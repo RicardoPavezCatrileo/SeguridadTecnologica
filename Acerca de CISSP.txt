@@ -1,0 +1,93 @@
+
+Acerca de CISSP
+CISSP (Certified Security Systems Security Professional) es la certificación más reconocida a nivel mundial en
+el mercado de la seguridad de la información. CISSP valida el profundo conocimiento técnico y de gestión
+de un profesional de la seguridad de la información para diseñar, construir y gestionar eficazmente la postura
+general de seguridad de una organización.
+El amplio espectro de temas incluidos en el conjunto de conocimientos de CISSP (Common Body of
+Knowledge - CBK) asegura su relevancia en todas las disciplinas en el campo de la seguridad de la
+información. Los candidatos aptos son competentes en los siguientes 8 dominios:
+• Seguridad y gestión de riesgos
+• Seguridad de activos
+• Arquitectura de seguridad e ingeniería
+• Comunicación y seguridad de red
+• Gestión de identidad y acceso (IAM)
+• Evaluación de seguridad y pruebas
+• Operaciones de seguridad
+• Seguridad de desarrollo de software
+Requisitos de experiencia
+Los candidatos tienen que tener un mínimo de 5 años de experiencia laboral acumulada a tiempo completo
+en 2 o más de los 8 dominios del CISSP CBK. Obtener un título universitario de 4 años o equivalente regional
+o una credencial adicional de la lista aprobada (ISC)² satisfará 1 año de la experiencia requerida. El crédito
+educativo solo satisfará 1 año de experiencia.
+Un candidato que no tenga la experiencia requerida para convertirse en un CISSP puede convertirse en un
+Asociado de (ISC)² al aprobar con éxito el examen CISSP. El Asociado de (ISC)² tendrá 6 años para obtener la
+experiencia requerida de 5 años.
+Acreditación
+CISSP fue la primera credencial en el campo de la seguridad de la información en cumplir con los estrictos
+requisitos de ANSI/ISO/IEC Standard 17024.
+Análisis de las áreas de trabajo
+(ISC)² tiene la obligación con sus miembros de mantener la relevancia del CISSP. Realizado a intervalos
+regulares, el análisis de las áreas de trabajo es un proceso metódico y crítico para determinar las tareas que
+realizan los profesionales de seguridad que participan en la profesión definida por el CISSP. Los resultados
+se utilizan para actualizar el examen. Este proceso asegura que los candidatos sean evaluados en las áreas
+temáticas relevantes para los roles y responsabilidades de los profesionales de la seguridad de la información
+de hoy en día.
+
+
+
+
+Dominio 1:
+Seguridad y Gestión de riesgos
+
+Comprender y aplicar conceptos de confidencialidad, integridad y disponibilidad
+
+Evaluar y aplicar principios de gobierno de la seguridad
+
+Determinar los requisitos de cumplimiento
+
+Comprender las cuestiones legales y regulatorias relacionadas con la seguridad de la información en un contexto global
+
+Comprender, adherirse a, y promover la ética profesional
+
+Desarrollar, documentar e implementar políticas de seguridad, estándares, procedimientos y directrices
+
+Identificar, analizar y priorizar los requisitos de continuidad del negocio 
+
+Contribuir y hacer cumplir las políticas y procedimientos de seguridad de personal
+
+Comprender y aplicar conceptos de gestión de riesgos 
+
+Comprender y aplicar conceptos y metodologías de modelado de amenazas
+
+Aplicar conceptos de gestión basados en el riesgo a la cadena de suministro 
+
+Establecer y mantener un programa de concienciación, educación y capacitación sobre
+seguridad
+
+
+Dominio 2:
+Seguridad de activos
+
+2.1 Identificar y clasificar información y activos
+» Clasificación de datos
+» Clasificación de activos
+2.2 Determinar y mantener la información y la propiedad de activos
+2.3 Proteger la privacidad
+» Propietarios de datos
+» Procesadores de datos
+» Remanencia de datos
+» Limitación en la recogida de datos
+2.4 Asegurar la retención adecuada de activos
+2.5 Determinar los controles de seguridad de datos
+» Comprender los estados de datos
+» Alcance y ajuste
+» Selección de estándares
+» Métodos de protección de datos
+2.6 Establecer requisitos de gestión de activos e información
+
+
+
+
+
+
