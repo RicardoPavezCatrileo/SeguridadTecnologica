@@ -343,60 +343,761 @@ de SQL y está mal visto. Para más información, vea el capítulo Inyecciones de In
 
 *****************************************************************************************************
 24
+El mejor desempeño y mayor seguridad a menudo se obtiene a través de procedimientos
+almacenados parametrizados, seguido de consultas parametrizadas (también conocidas como
+declaraciones preparadas) con una fuerte tipificación de los parámetros y esquemas. La principal
+razón para el uso de procedimientos almacenados es reducir al mínimo el tráfico de la red en
+transacciones de múltiples niveles o para evitar que información sensible sea transmitida por la
+red.
+Los procedimientos almacenados no son siempre una buena idea – lo atan a un proveedor de
+base de datos y muchas implementaciones no son rápidas para el cálculo numérico. Si utiliza la
+regla 80/20 para la optimización y mueve las transacciones lentas y de alto riesgo a
+procedimientos almacenados, los triunfos valdrán la pena desde un punto de vista de seguridad y
+rendimiento.
+Conclusión
+Las aplicaciones web se pueden escribir de muchas maneras diferentes, y en muchos idiomas
+diferentes. Aunque la Guía se concentra en las tres opciones comunes para sus ejemplos (PHP,
+ASP.NET y J2EE), la Guía puede utilizarse con cualquier aplicación web de tecnología. 
+
 ****************************************************************************************************
 25
+
+Arquitectura y Diseño de Seguridad
+Aplicaciones Seguras desde el Diseño 
+
 ****************************************************************************************************
 26
+Marcos de Política
+Sumario
+Las aplicaciones seguras no se dan por si mismas – son en cambio el resultado de una
+organización decidiendo que va a producir aplicaciones seguras. OWASP no desea forzar un
+enfoque particular o requerir a la organización el cumplimiento de leyes que no la afectan – cada
+organización es diferente.
+Sin embargo, a los fines de obtener una aplicación segura, se requiere como mínimo:
+Una gestión organizacional que abogue por la seguridad
+Políticas de seguridad documentadas y apropiadamente basadas en estándares nacionales
+Una metodología de desarrollo con adecuados puntos de control y actividades de seguridad
+Gestión segura de versiones y configuración
+Muchos de los controles contenidos en la Guía OWASP 2.0 se encuentran influenciados por
+requerimientos incluidos en estándares nacionales o marcos de control tales como COBIT;
+normalmente los controles seleccionados de la guía satisfacerán los requerimientos relevantes de
+ISO 17799 o COBIT.
+Compromiso Organizacional con la Seguridad
+Aquellas organizaciones donde la seguridad cuenta con el soporte de la alta gerencia
+generalmente desarrollaran y adquirirán aplicaciones que cumplen con principios básicos de
+seguridad. Este es el primero de los muchos pasos a lo largo del camino que conduce entre ad
+hoc “posiblemente seguras (pero probablemente no)” y “muy seguras”.
+En cambio, es muy poco probable que organizaciones que no cuentan con el soporte de la
+gerencia, o que simplemente no se preocupan por la seguridad, desarrollen aplicaciones seguras.
+Cada organización segura documenta su apetito por el riesgo en su política de Seguridad de la
+información, haciendo de esa manera que sea fácil determinar que riesgos serán aceptados,
+mitigados o asignados. 
+
 ****************************************************************************************************
 27
+Las organizaciones inseguras simplemente no conocen donde se encuentra este limite, por lo
+tanto es probable que cuando los proyectos dirigidos por este tipo de organizaciones seleccionan
+los controles a implementar, que estos terminen siendo inadecuados o insuficientes. Se han
+encontrados raros ejemplos donde todos los controles, incluyendo un colador de hojas de te para
+fregadero de cocina se habían implementado, usualmente a un costo muy alto.
+La mayoría de las organizaciones produce políticas de Seguridad de la información derivadas
+de la ISO 17799, o si la organización se encuentra ubicada en Estados Unidos, de COBIT, u
+ocasionalmente ambos o uno de los estándares. No hay una regla infalible o rápida que dicte
+como crear políticas de seguridad de la información, pero en general:
+Si la organización cotiza en bolsa en la mayoría de los países, debe tener una política de
+seguridad de la información
+Si la organización cotiza en bolsa en los Estados Unidos, la organización debe tener una
+política de seguridad de la información conforme a los requerimientos SOX, lo que por lo
+general implica controles COBIT
+Si la organización es propia pero posee cierto número de empleados y desarrolladores,
+probablemente necesite una política
+Proyectos populares de FOSS, que no son típicamente organizaciones, también deberían
+poseer su política de seguridad de la información.
+Es perfectamente correcto mezclar y combinar controles de COBIT y de ISO 17799 y casi
+cualquier otro estándar de seguridad de la información; rara vez se encuentran en desacuerdo en
+los detalles. El método de producción es a veces difícil – si usted “necesita” una política
+certificada, necesitara involucrar a firmas calificadas para que ayuden a la organización.
+La Posición de OWASP dentro del marco legislativo
+El siguiente diagrama muestra donde se ubica OWASP (sustituya con su país y su
+legislación, regulaciones y estándares si es que este no se encuentra listado): 
+
 ****************************************************************************************************
 28
+
+Las organizaciones necesitan establecer una política de seguridad de la información fundada
+en legislación nacional relevante, regulación industrial, acuerdos de comercio, y guías de
+mejores prácticas complementarias, tales como OWASP. Debido a que resulta imposible dibujar
+un pequeño diagrama que contenga todas las leyes y regulaciones relevantes, usted debe asumir
+que todas las leyes, estándares, regulaciones, y guías pertinentes no se encuentran listadas –
+usted necesitara identificar cuales afectan a su organización, clientes (según corresponda), y
+donde la aplicación Serra utilizada.
+IANAL: OWASP no es una fuente calificada de consejo legal; usted debe buscar
+asesoramiento legal apropiado.
+COBIT
+COBIT es un marco de gestión de riesgos muy popular que se estructura alrededor de cuatro
+dominios:
+Planear y organizar
+Adquirir e Implementar
+Entregar y Dar Soporte
+Monitorear y Evaluar
+
 ****************************************************************************************************
 29
+
+Cada uno de los cuatro dominios posee 13 objetivos de control de alto nivel, tales como DS5
+Garantizar la Seguridad de los Sistemas. Cada objetivo de alto nivel contiene un número de
+objetivos detallados como por ejemplo 5.2 Identificación, Autenticación y Acceso. Los objetivos
+pueden ser cumplidos con una variedad de métodos que es probable que difieran con cada
+organización. COBIT es típicamente usado como utilizado como marco de control para SOX, o
+como un complemento de los controles de ISO 17799. OWASP no se detiene en los aspectos de
+gestión o de negocio de los riesgos de COBIT. Si usted esta implementando COBIT, OWASP es
+un excelente punto de partida para identificar riesgos en el desarrollo de sistemas y para asegurar
+que aplicaciones hechas a medida o adquiridas cumplimenten con COBIT, pero OWASP no es
+una varita mágica para la conformidad con COBIT.
+Cuando un objetivo COBIT se cumplimente con un control de OWASP, usted vera “COBIT
+XX z.z” para ayudarle a identificar la porción de documentación de COBIT relevante. Estos
+controles deberían ser parte de todas las aplicaciones.
+Para mayor información sobre COBIT, por favor visite http://www.isaca.org/
+ISO 17799
+ISO 17799 es un marco de gestión de la Seguridad basado en riesgos que deriva directamente
+de los estándares AS/ NZS 4444 y BS 7799. Es un estándar internacional, muy utilizado por la
+mayoría de las organizaciones fuera de los Estados Unidos. Aunque algo más raro, algunas
+organizaciones en los Estados Unidos también utilizan ISO 17799, particularmente si poseen
+subsidiarias fuera del país. Los orígenes de la ISO 17799 se remontan a mediados de los 90, y
+algunos de los objetivos de control reflejan esta antigüedad - por ejemplo al llamar a las
+interfaces administrativas “puertos de diagnostico”.
+Las organizaciones que utilizan ISO 17799 pueden usar OWASP como una guía detallada al
+seleccionar e implementar una amplia gama de controles de la ISO 17799, particularmente
+aquellos detallados en el capitulo de Desarrollo de Sistemas, entre otros. Cuando un objetivos de
+control de 17799 se alcance con un control de OWASP, usted vera “ISO 17799 X.y.z” que le
+ayudara a referirse al capitulo relevante de ISO 17799. Estos controles deberían ser parte de
+todas las aplicaciones. 
 
 ****************************************************************************************************
 30
 
+Para mayor información al respecto de ISO 17799, por favor visite
+http://www.iso17799software.com/ y las normas pertinentes, tales como Estándares Australia
+(http://www.standards.com.au/), Estándares Nueva Zelanda (http://www.standards.co.nz/),
+o British Standards International
+(http://www.bsi-global.com/).
+
+Sarbanes-Oxley
+Un motivador importante para muchas organizaciones en Estados Unidos para adoptar
+controles OWASP es para asistir con el cumplimento de Sarbanes-Oxley. Si una organización
+siguiera cada control listado en este documento, no le garantizaría la conformidad con SOX.
+Esta Guía puede ser utilizada como un control adecuado para la adquisición de aplicaciones o
+para desarrollos internos, como parte de un programa de cumplimiento más extenso.
+Sin embargo, el cumplimento con requerimientos SOX es utilizado a veces como una
+cubierta necesaria por gerentes de Tecnología de la información que no poseían recursos
+suficientes, para implementar controles de seguridad que fueron descuidados por largo tiempo,
+por lo que resulta importante comprender que es lo que SOX realmente requiere. Un resumen de
+la sección 404 de SOX, obtenida de la página Web de AICPA
+(http://www.aicpa.org/info/sarbanes_oxley_summary.htm) establece:
+Sección 404: Administración del Establecimiento de Controles Internos
+Requiere que cada reporte anual de un emisor contenga un “informe de controles internos”
+que debe
+Establecer la responsabilidad de la gerencia por el establecimiento y mantenimiento de una
+adecuada estructura de controles internos y procedimientos para elaborar reportes financieros; y
+Contener una evaluación, completada al final del año fiscal del emisor, de la efectividad de la
+estructura de control y de los procedimientos de control interno para la elaboración de los
+informes financieros.
+Esto esencialmente dice que la gerencia debe establecer y mantener estructuras de control
+internas y procedimientos de carácter financiero, y una evaluación anual de que los controles
+son efectivos. Debido a que los informes financieros no se mantienen ya en libros contables de
+“Doble Entrada”, el cumplimiento con requerimientos SOX normalmente se extiende al área de
+Tecnología de la información. 
+
 ****************************************************************************************************
 31
+
+La Guía puede asistir con el cumplimiento de SOX, al proveer controles efectivos para todas
+las aplicaciones, y no solo para el propósito de reportes financieros. Permite a las organizaciones
+comprar productos que afirman usar controles OWASP, o permitir a las organizaciones exigir a
+las empresas de desarrollo de software que deben utilizar controles OWASP para producir
+software más seguro.
+Sin embargo, SOX no debe ser utilizado como una excusa. Los controles SOX son necesarios
+para prevenir otro ENRON, no para comprar artilugios que pueden o no ayudar. Todos los
+controles, sean artilugios comprados, capacitación, controles de código, o cambios de proceso,
+deben ser seleccionados basado en eficacia cuantificable y la habilidad para manejar el riesgo, y
+no “marcar todas las casillas”.
+Metodología de Desarrollo
+Las grandes empresas de software han elegido una metodología de desarrollo y estándares de
+codificación. La elección de una metodología de desarrollo no es tan importante como el simple
+hecho de poseer una.
+El desarrollo Ad hoc no es lo suficiente estructurado para producir aplicaciones seguras. Las
+Organizaciones que desean producir código seguro consistentemente necesitan una metodología
+que soporte dicho objetivo.
+Usted debe elegir la metodología adecuada – los equipos pequeños nunca deberían tomar en
+consideración metodologías demasiado complejas que identifiquen demasiados roles diferentes.
+Equipos más grandes deberían elegir metodologías a escala de sus necesidades.
+Las características a buscar en una metodología de desarrollo son:
+Fuerte aceptación de diseño, testeo y documentación
+Espacios donde se puedan insertan controles de seguridad (tales como análisis de riesgo de
+amenazas, revisiones por parte de pares, revisiones de código, etc.)
+Funciona para el tamaño y nivel de maduración de la organización
+Tiene el potencial de reducir la tasa actual de errores y de mejorar la productividad de los
+desarrolladores.
+Estándares de Codificación 
+
 ****************************************************************************************************
 32
+
+Una metodología no es un estándar de codificación; cada empresa de software necesitara
+determinar que utilizar basado en prácticas comunes, o simplemente cumplir la ley basado en
+mejores prácticas conocidas.
+Ítems a considerar:
+Orientación de arquitectura (por ejemplo “la capa Web no debe llamar a la base de datos
+directamente”)
+Niveles mínimos de documentación requerida
+Requerimientos de testeo mandatarios
+Niveles mínimos de comentarios entre código y estilo de comentarios preferidos
+Manejo de excepciones
+Uso de flujo de bloques de control (por ejemplo “Todos los usos de flujos condicionales
+deben usar bloques de sentencias específicos”)
+Método de nombramiento preferido para variables, funciones, clases y tablas.
+Código mantenible y legible es preferido ante código inteligente o complexo
+El estilo del guión y tabulado es una guerra santa, pero desde el punto de vista de la
+seguridad, simplemente no importan tanto. Sin embargo, debe destacarse que no usamos más
+terminales 80x24, así que el uso de espacio vertical ya no es tan importante como lo era antes. El
+guión y tabulado pueden ser “corregidos” utilizando herramientas automáticas o simplemente un
+estilo del editor de código, por lo tanto no se ponga demasiado exigente en este tema.
+Control de Código Fuente
+ La ingeniería de software de alto rendimiento requiere mejoras frecuentes al código,
+junto con regimenes de testeo asociados. Todo el código y testeos deben poder ser revertidos y
+versionados.
+Esto se puede hacer copiando carpetas a un servidor de documentos, pero es mejor si se
+utilizan herramientas de revisión de código, tales como Subversion, CVS, SourceSafe, o
+ClearCase.
+ ¿Por que incluir testeos en una revisión? Los testeos para las versiones de código
+posteriores no se ajustan a los testeos requeridos por las versiones de código iniciales. Es vital
+que se aplique un testeo a la versión de código para el cual fue construido. 
+
 ****************************************************************************************************
 33
+
+Principios de codificación segura
+Sumario
+Arquitectos y proveedores de soluciones necesitan una guía para producir aplicaciones
+seguras por diseño, y pueden hacerlo no sólo implementando los controles básicos documentados
+en el texto principal, sino también refiriéndose al subyacente “¿Por qué?” en esos principios. Los
+principios de seguridad tales como confidencialidad, integridad, y disponibilidad – aunque son
+importantes, amplios y vagos – no cambian. Su aplicación será más robusta cuanto más los
+aplique.
+ Por ejemplo, es correcto cuando en una implementación de validación de datos se incluye
+una rutina de validación centralizada para todas las entradas. Sin embargo, es mejor ver una
+validación a cada nivel para todas las entradas del usuario, asociadas con un apropiado manejo
+de errores y un robusto control de accesos.
+En el último año más o menos, ha habido un esfuerzo significante para estandarizar la
+terminología y taxonomía. Esta versión de la guía ha normalizado sus principios con aquellos de
+los grandes textos de la industria, mientras se han abandonado un principio o dos presentes en la
+primera edición de la Guía. Se ha hecho así para prevenir confusión e incrementar la
+conformidad con un conjunto de principios fundamentales. Los principios que han sido
+eliminados están adecuadamente cubiertos por controles dentro del texto.
+Clasificación de activos
+La selección de controles sólo es posible después de clasificar los datos a proteger. Por
+ejemplo, controles aplicables a sistemas de bajo valor tales como blogs y foros son diferentes al
+nivel y número de controles adecuados para la contabilidad, sistemas de alto valor de banca y
+comercio electrónico
+Sobre los atacantes
+En el diseño de controles para prevenir el mal uso de su aplicación, debe considerar los
+atacantes más probables (en orden de posibilidades y pérdidas actualizadas de más a menos):
+Equipo o desarrolladores descontentos.
+Ataques “Accionados por” como efectos secundarios o consecuencias directas de un virus, o
+ataque de gusano o troyano. 
+
 ****************************************************************************************************
 
 34
+
+Principios de codificación segura
+Sumario
+Arquitectos y proveedores de soluciones necesitan una guía para producir aplicaciones
+seguras por diseño, y pueden hacerlo no sólo implementando los controles básicos documentados
+en el texto principal, sino también refiriéndose al subyacente “¿Por qué?” en esos principios. Los
+principios de seguridad tales como confidencialidad, integridad, y disponibilidad – aunque son
+importantes, amplios y vagos – no cambian. Su aplicación será más robusta cuanto más los
+aplique.
+ Por ejemplo, es correcto cuando en una implementación de validación de datos se incluye
+una rutina de validación centralizada para todas las entradas. Sin embargo, es mejor ver una
+validación a cada nivel para todas las entradas del usuario, asociadas con un apropiado manejo
+de errores y un robusto control de accesos.
+En el último año más o menos, ha habido un esfuerzo significante para estandarizar la
+terminología y taxonomía. Esta versión de la guía ha normalizado sus principios con aquellos de
+los grandes textos de la industria, mientras se han abandonado un principio o dos presentes en la
+primera edición de la Guía. Se ha hecho así para prevenir confusión e incrementar la
+conformidad con un conjunto de principios fundamentales. Los principios que han sido
+eliminados están adecuadamente cubiertos por controles dentro del texto.
+Clasificación de activos
+La selección de controles sólo es posible después de clasificar los datos a proteger. Por
+ejemplo, controles aplicables a sistemas de bajo valor tales como blogs y foros son diferentes al
+nivel y número de controles adecuados para la contabilidad, sistemas de alto valor de banca y
+comercio electrónico
+Sobre los atacantes
+En el diseño de controles para prevenir el mal uso de su aplicación, debe considerar los
+atacantes más probables (en orden de posibilidades y pérdidas actualizadas de más a menos):
+Equipo o desarrolladores descontentos.
+Ataques “Accionados por” como efectos secundarios o consecuencias directas de un virus, o
+ataque de gusano o troyano. 
+
+
 ****************************************************************************************************
 35
+
+necesitan superar cierta cantidad de coches y tráfico a pie, pero también ciclones, terremotos,
+fuegos, accidentes de tráfico e inundaciones. Los diseñadores de aplicaciones deben superar
+eventos extremos como fuerza bruta o ataques de inyección y fraude. Los riesgos de los
+diseñadores de aplicaciones son bien conocidos. Los días de “no lo sabíamos” ya han pasado.
+La seguridad ahora es algo esperado, y no un caro complemento o algo dejado de lado.
+La arquitectura de seguridad se refiere a los pilares fundamentales: la aplicación debe
+proporcionar controles para proteger la confidencialidad de la información, integridad de los
+datos, y proporcionar acceso a los datos cuando se requiera (disponibilidad) – y solamente a los
+usuarios apropiados. La arquitectura de seguridad no es una “markitecture”, donde una
+cornucopia de productos de seguridad son lanzados juntos y denominados como “solución”, no
+son más que un conjunto de características cuidadosamente consideradas, controles, procesos
+seguros, y una postura de seguridad por defecto.
+Cuando se empieza una nueva aplicación o se rediseña una aplicación existente, debería
+considerar cada característica funcional y tener en cuenta:
+¿Son los procesos de alrededor de esta característica lo más seguro posibles? En otras
+palabras, ¿es este un proceso con defectos?
+¿Si fuera malvado, cómo abusaría de esta característica?
+¿Se requiere esta característica que este activa por defecto? Si es así, ¿existen límites u
+opciones que ayuden a reducir el riesgo de esta característica?
+Andrew van der Stock llamo al proceso anterior “Thinking Evil™”, y recomienda ponerse en
+el lugar de el atacante y pensar en todas las posibles vías en que se puede abusar de cada
+característica, sin considerar los tres pilares básicos y usando el modelo STRIVE sucesivamente.
+. Siguiendo esta guía, y usando el modelo de riesgo de amenazas STRIDE / DREAD
+discutido aquí y en el libro de Howard y LeBlanc, irá bien en su camino de adoptar formalmente
+una arquitectura de seguridad para sus aplicaciones.
+El mejor diseño de sistema de arquitectura y documentos de diseño detallados contienen
+discusiones de seguridad en cada característica, cómo se van a reducir los riesgos, y cómo se
+hacía actualmente la codificación.
+La arquitectura de seguridad empieza el día en que se modelan los requisitos del negocio, y
+no termina nunca hasta que la última copia de su aplicación es retirada. La seguridad es un
+proceso de larga vida y no un disparo por accidente. 
+
 ****************************************************************************************************
 36
+
+Principios de Seguridad
+Estos principios de Seguridad han sido tomados de la edición previa de la guía OWASP y se
+han normalizado con los principios de seguridad perfilados en el excelente libro Escribiendo
+código seguro de Howard y LeBlanc.
+Minimizando el área de la superficie de ataque
+Cada característica que se añade a una aplicación añade una cierta cantidad de riesgo a la
+aplicación total. El objetivo del desarrollo seguro es reducir el total del riesgo reduciendo el área
+de la superficie de ataque.
+Por ejemplo, una aplicación web implementa ayuda online con una función de búsqueda. La
+función de búsqueda puede ser vulnerable a ataques de inyección SQL. Si la característica de
+ayuda se hubiera limitado a usuarios autorizados, la probabilidad del ataque se hubiera reducido.
+Si la característica de ayuda de la función de búsqueda fuera introducida a través de rutinas
+de validación de datos centralizadas, la habilidad para realizar ataques de inyección SQL se
+hubiera reducido dramáticamente. Sin embargo, si la característica de ayuda fuera re-escrita para
+eliminar la función de búsqueda (por una interfaz de usuario mejorada, por ejemplo), esto
+eliminaría al menos el área de ataque, incluso si la característica de ayuda estuviera disponible
+para toda Internet.
+Seguridad por defecto
+Hay muchas maneras de entregar una experiencia “out of the box” a los usuarios. Sin
+embargo, por defecto, la experiencia debería ser segura, y debería depender del usuario el reducir
+su seguridad – si les está permitido.
+Por ejemplo, por defecto, debe habilitarse la complejidad de la contraseña y su duración. A
+los usuarios se les puede permitir deshabilitar esas dos características para simplificar su uso de
+la aplicación e incrementar su riesgo.
+Principio del mínimo privilegio
+El principio del mínimo privilegio recomienda que las cuentas tengan la mínima cantidad de
+privilegios necesarios para realizar sus procesos de negocio. Esto abarca a los derechos de
+usuario, permisos de recursos tales como límites de CPU, memoria, red y permisos del sistema
+de ficheros. 
 
 ****************************************************************************************************
 37
 
+Por ejemplo, si un servidor middleware requiere acceso sólo a la red, acceso de lectura a la
+tabla de una base de datos, y la habilidad para escribir en un log, esto describe todos los permisos
+que deben concederse. Bajo ninguna circunstancia debería darse privilegios administrativos al
+middleware.
+Principio de defensa en profundidad
+El principio de defensa en profundidad sugiere que donde con un control sería razonable,
+más controles contra diferentes tipos de riesgo serían mayores. Los controles, cuando se utilizan
+en profundidad, pueden hacérselo extraordinariamente difícil a severas vulnerabilidades y por lo
+tanto con poca probabilidad de que ocurran. Con la codificación segura, esto puede tomar la
+forma de validación basada en filas, controles de auditoria centralizados, y requerir a los usuarios
+hacer login en todas las páginas.
+Por ejemplo, una interfaz administrativa con defectos es poco probable que sea vulnerable a
+ataques anónimos si incorpora el acceso correctamente a redes de administración en producción,
+chequea la autorización administrativa del usuario, y hace log de todos los accesos.
+Fallar de manera segura
+Las aplicaciones fallan regularmente al procesar transacciones debido a diversas razones. De
+la manera en que fallan se puede determinar si una aplicación es segura o no. Por ejemplo:
+isAdmin = true;
+try {
+ codeWhichMayFail();
+ isAdmin = isUserInRole( “Administrator” );
+}
+catch (Exception ex) {
+ log.write(ex.toString());
+}
+Sí el código codeWhichMayFail() falla, el usuario es administrador por defecto. Obviamente
+esto es un riesgo de seguridad.
+Los sistemas externos son inseguros
+Diversas organizaciones utilizan las capacidades de procesamiento de terceras compañías, las
+cuales más que a menudo tienen diferentes políticas de seguridad y posturas que la suya. Es 
+
 ****************************************************************************************************
 38
+
+poco probable que pueda controlar o influenciar en una tercera parte externa, si ellas son usuarios
+domésticos o grandes suministradores o socios.
+De ahí que, la confianza implícita de ejecutar sistemas externos, no está garantizada. Todos
+los sistemas externos deberían ser tratados de un modo similar.
+Por ejemplo, un fiel proveedor de programas proporciona datos que son utilizados para la
+Banca en Internet, proporciona el número de puntos de premio y una pequeña lista de objetos
+potenciales de reembolso. Sin embargo, los datos deberían ser comprobados para asegurarse que
+es seguro mostrarlo al usuario final, y que los puntos de premio son un número positivo, y no
+improbablemente largo.
+Separación de funciones
+Un control clave del fraude es la separación de funciones. Por ejemplo, alguien que solicita
+un ordenador no puede anunciarlo también, no debería recibir directamente el ordenador. Esto
+previene que el usuario solicite varios ordenadores y reclame que nunca le llegaron.
+Ciertos roles tienen niveles diferentes de confianza que los usuarios normales. En particular,
+los administradores son diferentes que los usuarios normales. En general, los administradores no
+deberían ser usuarios de la aplicación.
+Por ejemplo, un administrador debería ser capaz de apagar y encender el sistema, configurar
+políticas de contraseñas pero no debería ser capaz de hacer login en la aplicación como un super
+usuario privilegiado, que fuera capaz de “comprar” objetos en nombre de otros usuarios.
+No confíes en la seguridad a través de la oscuridad
+La seguridad a través de la oscuridad es un control de seguridad débil, y además siempre
+fallan cuando son el único control. Esto no significa que mantener secretos es una mala idea,
+significa simplemente que la seguridad de los sistemas clave no debería basarse en mantener
+detalles ocultos.
+Por ejemplo, la seguridad de una aplicación no debería basarse en mantener en secreto el
+conocimiento del código fuente. La seguridad debería basarse en muchos otros factores,
+incluyendo políticas razonables de contraseñas, defensa en profanidad, límites en las
+transacciones de negocios, arquitectura de red sólida, y controles de auditoria y fraude.
+Un ejemplo práctico es Linux. El código fuente de Linux está ampliamente disponible, y aún
+así está asegurado apropiadamente. Linux es un sistema operativo resistente, seguro y robusto. 
+
+
 ****************************************************************************************************
 39
+
+Simplicidad
+El área de la superficie de ataque y la simplicidad van de la mano. Ciertos ingenieros de
+software prefieren aproximaciones demasiado complejas hacia lo que de otra manera sería un
+código relativamente sencillo y simple.
+Los desarrolladores deben evitar el uso de dobles negaciones y complejas arquitecturas en
+donde un enfoque simple sería más rápido y simple.
+Por ejemplo, aunque pueda estar a la última tener unas cuantas entidades sencillas
+ejecutándose en un servidor separado, es más seguro y rápido usar simplemente variables
+globales con un mecanismo apropiado de mutex para proteger contra las condiciones de carrera.
+Arreglar cuestiones de seguridad correctamente
+Una vez que un fallo de seguridad ha sido identificado, es importante desarrollar un test para
+él y comprender la raíz del problema. Cuando se usan los patrones de diseño, es muy probable
+que el fallo de seguridad se encuentre muy extendido en todo el código base, por lo que
+desarrollar la solución correcta sin introducir regresiones es esencial.
+Por ejemplo, un usuario ha visto que es capaz de ver las cuentas de otro usuario simplemente
+ajustando su cookie. La solución parece ser relativamente sencilla, pero como el manejo de la
+cookie es compartido entre todas las aplicaciones, un cambio en una simple aplicación
+repercutirá en todas las demás. La solución por lo tanto debe testearse en todas las aplicaciones
+afectadas. 
+
 ****************************************************************************************************
 40
+
+Modelado de Riesgo de Amenaza
+Durante el diseño de su aplicación, es esencial que la diseñe utilizando controles evaluados
+de riesgo de amenaza, de otra forma malgastara recursos, tiempo y dinero en controles inútiles y
+no suficiente en los riesgos reales.
+El método que utilice para determinar riesgo no es tan importante como hacer modelado de
+riesgo de amenaza estructurado. Microsoft señala que la mejora sencilla en su programa de
+mejora de seguridad fue la adopción universal de modelado de amenaza.
+OWASP ha elegido el proceso de modelado de amenaza de Microsoft ya que trabaja bien
+para los retos únicos enfrentando seguridad en aplicaciones, y es fácil de aprender y adoptar por
+diseñadores, desarrolladores y revisores de código.
+Modelado de Amenaza de Riesgo utilizando el Proceso de Modelado de Amenaza de
+Microsoft
+Modelado de amenaza es un proceso esencial para el desarrollo de aplicaciones web seguras.
+Permite a las organizaciones determinar el control correcto y producir contramedidas efectivas
+dentro del presupuesto. Por ejemplo hay poco sentido en agregar un controlo de $100,000 a un
+sistema que tiene fraude insignificante.
+Ejecutando modelado de riesgo de amenazas
+Hay cinco pasos en el proceso de modelado. Microsoft provee una herramienta de modelado
+de riesgo escrita en .NET para ayudar con el seguimiento y visualización de árboles de
+amenazas. Podría encontrar el uso de está herramienta útil para proyectos más largo y de larga de
+vida.
+Flujo del Modelo de Amenaza 
+
 ****************************************************************************************************
 41
+
+Identificar Objetivos de Seguridad
+El negocio (o líder de la organización) en coordinación con el equipo de desarrollo necesita
+entender los probables objetivos de seguridad. Los objetivos de seguridad en aplicaciones
+necesitan ser divididos en:
+Identidad: ¿protege está aplicación al usuario de mal uso? ¿Hay controles adecuados para
+asegurar evidencia de identidad (requerido para muchas aplicaciones bancarias)?
+Reputación: la pérdida de reputación derivada de la aplicación siendo mal usada o atacada
+exitosamente 
+
 ****************************************************************************************************
 42
+
+Financiero: el nivel de riesgo que la organización esta preparada para tomar en la
+remediación de potencial pérdida financiera. Un software de foros tendría menor riesgo
+financiero que la banca por Internet de un corporativo
+Privacidad y regulaciones: en que medida las aplicaciones deben proteger la información del
+usuario. Software de foros es público por naturaleza, pero un programa de impuestos esta
+intrínsecamente vinculado a las regulaciones y legislación de privacidad en la mayoría de los
+países
+Disponibilidad de garantías: ¿tiene este software que estar disponible por un SLA o un
+acuerdo similar? ¿Es infraestructura protegida nacionalmente? ¿A que nivel tiene que estar
+disponible la aplicación? Aplicaciones y técnicas altamente disponibles son extraordinariamente
+caras, así que la fijación de controles correctos puede ahorrar una gran cantidad de recursos y
+dinero.
+Esto de ninguna manera es una lista exhaustiva pero da una idea de algunas de las decisiones
+de riesgo de negocio que lleva a la construcción de controles técnicos. Otras fuentes de
+orientación vienen de:
+Leyes (Como leyes de privacidad o financieras)
+Regulaciones (como regulaciones bancarias o de negocios electrónicos)
+Estándares (como ISO 17799)
+Acuerdos Legales (como acuerdos mercantes)
+Políticas de Seguridad de la información
+Visión General de la Aplicación
+Una vez que los objetivos han sido definidos, la aplicación debería ser analizada para
+determinar:
+Componentes
+Flujos de datos
+Límites de confianza
+La mejor manera de hacer esto es obtener la documentación de arquitectura y diseño de la
+aplicación.
+Busque diagramas de componentes UML. Los diagramas de componentes de alto nivel son
+generalmente todo lo que se requiere para entender como y porque la información fluye a
+distintos lugares. Información que cruza un límite de confianza (como desde el Internet al código 
+
 ****************************************************************************************************
 43
+
+de la interfaz o desde la lógica de negocio al servidor de base de datos), necesita ser analizado
+cuidadosamente, mientras que los flujos dentro del mismo nivel de confianza no necesitan tanto
+escrutinio.
+Descomponer la aplicación
+Una vez que la arquitectura de la aplicación es entendida, la aplicación necesita ser
+descompuesta, esto significa que las características y módulos que tienen un impacto de
+seguridad necesitan ser descompuestas. Por ejemplo, cuando se investiga el módulo de
+autenticación, es necesario entender como los datos entran al módulo de autenticación, como el
+módulo valida y procesa la información, a donde fluyen los datos, si la información es guardada,
+y que decisiones son hechas por el módulo.
+Documentar las amenazas conocidas
+Es imposible escribir amenazas desconocidas, y es poco probable para muchos sistemas
+personalizados que un nuevo malware sea creado para hacer frente a nuevas vulnerabilidades. En
+cambio, concéntrese en los riesgos que son conocidos, que pueden ser fácilmente demostrados
+utilizando herramientas o el seguimiento de errores.
+Cuando documente una amenaza, Microsoft sugiere dos enfoques diferentes. Uno es un
+gráfico de amenaza y el otro es simplemente una lista estructurada. Típicamente, un gráfico de
+amenaza imparte mucha más información en un periodo de tiempo más corto para el lector pero
+lleva mayor tiempo para construirse, y la lista estructurada es mucho más fácil de escribir pero
+lleva más tiempo para el impacto de las amenazas hacerse obvias. 
+
 ****************************************************************************************************
 
 44
+
+1. Un atacante podría leer los mensajes de otros usuarios
+El usuario tal vez no haya terminado sesión en una computadora compartida
+2. Validación de datos puede permitir inyección SQL
+3. Implementar validación de datos
+4. Autorización puede fallar, permitiendo acceso no autorizado
+5. Implementar revisiones de autorización
+6. Caché del navegador puede contener parte del mensaje
+7. Implementar cabeceras HTTP anti-caché
+8. Si el riesgo es alto, usar SSL
+Las amenazas son atacantes motivados, ellos generalmente quieren algo de su aplicación o
+burlar controles. Para entender que amenazas son aplicables, utilice los objetivos de seguridad
+para entender quien podría atacar la aplicación:
+Descubrimiento accidental: Usuarios autorizados pueden toparse con un error en la lógica de
+su aplicación utilizando simplemente un navegador
+Malware automatizado (buscando vulnerabilidades conocidas pero con un poco de malicia e
+inteligencia)
+Atacante Curioso (como investigadores de seguridad o usuarios que notaron algo mal en su
+aplicación y prueban más allá)
+Script kiddie: criminales computacionales atacando o desfigurando aplicaciones por respeto o
+motivos políticos – utilizando técnicas descritas aquí o en la Guía de Pruebas de OWASP para
+comprometer su aplicación
+Atacantes motivados (como personal disgustado o un atacante pagado)
+Crimen organizado (generalmente para aplicaciones de alto riesgo, como comercio
+electrónico o bancario
+Es vital entender el nivel del atacante contra el que se esta defendiendo. Un atacante
+informado que entiende sus procesos es mucho más peligroso que un script kiddie, por ejemplo.
+STRIDE
+Burlando Identidad
+Burlar identidad es un riesgo clave para las aplicaciones que tienen muchos usuarios pero un
+contexto de ejecución simple a nivel aplicación y base de datos. Los usuarios no deben ser
+capaces de actuar como otro usuario o convertirse en otro usuario. 
+
 ****************************************************************************************************
 45
+
+Manipulación de información
+Los usuarios pueden cambiar cualquier información entregada a ellos, y por lo tanto pueden
+cambiar validación del lado del cliente, datos GET y POST, cookies, cabeceras HTTP, y más. La
+aplicación no debería enviar información al usuario, como tasas de interés o periodos que son
+obtenibles de la aplicación misma. La aplicación debe revisar cuidadosamente cualquier
+información recibida del usuario para identificar si es sensata y aplicable.
+Repudiación
+Los usuarios pueden disputar transacciones si hay trazabilidad y auditoria insuficiente de la
+actividad del usuario. Por ejemplo, si un usuario dice, “yo no transferí dinero a está cuenta
+externa”, y usted no puede seguir sus actividades desde el frente al dorso de la aplicación, es
+extremadamente posible que la transacción tendrá que deshacerse.
+Las aplicaciones deberían tener controles de repudiación adecuados, como registros de
+accesos web, pistas de auditorias en cada nivel, y un contexto de usuario desde arriba hacia
+abajo. Preferentemente, la aplicación debería correr como el usuario, pero esto comúnmente no
+es posible con muchos marcos.
+Divulgación de Información
+Los usuarios se resisten a enviar detalles privados a un sistema. Es posible para un atacante
+revelar detalles de usuario, ya sea anónimamente o como un usuario autorizado, habrá un periodo
+de reputación perdido. Las aplicaciones deben incluir controles fuertes para prevenir
+manipulación de identificación de usuario, particularmente cuando ellos usan una única cuenta
+para correr la aplicación entera.
+El navegador del usuario puede fugar información. No todos los navegadores implementan
+correctamente políticas de manejo de caché pedidos por las cabeceras HTTP. Cada aplicación
+tiene la responsabilidad de minimizar la cantidad de información almacenada por el navegador,
+previendo que pueda divulgar información y pueda ser utilizada por un atacante para aprender
+más acerca del usuario o convertirse en ese usuario.
+Denegación de Servicio
+Las aplicaciones deberían estar conscientes que podrían ser objeto de un ataque de
+denegación de servicio. Para aplicaciones autenticadas, recursos costosos como archivos
+grandes, cálculos complejos, búsquedas pesadas, o consultas largas deberían estar reservadas
+para usuarios autorizados, no para usuarios anónimos. 
+
 ****************************************************************************************************
 46
+
+Para aplicaciones que no tienen este lujo, cada faceta de la aplicación deber ser
+implementada para realizar el menos trabajo posible, usar (o no) consultas rápidas a la base de
+datos, y no exponer archivos grandes, o proveer ligas únicas por usuario para prevenir un ataque
+simple de denegación de servicios.
+Elevación de Privilegios
+Si una aplicación provee roles de usuario y administrador, es vital asegurarse que el usuario
+no puede elevarse a algún rol de privilegios más altos. En particular, simplemente no proveer las
+ligas al usuario es insuficiente – todas las acciones deben estar cerradas a través de una matriz de
+autorización para asegurarse que solamente los roles correctos pueden acceder funcionalidades
+privilegiadas.
+DREAD
+DREAD es usado para formar parte del razonamiento detrás de la clasificación de riesgos, y
+es usada directamente para ordenar riesgos.
+DREAD es usado para computar un valor de riesgo, que es un promedio de cinco elementos:
+RiskDREAD = (DAÑO + REPRODUCIBILIDAD + EXPLOTABILIDAD + usuarios
+AFECTADOS + DESCUBRIBILIDAD) / 5
+Esto produce un número entre 0 y 10. Mientras más alto el número, más serio es el riesgo.
+Daño Potencial
+Si una amenaza es cumplida, ¿cuánto daño es causado? 
+
+0 = Nada 5 = Información
+individual del usuario es
+comprometida o afectada
+10 = Destrucción
+completa del sistema 
+
+Reproducibilidad
+¿Qué tan fácil es reproducir esta amenaza? 
+0 = Muy difícil o
+imposible, incluso para los
+administradores de la
+aplicación
+5 = uno o dos pasos
+requeridos, tal vez necesite
+ser un usuario autorizado
+10 = Requiere sólo una
+barra de direcciones sin
+estar registrado en la
+aplicación 
+
 ****************************************************************************************************
 47
+
+Explotación
+¿Qué necesita tener para explotar esta amenaza?
+0 = Habilidades 5 = Malware existente, 10 = Solamente un 
+avanzadas de programación
+y redes, herramientas de
+ataque avanzadas o
+personalizadas
+o fácilmente realizado
+utilizando herramientas
+normales de ataque
+navegador 
+
+Usuarios Afectados
+¿Cuántos usuarios serán afectados por esta amenaza?
+0 = Ninguno 5 = Algunos usuarios,
+pero no todos
+10 = Todos los usuarios 
+
+Descubrimiento
+¿Qué tan fácil es descubrir esta amenaza? Cuando se está realizando una revisión de código
+de una aplicación existente, la facilidad para descubrirla es usualmente establecida como 10 ya
+que se tiene que asumir que estas cuestiones serán descubiertas.
+0 = De muy difícil a
+imposible. Requiere acceso
+al sistema o al código
+5 = Se podría dar con el
+problema de estar
+adivinando u observando
+las huellas de la red
+9 = Detalles de fallas
+como esta son del dominio
+público, y pueden ser
+descubiertas utilizando
+Google
+10 = Está en la barra de
+direcciones o en una forma
+
+
+Sistemas Alternativos de Modelado de Amenazas
+OWASP reconoce que la adopción de un proceso de modelado de Microsoft puede ser una
+elección controversial en algunas organizaciones. Si STRIDE / DREAD es inaceptable debido a
+prejuicio infundado, recomendamos que cada organización juzgue los varios modelos de
+amenaza en una aplicación o diseño existente. Esto permitirá a la organización determinar que
+enfoque funciona mejor para ellos, y adoptar las herramientas de modelado de amenaza más
+apropiada para sus organizaciones.
+Realizar modelado de amenazas provee un retorno mucho mayor que cualquier control en esta
+Guía. Es vital que el modelado de amenaza se lleve acabo
+
 ****************************************************************************************************
 48
+
+Trike
+Trike es un marco de modelado de amenaza con similitudes al proceso de modelado de
+amenaza de Microsoft. Sin embargo, Trike se diferencia utilizando un enfoque basado en el
+riesgo con implementación, modelos de amenaza y riesgo distintos, en vez de utilizar un modelo
+de amenaza mixto (ataques, amenazas y debilidades) como se representan por STRIDE /
+DREAD.
+Del papel de Trike, Trike tiene por objeto:
+Con ayuda de los interesados del sistema, asegurar que el riesgo que este sistema implica a
+cada activo es aceptable para todos los interesados.
+Ser capaz de decir si esto se ha hecho.
+Comunicar que hemos hecho y sus efectos a los interesados
+Potenciar a los interesados para entender y reducir los riesgos para si mismos y para otros
+interesados implicados por sus acciones dentro de sus dominios.
+Para mayor información, por favor revise debajo la sección “Otra lectura”. La Guía de
+OWASP 2.1 (en Noviembre 2005) tendrá mayor detalle acerca de Trike.
+AS/NZS 4360:2004 De Gestión de Riesgos
+Estándar Australiano / Estándar neocelandés AS/NZS 4360, publicado por primera vez en
+1999, es el primer estándar formal del mundo para documentar y gestionar riesgo, y es todavía
+uno de los pocos estándares formales para gestionar riesgo. Fue actualizado en 2004.
+El enfoque del AS/NZS 4360 es simple (es sólo de 28 páginas) y flexible, y no bloquea a las
+organizaciones en un método en particular de gestión de riesgo siempre y cuando la gestión de
+riesgo cumpla los cinco pasos del AS/NZS 4360. Provee varios conjuntos de tablas de riesgo y
+permite a las organizaciones adoptar el suyo propio.
+Los cinco componentes principales del enfoque iterativo del AS/NZS son:
+Establecer el contexto – establecer que es un riesgo tratado, por ejemplo, que bienes /
+sistemas son importantes
+Identificar los riesgos – dentro de sistemas a ser tratados, ¿qué riesgos son aparentes?
+Analizar los riesgos – ver estos riesgos y determinar si hay algunos controles de apoyo
+Evaluar los riesgos – determinar el riesgo residual
+Tratar los riesgos – describir los métodos para tratar los riesgos para que los riesgos
+seleccionados por el negocio puedan ser mitigados 
+
 ****************************************************************************************************
 49
 ****************************************************************************************************
