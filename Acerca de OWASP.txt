@@ -1,0 +1,567 @@
+13
+Acerca de OWASP
+El Open Web Application Security Project (OWASP) es un espacio abierto de la comunidad
+dedicada a la búsqueda y la lucha contra las causas del software inseguro. Todas las
+herramientas, documentos, foros, y los capítulos de OWASP son gratuitos y abiertos a cualquier
+persona interesada en mejorar la seguridad de aplicaciones.
+http://www.owasp.org/
+OWASP es un nuevo tipo de entidad en el mercado de la seguridad. Nuestra libertad de las
+presiones comerciales nos permite brindar información imparcial, práctica, y rentable sobre
+seguridad de aplicaciones. OWASP no está afiliado con ninguna compañía de tecnología, sin
+embargo apoya la utilización de tecnología de seguridad.
+Somos partidarios de acercarnos a la seguridad de aplicaciones como un problema de las
+personas, procesos y tecnología. Los enfoques más efectivos para seguridad de aplicaciones
+incluyen mejoras en todas estas áreas. 
+
+Estructura y Licenciamiento
+La Fundación OWASP es una entidad sin fines de lucro (501c3) que proporciona la
+infraestructura para la comunidad de OWASP. La Fundación proporciona nuestros servidores y
+ancho de banda, facilita los proyectos y capítulos, y gestiona las Conferencias OWASP de
+Seguridad de Aplicaciones en todo el mundo.
+Todos los materiales OWASP están disponibles bajo un aprobado método de licencia de código
+abierto. Si opta por convertirse en una organización miembro de OWASP, también puede utilizar
+la licencia comercial que le permite usar, modificar y distribuir todos los materiales OWASP
+dentro de su organización bajo una única licencia.
+Participación y Membresía
+Todo el mundo es bienvenido a participar en nuestros foros, proyectos, capítulos, y
+conferencias. OWASP es un lugar fantástico para aprender sobre seguridad de aplicaciones, de
+red, e incluso construir su reputación como un experto. Muchos expertos en seguridad de
+aplicaciones y las empresas participan en OWASP porque la comunidad establece su
+credibilidad.
+Si los materiales de OWASP le resultan útiles, por favor, considere la posibilidad de apoyar 
+************************************************************************************************************************************************************************************************************
+14
+
+nuestra causa por convertirse en un miembro OWASP. Todo el dinero recibido por la Fundación
+OWASP será destinado directamente al apoyo de proyectos de OWASP.
+Proyectos
+Los proyectos de OWASP están ampliamente divididos en dos categorías principales: los
+proyectos de desarrollo, y los proyectos de documentación.
+Nuestros proyectos de documentación actualmente consisten en:
+• La Guía - Este documento que proporciona orientación detallada sobre la seguridad de
+aplicaciones web.
+• El Top Ten de las vulnerabilidades más criticas de Aplicaciones Web - Un documento de alto
+nivel para ayudar a centrarse en las cuestiones más críticas.
+• Métricas - Un proyecto viable para definir las métricas de seguridad de aplicaciones web.
+• Legal - Un proyecto de software para ayudar a compradores y vendedores negociar una
+seguridad adecuada en sus contratos.
+• Guía de Testeo - Una guía eficaz centrada en pruebas de la seguridad de aplicaciones web.
+• ISO17799 - Los documentos de soporte para las organizaciones haciendo revisiones ISO17799
+• AppSec FAQ - Preguntas frecuentes y respuestas sobre seguridad de aplicaciones
+Los proyectos de desarrollo incluyen:
+• WebScarab - una aplicación Web que incluye una suite de evaluación de vulnerabilidades y
+herramientas Proxy.
+• Los filtros de validación - (Stinger para J2EE, filtros para PHP) filtros de frontera genéricos de
+seguridad que los desarrolladores pueden utilizar en sus propias aplicaciones.
+• WebGoat - una herramienta de capacitación y evaluación interactiva que los usuarios pueden
+utilizar para aprender sobre seguridad de aplicaciones web en un lugar seguro y legal.
+• DotNet - una variedad de herramientas para asegurar entornos .NET. 
+*************************************************************************************************************************************************************************************************************
+15
+
+Introducción
+Hemos re-escrito completamente la Guía, ocupándonos de todas las cuestiones de seguridad
+en aplicaciones web, desde las más antiguas, como la inyección SQL, hasta las modernas tales
+como la suplantación de identidad, manipulación de tarjetas de crédito, fijación del período de
+sesiones, falsificaciones de petición en sitios cruzados, el cumplimiento de las reglas y
+cuestiones de privacidad.
+En la Guía 2.0, encontrará detalles sobre la seguridad de la mayoría de las formas de
+aplicaciones web y servicios, con una orientación práctica utilizando ejemplos de J2EE,
+ASP.NET, PHP. Ahora utilizamos el gran éxito del estilo OWASP Top 10, pero con más
+profundidad, y referencias que lo harán comprender a usted mucho más.
+La seguridad no es un terreno blanco o negro, sino que son muchos tonos de gris. En el
+pasado, muchas organizaciones deseaban comprar una simple bala de plata de seguridad -
+"hacerlo de esta manera o seguir esta lista al pie de la letra, y usted estará seguro." El
+pensamiento en blanco y negro es siempre equivocado, costoso, e ineficaz.
+El modelado de Riesgo de Amenazas es el método más importante de mitigación en el
+desarrollo de aplicaciones Web de seguridad en los últimos tres años. Se introducen los
+conceptos básicos de Microsoft sobre el modelado de riesgo de amenazas, y los detalles de varias
+estrategias de otras empresas, incluyendo Trike, CVSS, AS4360, y Octave. Instamos
+enérgicamente a usted a adoptar uno de ellos el día de hoy. Si analizamos detenidamente y
+seleccionamos los controles a través del modelado de riesgo de la amenazas, el resultado final
+será una implementación de sistemas que demostrablemente reducen los riesgos de negocio, que
+generalmente conduce a un aumento de la seguridad y la reducción de los fraudes y pérdidas.
+Estos controles suelen ser baratos, eficaces y sencillos de aplicar.
+En algunos países, el desarrollo basado en el riesgo no es un extra opcional, sino por mandato
+legal. Para nuestros lectores de EE.UU., el cumplimiento de Sarbanes Oxley parece
+engañosamente simple: demostrar que los controles aplicados en los sistemas financieros son
+adecuados, y que el personal directivo superior cree que los controles son efectivos. ¿Cómo una
+organización realmente verifica que se cumplan dichas controles? Ellos auditan alineados a una
+norma acordada, que difiere de un país a otro, pero las normas comunes incluyen COBIT, ISO
+17799, y así sucesivamente. La Guía ofrece claves en COBIT para ayudar rápidamente con su 
+
+*******************************************************************************************************************************************************************************************
+
+16
+
+cumplimiento SOX y proporciona una base para sus vendedores y probadores de penetración.
+Las futuras ediciones de la Guía se extenderán a la norma ISO 17799.
+Al igual que ocurre con un proyecto de larga vida, hay una necesidad de mantener el material
+fresco y pertinente. Por lo tanto, algunos materiales mas antiguos se han migrado al portal de
+OWASP o directamente reemplazados con el asesoramiento actualizado.
+A título personal, deseo hacer extensivo mi agradecimiento a los numerosos autores, revisores,
+los editores y por su ardua labor para lograr que esta guía sea lo que es hoy. Nos apoyamos en
+hombros de gigantes, y esta Guía no es una excepción.
+Si tiene algún comentario o sugerencia sobre la Guía, por favor envíe un e-mail a la lista de
+correo de la Guía (ver nuestro sitio web para más detalles) o póngase en contacto conmigo
+directamente.
+Andrew van der Stock, vanderaj@owasp.org
+Melbourne, Australia
+July 26, 2005 
+
+
+*********************************************************************************************************************************************************************************************
+17
+
+¿Que son las aplicaciones web?
+Descripción general
+En los inicios de Internet, los sitios web consistían de páginas estáticas. Obviamente, el
+contenido estático impedía a la aplicación interactuar con el usuario. Como esto es un limitante,
+los fabricantes de servidores web permitieron correr programas externos mediante la
+implementación del mecanismo CGI. Esto permitía que la información ingresada por el usuario
+fuera enviada a un programa externo o script, procesado y luego el resultado era devuelto al
+usuario. CGI es el abuelo de todos los marcos de aplicaciones web, lenguajes de script y
+servicios web que son comunes hoy en día.
+CGI es raramente utilizado ahora, pero la idea de un proceso ejecutando información
+dinámica suministrada por el usuario o un almacén de datos, y generando una salida es ahora el
+pilar de las aplicaciones web.
+Tecnologías
+CGI
+CGI es aun utilizado por muchos sitios. Una ventaja de CGI es la facilidad para escribir la
+lógica de la aplicación en un lenguaje nativo rápido, tal como C o C++, o de habilitar una
+aplicación que previamente no era web a que sea accesible vía navegadores web.
+Existen varias desventajas al escribir aplicaciones usando CGI:
+La mayoría de los lenguajes de bajo nivel no soportan salidas de HTML de manera directa, y
+por lo tanto se necesita escribir o utilizar una librería, o una salida HTML deber ser creada en el
+momento por el programador.
+El ciclo escritura – compilación – implementación – ejecución es mas lento que en la
+mayoría de las tecnologías mas recientes (pero no demasiado).
+CGI son procesos separados, y la penalización en el rendimiento de IPC y en la creación de
+procesos puede ser significativa en algunas arquitecturas. 
+
+***********************************************************************************************************************************************************************************************************
+
+18
+
+CGI no soporta controles de sesión, por lo tanto una librería tiene que ser escrita o importada
+para soportar sesiones.
+No todos se encuentran confortables escribiendo en un lenguaje de bajo nivel (tal como C o
+C++), por lo tanto la barrera de ingreso es de alguna manera alta, particularmente comparado con
+lenguajes de script.
+La mayoría de los lenguajes de 3ra generación comúnmente utilizados en programas CGI (C
+o C++) sufren de desbordamientos de pila y pérdida de recursos. Para evitar esto, es necesaria
+una gran cantidad de habilidades.
+Filtros
+Los filtros son usados para propósitos específicos, tales como controlar el acceso a un sitio
+web, implementar otro marco de aplicaciones web (por ejemplo Perl, PHP o ASP), o proveer un
+control de seguridad. Un filtro debe ser escrito en C o C++ y puede ser de alto rendimiento ya
+que reside dentro del contexto de ejecución del mismo servidor web. Ejemplos típicos de una
+interfase de filtro son los módulos de servidor web Apache, SunONE NSAPI’s, y Microsoft
+ISAPI’s. Ya que los filtros son interfases especiales raramente utilizadas que pueden
+directamente afectar la disponibilidad del servidor web, ya no son más considerados.
+Scripting
+La falta de controles de CGI sobre el manejo de sesiones y los controles de autorización ha
+obstaculizado el desarrollo de aplicaciones web de utilidad comercial. Junto con tiempos de
+desarrollo relativamente más lentos, los desarrolladores web se han inclinado hacia lenguajes de
+script como una solución. Los intérpretes corren código script dentro del proceso del servidor
+web, y debido a que los scripts no son compilados, el ciclo escritura – implementación –
+ejecución era un poco más rápido. Los lenguajes de script raramente sufren de desbordamientos
+de pila o pérdidas de recursos, por lo tanto es más fácil para los programadores evitar uno de los
+problemas de seguridad más comunes.
+Tiene algunas desventajas: 
+
+*****************************************************************************************************
+19
+
+La mayoría de los lenguajes de script no se encuentran solidamente tipificados y no
+promueven buenas prácticas de programación.
+Los lenguajes de script son generalmente mas lentos que sus contrapartes compilados
+(algunas veces hasta 100 veces mas lento).
+Los scripts muchas veces llevan a generar código fuente difícil de mantener a medida que su
+tamaño aumenta.
+Es difícil (pero no imposible) escribir grandes aplicaciones de varias capas en lenguajes de
+script, muy frecuentemente la capa de presentación, aplicación y datos residen en la misma
+maquina, limitando la escalabilidad y seguridad.
+La mayoría de los lenguajes de script no soportan nativamente métodos remotos o llamadas
+de servicios web, haciendo difícil la comunicación con servidores de aplicación y servicios web
+externos.
+A pesar de sus desventajas, muchas aplicaciones aun son escritas en lenguaje de script, tales
+como eGroupWare (PHP), y muchos sitios antiguos de banca electrónica se encuentran
+frecuentemente escritos en ASP.
+Los marcos de lenguaje de script incluyen ASP, Perl, Cold Fusion, y PHP. Sin embargo,
+muchos de estos son considerados híbridos ahora, particularmente las últimas versiones de PHP
+y Cold Fusion, que permiten la optimización de scripts.
+Marcos de aplicaciones web
+A medida que los lenguajes de script alcanzaban sus límites de rendimiento y escalabilidad,
+muchos grandes proveedores se movieron a la plataforma Sun de desarrollo web: J2EE.
+Utiliza el lenguaje Java para producir aplicaciones veloces (casi tan veloces como C++) que
+no fácilmente sufren de desbordamiento de pila y pérdidas de memoria.
+Permite a aplicaciones grandes distribuidas ejecutarse aceptablemente desde la primera vez.
+Posee buenos controles de autorización y sesión.
+Habilita aplicaciones de varias capas relativamente transparentes a través de varios
+mecanismos de invocación remota, y 
+
+*****************************************************************************************************
+20
+
+Es fuertemente codificado para prevenir muchos problemas típicos de seguridad y
+programación antes que el programa sea ejecutado.
+Hay muchas implementaciones de J2EE disponible, incluyendo la versión de referencia de
+Tomcat de la fundación Apache. La desventaja es que J2EE tiene una curva de aprendizaje o mas
+pronunciada que C++, lo que hace que le resulte difícil escribir aplicaciones a diseñadores web y
+programadores recién iniciados. Recientemente las herramientas de diseño grafico han facilitado
+esto de alguna manera, pero a comparación que PHP, J2EE se encuentra aun a cierta distancia.
+Microsoft actualizo su tecnología ASP a ASP.Net, que utiliza el marco .Net y compiladores
+nativos MSIL justo a tiempo. El marco .Net mimetiza de muchas formas el marco J2EE, pero
+MS mejoro el proceso de desarrollo de varias maneras tales como:
+Resulta más fácil a los programadores recién iniciados y a los diseñadores web crear
+aplicaciones más pequeñas.
+Permite grandes aplicaciones distribuidas.
+Posee buenos controles de sesión y autorización.
+Los programadores pueden usar su lenguaje favorito, que es compilado a código nativo
+permitiendo un excelente rendimiento (cercano a las velocidades de C++), además de la
+recolección de desbordamiento de pila y residuos de recursos.
+Comunicación transparente con componentes remotos y externos.
+Se encuentre fuertemente codificada para prevenir problemas comunes de seguridad y
+programación antes que el programa sea ejecutado.
+La elección entre J2EE y ASP.Net depende mayormente de la plataforma elegida. Las
+aplicaciones que se orientan a J2EE teóricamente pueden ser ejecutadas con pocos (o ningún)
+cambio entre los proveedores mas importantes. Y en muchas plataformas de Linux, AIX, MacOS
+X, o Windows. En practica, algunos ajustes son requeridos, pero no reescribir completamente la
+aplicación.
+ASP.Net se encuentra disponible principalmente Microsoft Windows. El proyecto Mono
+(http://www.go-mono.com/) puede correr aplicaciones ASP.Net en diversas plataformas
+incluyendo Solaris, Netware, Linux.
+Existen pocas razones para elegir una a la otra desde la perspectiva de la seguridad. 
+
+*****************************************************************************************************
+21
+
+Aplicaciones de pequeña a mediana escala
+La mayoría de las aplicaciones se encuentran dentro de esta categoría. La arquitectura mas
+común es un script lineal procedural y simple. Esta es la forma mas usual de codificación para
+ASP, Coldfusion y scripts PHP. Pero menos utilizada (sino imposible) para ASP.Net y
+aplicaciones J2EE.
+La razón para esta arquitectura es que resulta fácil de escribir, y se requiere poco
+conocimiento técnico para mantener el código. Para aplicaciones mas pequeñas, cualquier
+beneficio en el rendimiento obtenido por moverse a una arquitectura mas escalable nunca será
+recuperado en el tiempo de ejecución. Por ejemplo, si se requieren tres semanas adicionales de
+tiempo de desarrollo para re-escribir los scripts a un enfoque MVC, las tres semanas nunca serán
+recuperadas (o notadas por los usuarios finales) de las mejoras en escalabilidad.
+Es típico encontrar diversos problemas de seguridad en estas aplicaciones, incluyendo
+consultas dinámicas de bases de datos construidas con entradas de datos insuficientemente
+validadas, un manejo pobre de errores y controles débiles de autorización.
+Esta guía provee recomendaciones de los diversos capítulos para mejorar la seguridad de
+estas aplicaciones.
+Aplicaciones de gran escala
+Las aplicaciones de gran escala necesitan una arquitectura diferente de aquella de un simple
+formulario de encuesta. A medida que las aplicaciones crecen en tamaño, resulta cada vez más
+difícil el implementar y mantener funcionalidades y mantener una alta escalabilidad. La
+utilización de arquitecturas de aplicación escalables se convierte en una necesidad mas que en un
+lujo cuando la aplicación necesita mas de tres tablas de base de datos o presenta mas de
+aproximadamente 20-50 funciones a un usuario.
+Una arquitectura de aplicación escalable normalmente se encuentra dividida en niveles, y si
+se utilizan patrones de diseño, muchas veces se dividen en porciones reutilizables usando
+diferentes lineamientos específicos para reforzar la modularidad, requerimientos de interfase y la
+reutilización de objetos. El dividir la aplicación en niveles permite que la aplicación se pueda
+distribuir entre varios servidores, mejorando por lo tanto la escalabilidad de la aplicación a
+expensas de mayor complejidad.
+Una de las arquitecturas de aplicaciones web más comunes es Modelo Vista Controlador
+(MVC), que implementa la arquitectura de aplicación Smalltalk 80. MVC es típico de la mayoría 
+
+
+*****************************************************************************************************
+22
+
+de las aplicaciones J2EE de Apache Foundation Jakarta Struts, y el código detrás de ASP.Net
+puede ser considerado una implementación parcial de este enfoque. Para PHP, el proyecto
+WACT (http://www.wact.sourceforge.net) aspira a implementar el paradigma MVC de una
+manera más amigable para PHP.
+Vista
+La renderización de código front-end, frecuentemente llamada nivel de presentación, debería
+aspirar a producir la salida HTML para el usuario con poco o nada de lógica de aplicación.
+Como muchas aplicaciones serán internacionalizadas (por ejemplo no conteniendo cadenas
+localizadas o información cultural en la capa de presentación), deben usar llamadas al modelo
+(lógica de aplicación) para obtener la información requerida para suministrar información útil al
+usuario en su lenguaje y cultura preferido, dirección del script, y unidades.
+Todas las entradas de los usuarios se encuentran redireccionadas hacia los controladores en la
+lógica de la aplicación.
+Controlador
+El controlador (o lógica de la aplicación) toma entradas de los usuarios y las dirige a través
+de varios flujos de trabajo que llaman a los objetos del modelo de la aplicación para extraer,
+procesar, o almacenar información.
+Los controladores bien codificados, validan información centralmente en el servidor contra
+problemas de seguridad comunes antes de pasar la información al modelo de procesamiento y se
+aseguran que la salida de datos sea segura o en un formato preparado para una salida segura por
+parte del código de visualización.
+Debido a que es probable que la aplicación sea internacionalizada y accesible, la información
+debería encontrarse en el lenguaje y cultura local. Por ejemplo, las fechas no solo pueden
+presentarse en distinto orden, pero también se podría utilizar un calendario completamente
+distinto. Las aplicaciones deben ser flexibles respecto de la presentación y almacenamiento de
+información. El desplegar simplemente “9/11/2001” es completamente ambiguo para cualquiera
+excepto por un par de países.
+Modelos
+Los modelos encapsulan funcionalidades tales como “cuenta” o “usuario”. Un buen modelo
+debe ser transparente al programa que lo llama y proveer un método para lidiar con procesos de
+
+*****************************************************************************************************
+23
+
+negocio de alto nivel en vez de actuar como un relleno para el almacenamiento de datos. Por
+ejemplo, un buen modelo permitiría que exista en el controlador pseudo código como el
+siguiente:
+oAccount->TransferFunds(fromAcct, ToAcct, Amount)
+Más que escribirlo de la siguiente manera:
+if oAccount->isMyAcct(fromAcct) &
+ amount < oAccount->getMaxTransferLimit() &
+ oAccount->getBalance(fromAcct) > amount &
+ oAccount->ToAccountExists(ToAcct) &
+then
+ if oAccount->withdraw(fromAcct, Amount) = OK then
+ oAccount->deposit(ToAcct, Amount)
+ end if
+end if
+ La idea es encapsular el trabajo sucio en el modelo de código, en lugar de exponer
+primitivas. Si el controlador y el modelo se encuentran en diferentes máquinas, la diferencia de
+rendimiento será asombrosa, por lo que es importante para el modelo ser útil a un nivel alto.
+El modelo es responsable de la comprobación de datos en contra de las reglas de negocio, y
+cualquier riesgo residual para el único almacén de datos en uso. Por ejemplo, si un modelo
+almacena los datos en un archivo plano, el código necesita comprobar la inyección de comandos
+de sistema operativo si los archivos planos han sido nombrados por el usuario. Si el modelo
+almacena los datos en un lenguaje interpretado, como SQL, entonces el modelo se encarga de la
+prevención de inyección de SQL. Si se utiliza una interfaz de cola de mensajes a un mainframe,
+el formato de datos de la cola de mensajes (normalmente XML) debe estar bien formado y
+cumple con una DTD.
+El contrato entre el controlador y el modelo debe ser examinado cuidadosamente para
+garantizar que los datos están fuertemente tipificados, con una estructura razonable (sintaxis),
+una longitud apropiada, al tiempo que permita flexibilidad para permitir la internacionalización y
+las necesidades futuras.
+Llamadas por el modelo al almacén de datos debe ser a través del método más seguro
+posible. A menudo, la posibilidad más débil son las consultas dinámicas, cuando una cadena se
+construye a partir de la entrada de un usuario sin verificar. Esto lleva directamente a la inyección
+de SQL y está mal visto. Para más información, vea el capítulo Inyecciones de Intérprete. 
+
+*****************************************************************************************************
+
+*****************************************************************************************************
+
+*****************************************************************************************************
+
+*****************************************************************************************************
+
+*****************************************************************************************************
+
+*****************************************************************************************************
+
+*****************************************************************************************************
+
+
+*****************************************************************************************************
+
+*****************************************************************************************************
+
+*****************************************************************************************************
+
+*****************************************************************************************************
+
+*****************************************************************************************************
+
+*****************************************************************************************************
+
+*****************************************************************************************************
+
+*****************************************************************************************************
+
+*****************************************************************************************************
+
+*****************************************************************************************************
+
+*****************************************************************************************************
+
+*****************************************************************************************************
+
+
+
+
+*****************************************************************************************************
+
+*****************************************************************************************************
+
+*****************************************************************************************************
+
+*****************************************************************************************************
+
+*****************************************************************************************************
+
+*****************************************************************************************************
+
+*****************************************************************************************************
+
+*****************************************************************************************************
+
+*****************************************************************************************************
+
+*****************************************************************************************************
+
+*****************************************************************************************************
+
+*****************************************************************************************************
+
+
+*****************************************************************************************************
+
+*****************************************************************************************************
+
+*****************************************************************************************************
+
+*****************************************************************************************************
+
+*****************************************************************************************************
+
+*****************************************************************************************************
+
+*****************************************************************************************************
+
+*****************************************************************************************************
+
+*****************************************************************************************************
+
+*****************************************************************************************************
+
+*****************************************************************************************************
+
+*****************************************************************************************************
+
+
+*****************************************************************************************************
+
+*****************************************************************************************************
+
+*****************************************************************************************************
+
+*****************************************************************************************************
+
+*****************************************************************************************************
+
+*****************************************************************************************************
+
+*****************************************************************************************************
+
+*****************************************************************************************************
+
+*****************************************************************************************************
+
+*****************************************************************************************************
+
+*****************************************************************************************************
+
+*****************************************************************************************************
+
+
+
+
+
+*****************************************************************************************************
+
+*****************************************************************************************************
+
+*****************************************************************************************************
+
+*****************************************************************************************************
+
+*****************************************************************************************************
+
+*****************************************************************************************************
+
+*****************************************************************************************************
+
+*****************************************************************************************************
+
+*****************************************************************************************************
+
+*****************************************************************************************************
+
+*****************************************************************************************************
+
+*****************************************************************************************************
+
+
+
+
+*****************************************************************************************************
+
+*****************************************************************************************************
+
+*****************************************************************************************************
+
+*****************************************************************************************************
+
+*****************************************************************************************************
+
+*****************************************************************************************************
+
+*****************************************************************************************************
+
+*****************************************************************************************************
+
+*****************************************************************************************************
+
+*****************************************************************************************************
+
+*****************************************************************************************************
+
+*****************************************************************************************************
+
+
+
+
+*****************************************************************************************************
+
+*****************************************************************************************************
+
+*****************************************************************************************************
+
+*****************************************************************************************************
+
+*****************************************************************************************************
+
+*****************************************************************************************************
+
+*****************************************************************************************************
+
+*****************************************************************************************************
+
+*****************************************************************************************************
+
+*****************************************************************************************************
+
+*****************************************************************************************************
+
+*****************************************************************************************************
+
+
+
+
+*****************************************************************************************************
+
+*****************************************************************************************************
+
+*****************************************************************************************************
+
+*****************************************************************************************************
+
+*****************************************************************************************************
+
+*****************************************************************************************************
+
+*****************************************************************************************************
+
+*****************************************************************************************************
+
+*****************************************************************************************************
+
+*****************************************************************************************************
+
+*****************************************************************************************************
+
+*****************************************************************************************************
