@@ -1100,85 +1100,1280 @@ seleccionados por el negocio puedan ser mitigados
 
 ****************************************************************************************************
 49
+
+AS/NZS 4360 asume que el riesgo será manejado por un estilo de riesgo operativo de grupo,
+y que la organización cuenta con conocimientos adecuados en casa, y grupos de gestión de riesgo
+para identificar, analizar y tratar los riesgos.
+Porque usaría AS/NZS 4360:
+AS/NZS 4360 trabaja bien como una metodología de gestión de riesgos para organizaciones
+que requieren cumplimiento con la ley Sarbanes-Oxley.
+AS/NZS 4360 trabaja bien para organizaciones que prefieren manejar riesgos en una forma
+tradicional como utilizar probabilidad y consecuencia para determinar el riesgo global.
+AS/NZS 4360 es familiar para la mayoría de los gestores de riesgo alrededor del mundo, y su
+organización tal vez ya haya implementado un enfoque compatible al AS 4360
+Son una organización australiana, y por lo tanto pueden estar obligado a usarlo si son
+auditados externamente de manera periódica, o justificar porque no lo están utilizando.
+Afortunadamente los modelos STRIDE / DREAD referidos anteriormente son compatibles con
+AS/NZS 4360.
+Porque no usuaria AS/NZS 4360:
+El enfoque AS/NZS 4360 trabaja mucho mejor para negocios o los riesgos sistemáticos que
+para los riesgos técnicos
+AS/NZS 4360 no discute métodos para realizar un ejercicio de modelado de riesgo de
+amenaza estructurado
+Ya que AS/NZS 4360 es un marco genérico para gestionar riesgos, no provee ningún método
+estructurado para enumerar riesgos de seguridad en aplicaciones Web.
+Aunque AS 4360 puede ser utilizado para calificar los riesgos de revisiones de seguridad, la
+falta de métodos estructurados para enumerar amenazas para aplicaciones Web lo hace menos
+deseable que otros métodos.
+CVSS
+El Departamento de EEUU de Seguridad nacional (DHS por sus siglas en inglés) estableció
+Grupo de Trabajo de Revelación de Vulnerabilidad NIAC, que incorpora aportaciones de Cisco,
+Symantec, ISS, Qualys, Microsoft, CERT/CC y eBay. Una de las aportaciones de este grupo es
+el Sistema de Marcación de Vulnerabilidades Comunes (CVSS por sus siglas en inglés).
+Porque usaría CVSS: 
+
 ****************************************************************************************************
 50
+
+Usted acaba de recibir una notificación de un investigador de seguridad u otra fuente que su
+producto tiene una vulnerabilidad, y desea asegurarse que una calificación de seguridad
+confiable como para alertar a sus usuarios del nivel apropiado de acción requerida cuando usted
+libere el parche
+Usted es un investigador de seguridad, y ha encontrado varias vulnerabilidades en un
+programa. Le gustaría usar el sistema de medición CVSS para producir calificaciones de riesgo
+confiable, para asegurarse que el ISV tomará las vulnerabilidades en serio al ser comparadas a
+sus clasificaciones.
+El uso de CVSS es recomendado para usarse por departamentos del gobierno de EEUU para
+el trabajo en grupo – no es claro si esto es una política a la hora de escribir.
+Porque no usaría CVSS:
+CVSS no encuentra o reduce el área de superficie de ataque (por ejemplo, defectos de
+diseño), tampoco ayuda a enumerar posibles riesgos de una pieza de código arbitrario ya que no
+está diseñado para ese propósito.
+CVSS es más complejo que STRIDE / DREAD, ya que apunta a modelar el riesgo de
+vulnerabilidades anunciadas como aplican a software liberado.
+La clasificación de riesgos de CVSS es compleja – una hoja de cálculo es requerida para
+calcular el riesgo ya que el supuesto detrás de CVSS es que un riesgo simple ha sido anunciado,
+o un gusano o troyano ha sido liberado orientado a un pequeño número de vectores de ataque.
+Los gastos de calcular la clasificación de riesgo de CVSS son bastante alto si es aplicado a
+una revisión de código minuciosa, que puede tener 250 o más amenazas por clasificar.
+Octave
+Octave es un peso pesado de enfoque de Metodología de riesgo del Instituto de Ingeniería de
+Software de CMU en colaboración con CERT. OCTAVE no está dirigido a riesgo técnico, sino a
+riesgo organizacional.
+OCTAVE consiste en dos versiones: OCTAVE – para organizaciones grandes y OCTAVE-S
+para organizaciones pequeñas, ambas tienen catálogos de prácticas, perfiles, y hojas de trabajo
+para documentar los resultados de OCTAVE. OCTAVE es popular en muchos sitios.
+OCTAVE es útil cuando:
+Se implementa una cultura de gestión de riesgo y control dentro de una organización
+Se documentan y miden riesgos de negocio 
+
 ****************************************************************************************************
 51
+
+Se documenta y mide riesgos de seguridad global en TI, particularmente cuando son
+relacionados a toda la empresa de gestión de riesgo de TI
+Se documentan riesgos en torno a sistemas completos
+Cuando una organización es madura, no tiene una metodología de riesgo de trabajo puesta en
+marcha, y requiere que un marco de gestión de riesgo robusto se ponga en marcha
+Las desventajas de OCTAVE son:
+OCTAVE es incompatible con AS 4360, ya que fuerza la Probabilidad=1 (es decir, una
+amenaza siempre ocurrirá). Esto es también inapropiado para muchas organizaciones. OCTAVES
+tiene una inclusión opcional de probabilidad, pero no es parte de OCTAVE.
+Consistente de 18 volúmenes, OCTAVE es grande y compleja, con muchas hojas de trabajo
+y prácticas para implementar
+No provee una lista de prácticas “fuera de la caja” para riesgos de seguridad de aplicaciones
+Web
+OWASP no espera que OCTAVE sea utilizada por diseñadores o desarrolladores de
+aplicaciones, y por lo tanto pierde la razón de ser de un modelado de amenaza – que será
+utilizado durante todas las etapas de desarrollo por todos los participantes para reducir el riesgo
+de una aplicación volviéndose vulnerable a un ataque.
+Comparando enfoques de modelado de amenaza 
+
+Aquí está como aproximadamente CVSS se mide a STRIDE / DREAD:
+
+Métrica | Atributo | Descripción | Lo más cercano a STRIDE / DREAD
+Métrica base CVSS
+Vector de acceso
+¿Acceso remoto o local?
+~ Explotación
+
+Métrica base
+CVSS
+Complejidad de
+acceso
+Que tan difícil
+es reproducir la
+explotación
+Reproducibilidad
+Métrica base
+CVSS
+Autenticación ¿Anónimo o
+Autenticado?
+~ Explotación
+Métrica base
+CVSS
+Impacto de
+confidencialidad
+Brecha de
+impacto de
+confidencialidad
+Divulgación de
+Información 
+
 ****************************************************************************************************
 52
+
+Métrica base
+CVSS
+Impacto de
+Integridad
+Brecha de
+impacto de
+integridad
+Forzar
+Métrica base
+CVSS
+Impacto de
+disponibilidad
+Brecha de
+impacto de
+disponibilidad del
+sistema
+Denegación de
+Servicios
+Métrica base
+CVSS
+Impacto de
+tendencia
+¿La tendencia es
+igual a CIA, o
+predispuesta hacia
+una o más de CIA?
+No hay
+equivalente
+Temporal CVSS Explotación ¿Qué tan fácil es
+la brecha a explotar?
+Explotación
+Temporal CVSS Nivel de
+reparación
+¿Hay una
+solución disponible?
+No hay
+equivalente
+Temporal CVSS Confianza del
+reporte
+¿Qué tan
+confiable es el
+reporte original de
+la vulnerabilidad?
+No hay
+equivalente
+Ambiental
+CVSS
+Daño Colateral ¿Qué tan malo
+sería el daño si la
+amenaza fuera
+realizada?
+Daño potencial
+Ambiental
+CVSS
+Distribución de
+objetivo
+¿Cuántos
+servidores son
+afectados si la
+amenaza es
+realizada?
+Usuarios
+afectados (no
+directamente
+equivalente) 
+
+Alternativamente, aquí esta como STRIDE / DREAD se relacionan a CVSS: 
+
+Atributo STRIDE | Descripción | Atributo CVSS más cercano 
+
 ****************************************************************************************************
 53
+
+Burlando identidad ¿Cómo pueden los
+usuarios obviar controles
+para convertirse en otro
+usuario o actuar como otro
+usuario?
+No equivalente directo
+Manipulación de
+información
+¿Puede ser la
+información manipulada por
+un atacante para obviar los
+controles de seguridad de la
+aplicación o tomar control
+de los sistemas subyacentes
+(por ejemplo inyecciones
+SQL)
+Integridad
+Repudiación ¿Pueden los usuarios
+rechazar transacciones
+debido a la falta de
+trazabilidad dentro de la
+aplicación
+No equivalente directo
+Divulgación de
+información
+¿Pueden los controles
+de autorización ser
+obviados, lo que llevaría
+información sensible a ser
+expuesta que no debería
+suceder?
+Confidencialidad
+Denegación de
+Servicios
+¿Puede un atacante
+prevenir que usuarios
+autorizados accedan el
+sistema?
+Disponibilidad
+Elevación de Privilegios ¿Puede un atacante
+anónimo convertirse en un
+usuario, o un usuario
+No equivalente directo 
+
 ****************************************************************************************************
 54
+
+autenticado actuar como un
+administrador o cambiar a
+un rol con más privilegios?
+Atributo DREAD Descripción... si la
+amenaza es realizada
+Atributo CVSS más
+cercano
+Daño potencial ¿Qué daño podría
+ocurrir?
+Daño colateral
+Reproducibilidad ¿Qué tan fácil es para
+un ataque potencial
+funcionar?
+~ Complejidad de
+acceso
+Explotación ¿Qué necesita (esfuerzo,
+conocimientos técnicos)
+para hacer que el ataque
+funcione?
+Explotación
+Usuarios afectados ¿Cuántos usuarios
+serían afectados por el
+ataque?
+Objetivo de distribución
+Descubrimiento ¿Qué tan fácil es para
+un atacante descubrir la
+cuestión?
+No equivalente directo
+
+En general, CVSS es útil para software liberado y el número de vulnerabilidades realizadas
+son pequeñas. CVSS debería producir calificaciones de riesgos similares independientemente del
+revisor, pero muchas de las tendencias construidas en el cálculo del riesgo global son subjetivas
+(es decir local y remoto o que aspecto de la aplicación es más importante), y por lo tanto tal vez
+haya desacuerdos en la calificación del riesgo resultante.
+STRIDE/DREAD son útiles para reducir el área de superficie del ataque, mejorar el diseño, y
+eliminar vulnerabilidades antes de que sean liberadas. También puede ser utilizado por revisores
+para calificar y enumerar amenazas en una forma estructurada, y produce calificaciones de riesgo
+similares independientemente del revisor. 
+
 ****************************************************************************************************
 55
+Conclusión
+En las pocas páginas anteriores, hemos tocado los principios básicos de seguridad en
+aplicaciones Web. Aplicaciones que honran la intención subyacente de estos principios será más
+segura que sus contrapartes que cumplen al mínimo con controles específicos mencionados más
+tarde en está Guía.
+Lectura Adicional
+Microsoft, Threat Modeling Web Applications, © 2005 Microsoft
+http://msdn.microsoft.com/security/securecode/threatmodeling/default.aspx?pull=/library/enus/dnpag2/html/tmwa.asp
+
+Microsoft, Threats and Countermeasures, © 2003 Microsoft
+Howard and LeBlanc, Writing Secure Code, 2nd Edition, pp 69 – 124, © 2003 Microsoft
+Press, ISBN 0-7356-1722-8
+Meier et al, Improving Web Application Security: Threats and Countermeasures, © 2003
+Microsoft Press
+Saitta, Larcom, and Michael Eddington, A conceptual model for threat modeling
+applications, July 13 2005
+http://dymaxion.org/trike/
+http://dymaxion.org/trike/Trike_v1_Methodology_Document-draft.pdf
+CVSS
+http://www.dhs.gov/interweb/assetlibrary/NIAC_CyberVulnerabilitiesPaper_Feb05.pdf
+OCTAVE
+http://www.cert.org/octave/
+AS/NZS 4360:2004 Risk Management, available from Standards Australia and Standards
+New Zealand:
+http://shop.standards.co.nz/productdetail.jsp?sku=4360%3A2004%28AS%2FNZS%29 
+
 ****************************************************************************************************
 56
+
+Manejando pagos en el Comercio Electrónico
+Objetivos
+Asegurar:
+• Manejar los pagos de una manera segura y equitativa de los usuarios de sistemas de
+comercio electrónico.
+• Minimizar el fraude de los usuarios de tarjetas que no presencian transacciones. (CNP)
+• Maximizar la privacidad y confianza para los usuarios de sistemas de comercio
+electrónico.
+• Cumplir con todas las leyes locales y normas PCI (acuerdos de Mercado)
+Conformidades y leyes
+Si usted es un comerciante del comercio electrónico, debe cumplir con todas sus leyes
+locales, tales como impuestos de acción, prácticas de negocio. La venta de bienes o acciones
+(similares), leyes limón (donde sean aplicables) y unas cuantas más. Debería consultar una
+fuente de consejo legal competente para su jurisdicción para encontrar que es lo que se necesita.
+Si usted es un comerciante de tarjetas de crédito, tiene que aceptar todos los acuerdos del
+mercado de las tarjetas de crédito. Típicamente, estos son extremadamente estrictos en cuanto a
+la cantidad de fraude permitido, y las directivas para las transacciones “no presenciales”. Debe
+leer y seguir su contrato.
+Si no comprende su contrato, debe consultar con el soporte de
+su banco de negocio para más información.
+Conformidad con PCI
+Para cumplir con las regulaciones más actuales en relación a las tarjetas de crédito, debe
+revisar las directivas PCI y su contrato de negocio. En resumen, aquí están los doce
+requerimientos los cuales le solicitarán su uso si va a manejar pagos con tarjetas de crédito:
+
+Construir y mantener una red segura Instalar y mantener una configuración de
+firewall para proteger los datos.
+No usar sistemas de contraseña por defecto 
+
 ****************************************************************************************************
 57
+
+ni otros parámetros de seguridad
+proporcionados por el vendedor.
+Proteger los datos de los usuarios de
+tarjetas
+Proteger datos almacenados
+Cifrar la transmisión de los datos de
+usuarios de tarjetas e información sensible a
+través de las redes públicas
+Mantener un programa de administración
+de vulnerabilidades
+Usar regularmente software actualizado de
+anti-virus
+Desarrollar y mantener sistemas y
+aplicaciones seguras
+Implementar fuertes medidas de control de
+acceso
+Restringir el acceso a los datos del negocio
+a la necesidad-del-saber
+Asignar un ID único a cada persona con
+acceso a ordenador
+Restringir el acceso físico a los datos de
+usuarios de tarjetas
+Monitorizar y testear regularmente las
+redes
+Registrar y monitorizar todos los accesos a
+los recursos de la red y a los datos de usuarios
+de tarjetas.
+Testear regularmente los sistemas de
+seguridad y procesos
+Mantener una política de información de la
+seguridad
+Mantener una política que dirija la
+seguridad de la información
+OWASP es mencionado en los requisitos de “Desarrollar y mantener sistemas y aplicaciones
+seguras”.
+Desarrollar software y aplicaciones Web basadas en directivas de
+codificación segura tales como las directivas del proyecto abierto
+de seguridad de aplicaciones Web (Open Web Application 
+
 ****************************************************************************************************
 58
+
+Security Project). Revisa el código de aplicaciones a medida para
+identificar vulnerabilidades en su codificación. Ver
+www.owasp.org - “Las diez vulnerabilidades de seguridad más
+críticas de aplicaciones Web.” Cubre la prevención de
+vulnerabilidades comunes en la codificación en los procesos de
+desarrollo de software, incluye: …
+Esta guía es actualmente la mayor fuente de información para asegurar sus aplicaciones.
+Aunque útil, el TOP 10 de está diseñado para ser el comienzo en mejorar la seguridad de sus
+aplicaciones, y no como una referencia completa. El TOP 10 está (al tiempo que se escribe) en
+proceso de ser actualizado.
+Manejando tarjetas de crédito
+Cada semana, leemos acerca de empresas que han sufrido su última humillación – los datos
+de tarjetas de crédito de sus clientes han sido robados…otra vez. Lo que no se suele indicar es
+que a menudo ese es el fin del negocio (ver CardSystems revocados por Visa y AMEX en la
+sección Lectura adicional). Los clientes detestan ser forzados a reemplazar sus tarjetas de credito
+y enviar faxes diariamente o semanalmente con retrocesos de operaciones al banco emisor.
+Además de los inconvenientes causados a los clientes, los comerciantes rompen el acuerdo con
+los bancos emisores si no poseen suficiente seguridad.
+Esta sección detalla la manera de cómo deberían manejarse y almacenarse las transacciones
+de pago. Por suerte, es incluso más fácil que hacerlo erróneamente.
+Buenas prácticas 
+
 ****************************************************************************************************
 59
+
+
+• Procese las transacciones online inmediatamente o pase el procesamiento a una
+tercera parte competente.
+• Nunca almacene ningún número de tarjeta de crédito (CC). Si deben almacenarse,
+debe seguir las directivas de PCI al pie de la letra. Le recomendamos
+encarecidamente que no almacene datos de tarjetas de crédito.
+• Si usted usa un servidor compartido para su sitio, no puede cumplir con las
+directivas PCI. Debe tener su propia infraestructura para cumplir con las directivas
+PCI.
+A muchas empresas les tienta salirse del camino fácil y almacenar los números de las tarjetas
+de crédito de los clientes, pensando que los necesitarán. Esto es incorrecto. No almacene
+números de tarjetas de crédito.
+Números de autorización
+Después del procesamiento correcto de una transacción a usted se le asigna un número de
+autorización. Este es único por transacción y no tiene un valor propio intrínseco. Es seguro
+almacenar este valor, escribirlo en logs, presentarlo al equipo o enviarlo a través de e-mail al
+cliente.
+Manejando devoluciones de pagos
+La única razón de negocio para almacenar números de tarjetas de crédito son las
+devoluciones de pagos. Sin embargo, tiene diversas responsabilidades si facilita devoluciones de
+pagos: 
+
+
 ****************************************************************************************************
 60
+
+• Debe seguir los términos del acuerdo de su comercio. La mayoría de los acuerdos de
+comercio requieren que usted tenga las autorizaciones firmadas de derecho originales de
+sus usuarios de tarjetas de crédito. Este trozo de papel firmado le ayudará en caso de
+algún problema de cobros con el cliente.
+• Es una buena práctica cifrar los números de tarjetas de crédito. Este es un requisito
+obligado en las directivas PCI
+• Limita los términos de la devolución de pagos a no más de un año, particularmente si
+dispones de transacciones (CNP) “usuario de tarjeta no presente”
+• Elimina los detalles de la tarjeta de crédito tan pronto como el acuerdo haya finalizado
+El problema con el cifrado es que usted debe ser capaz de descifrar los datos posteriormente
+en los procesos de negocio. Cuando se elige un método para almacenar las tarjetas de forma
+cifrada, recuerde que no hay ninguna razón por la cual el servidor Web front-end necesite ser
+capaz de descifrarlas.
+Mostrando partes de la tarjeta de crédito
+PCI solo permite la presentación de los primeros seis dígitos (BIN) o los últimos cuatro.
+Nosotros recomendamos encarecidamente a no mostrar la tarjeta de crédito de ninguna manera si
+esto puede ayudar.
+Hay muchas maneras por las que rastrear, enviar o presentar un número de tarjeta de crédito
+es práctico, pero no es posible mostrar números de tarjetas de crédito de una forma segura: 
+
 ****************************************************************************************************
 61
+
+• Si una gran organización tiene varias aplicaciones, todas con diferentes algoritmos para
+mostrar una porción identificativa de la tarjeta de crédito, la tarjeta será revelada.
+• Enviar una factura por correo electrónico es un método de bajo coste de informar a los
+usuarios de cargas en sus tarjetas de crédito. Sin embargo, el e-mail no es seguro
+• En muchos lugares de trabajo, los equipos de centros de llamada consisten típicamente de
+gente temporal con gran ratio de rotación
+• Los logs son atacados no simplemente para eliminar evidencias, sino también para
+obtener secretos adicionales.
+• En países con pequeña cantidad de instituciones de banca, los números institucionales
+BIN están limitados. Por lo tanto, es posible adivinar números BIN válidos y reconstruir
+el número de la tarjeta incluso si gran parte del número de la tarjeta se ha ocultado.
+La mayoría de las tarjetas de crédito consisten en 16 dígitos (aunque algunas son de 14 o 15
+dígito, tales como las de AMEX):
+XXXX XXYY YYYY YYYC
+C es la suma de comprobación. X es el número BIN, el cual hace referencia a la institución
+que la emite. Y es el número de la tarjeta de cliente.
+No debe almacenar el CCV, CCV2 y PVV (o PIN de valor de verificación). Estos son
+campos de validación de tarjetas de crédito usados por muchas pasarelas de pago para proteger
+contra el fraude de huella como el valor en el reverso de la tarjeta. Almacenar este valor no está
+permitido por las secciones 3.2.3 y 3.4.
+Por estas razones, se recomienda encarecidamente que no presente el usuario o su equipo con
+números abiertos u oscurecidos de tarjeta de crédito. Aún así recomendamos que no muestre
+ningún dígito de la tarjeta de crédito – sólo la fecha de caducidad.
+Manipulando tarjetas
+Esta sección no es aplicable a la mayoría de los desarrolladores de aplicaciones Web.
+No le está permitido duplicar una tarjeta de crédito de un cliente. Esta es la práctica
+común de birlar tarjetas en los terminales de transferencia electrónica para hacerlo después en los
+sistemas de puntos de venta. Esto es parcialmente así para prevenir a los clientes de que la gente
+les tome sus tarjetas múltiples veces, lo cual es desafortunadamente, demasiado a menudo el 
+
 ****************************************************************************************************
 62
+
+primer paso antes de duplicar fraudulentamente la tarjeta del cliente o cualquier otro uso
+fraudulento de la misma.
+No le está permitido almacenar el contenido de la banda magnética o el chip del valor
+almacenado.
+Corrección y mantenimiento
+PCI le requiere que corrija sus sistemas dentro de un mes de la disponibilidad del parche para
+cualquier parte del sistema que le ayude a procesar o almacenar las transacciones de tarjetas de
+crédito. Debe tener protección anti-virus, y debe estar actualizada.
+Revocaciones
+Hay dos fraudes potenciales en las revocaciones: un usuario malintencionado poniendo
+dinero de la cuenta de la organización a una tercera parte, y un intruso que ha descubierto con
+éxito como usar un proceso automático de revocación para “rembolsar” dinero que no le
+pertenece, por ejemplo usando números negativos.
+Las revocaciones deberían siempre realizarse a mano, y deberían ser firmadas por dos
+empleados distintos o grupos. Esto reduce el riesgo de fraude interno y externo.
+Es esencial asegurarse de que todos los valores están dentro de los límites, y la autoridad de
+firma está asignada apropiadamente.
+Por ejemplo, en Melbourne, Australia en 2001, un miembro de un equipo confiable uso un
+terminal móvil EFTPOS para desviar $400,000 de una organización deportiva. Si la persona
+hubiera sido menos codiciosa, nunca se le hubiera cazado.
+Es vital comprender la cantidad de fraudes que las organizaciones están dispuestas a tolerar.
+Devolución de cobros
+Muchos negocios operan perspizcamente dentro de estos márgenes conocidos como “puntos”
+en términos de ventas. Por ejemplo, “6 puntos” significan 6% de ganancias sobre bastos costos,
+lo cual es apenas lo que vale levantarse de la cama por la mañana.
+Por lo tanto, si se encuentra usted mismo al final de muchas devoluciones después de
+comprar productos, ha perdido más que solo el beneficio de una transacción. En términos de
+venta, esto se denomina “shrinkage” (reducción) pero la policía le denomina fraude. Hay razones
+legítimas par alas devoluciones, y las leyes de su consume local le dirá cuales son. Sin embargo, 
+
 ****************************************************************************************************
 63
+
+la mayoría de los distribuidores verán con malos ojos a los comercios con altos ratios de
+devoluciones ya que les cuesta mucho tiempo y dinero e indica una falta de controles de fraude.
+Puede tomar unos simples pasos para reducir su riesgo. Estos son:
+• El dinero no es negativo. Use fuertes tipos para forzar a cero o números positivos, y
+prevenga los números negativos.
+• No sobrecarge una función de cobro para que se pueda invertir permitiendo valores
+negativos.
+• Todas las devoluciones y revocaciones requieren registros, auditorias y autorizaciones
+manuales.
+• No debería haber códigos en su sitio Web para revocaciones o devoluciones
+• No envíe el material hasta que no tenga un código de autorización de la pasarela de pago
+• Gran parte de las tarjetas de crédito tienen una fuerte relación entre los números BIN y el
+país de la institución que la emitió. Considere firmemente el no enviar materiales a
+tarjetas con BIN fuera-del-país
+• Para bienes de gran valor, considere realizar el pago a través del teléfono a fax.
+Algunos clientes intentaran devoluciones a menudo. Mantenga vigilados a clientes que
+realicen devoluciones, y decida si estos presentan un riesgo excesivo
+Solicite siempre el e-mail y número de teléfono del cliente que tenga la institución emisora
+del cliente. Esto ayuda si otros avisos peligrosos se presentan
+Una firma de 10 céntimos vale miles de dólares en infraestructura de seguridad. Haga saber
+en su sitio Web que perseguirá el fraude en toda la extensión de la ley y que todas las
+transacciones quedan completamente registradas. 
+
 ****************************************************************************************************
 
 64
+
+Lectura adicional
+• Visa and AMEX revoke CardSystems for PCI breaches:
+http://www.theregister.co.uk/2005/07/19/cardsystems/
+• AMEX, Visa, Mastercard, Discover, JCB, Diner’s Club – Payment Card Industry
+Payment Card Industry (PCI) Data Security Standard
+http://www.visa-asia.com/ap/center/merchants/riskmgmt/includes/uploads/AP_PCI_Data_Security_Standard_1.pdf
+https://sdp.mastercardintl.com/pdf/pcd_manual.pdf
+• Visa
+Cardholder Information Security Program
+http://usa.visa.com/business/accepting_visa/ops_risk_management/cisp.html
+Account Information Security Program
+http://www.visa-asia.com/ap/sea/merchants/riskmgmt/ais.shtml
+Mapping CISP to PCI
+http://usa.visa.com/download/business/accepting_visa/ops_risk_management/cisp_Mappi
+ng_CISPv2.3_to_PCIv1.0.pdf 
+
 ****************************************************************************************************
 
 65
+
+Phishing
+Los ataques de phishing son uno de los mayores problemas para los sitios bancarios y de
+comercio electrónico, con el potencial de destruir los medios de subsistencia y calificaciones
+crediticias de un cliente. Existen algunas precauciones que los escritores de aplicaciones pueden
+seguir para reducir el riesgo, pero la mayoría de los controles de phishing son procesales y
+educación del usuario.
+El phishing es un enfoque completamente diferente de la mayoría de las estafas. En estas,
+existe una tergiversación y la victima es claramente identificable. En phishing, las líneas son
+borrosas:
+La victima de un robo de información es una victima: Y serán repetidamente victimas por
+años. Simplemente vaciar su cuenta bancaria no es el final. Tal como la mayoría de los robos de
+identidad, el daño nunca es completamente resuelto. Justo cuando la persona piensa que todo ha
+sido finalmente limpiado, la información es utilizada nuevamente.
+Bancos, ISPs, negocios y otros objetivos de phishing son victimas – ellos sufren una gran
+perdida de reputación y confianza por parte de los consumidores. ¿Si hoy recibe un correo
+electrónico legitimo de Citibank, confiaría en el?
+El phishing comienza como una estafa estereotipada. Los clientes de un negocio en particular
+son directamente atacados. A diferencia de una estafa estereotipada, la compañía nunca es
+directamente atacada y el dinero para protección no es demandado por los atacantes. En los
+pocos casos de chantaje, los clientes pueden seguir siendo víctimas más tarde.
+¿Que es el phishing?
+El phishing es una tergiversación donde el criminal utiliza ingeniería social para aparecer
+como una identidad legitima. Ellos ganan la confianza para obtener información valiosa;
+usualmente detalles de cuentas, o suficiente información para abrir cuentas, obtener prestamos, o
+comprar bienes a través de sitios de comercio electrónico. 
+
+
 ****************************************************************************************************
 66
+
+Hasta un 5% de los usuarios parecen ser atraídos en este tipo de ataques, por lo tanto puede
+ser bastante rentable para los estafadores – muchos de los cuales envían millones de correos
+electrónicos con estafas por día.
+El ataque básico de phishing sigue uno o más de estos patrones:
+Envíos a través de un sitio web, correo electrónico, o mensaje instantáneo, que solicita al
+usuario hacer clic en un enlace para “revalidar” o “reactivar” su cuenta. El enlace muestra una
+imagen y semejanza creíble de vuestro sitio para convencer usuarios en enviar detalles privados.
+Envíos de correo electrónico amenazantes a los usuarios indicando que el usuario ha atacado
+al remitente. En el correo electrónico hay un enlace que pide a los usuarios proporcionar datos
+personales.
+Instalación de spyware que monitorea las URL’s de ciertos bancos a ser escritas, y cuando
+ello ocurre, muestra una ventana emergente con un formulario creíble de dicha identidad
+pidiendo a los usuarios sus detalles privados.
+Instalación de spyware (como Berbew) que monitorea los datos contenidos en POST de
+formularios, tales como usuarios y contraseñas, los cuales luego son enviados a un sistema de
+terceras partes.
+Instalación de spyware (como AgoBot) que analiza al ordenador anfitrión en busca de
+información contenida en caches y cookies.
+Envíos de mensajes “urgentes” indicando que la cuenta del usuario ha sido comprometida, y
+que es necesario tomar ciertas acciones para recuperarla.
+Envíos de mensajes del “departamento de seguridad” pidiendo a la victima controlar su
+cuenta ya que alguien ilegalmente ha accedido a la misma.
+Los gusanos se conocen por enviar correos electrónicos con estafas, tales como MiMail, por
+lo tanto los mecanismos de envío evolucionan constantemente. Pandillas de phishing (crimen
+organizado) utilizan frecuentemente software malicioso como Passer o SubSeven para instalar y
+controlar ordenadores zombies con el objetivo de esconder sus acciones, proporcionar muchos
+ordenadores anfitriones para recibir información de phishing, y evadir el cierre de uno o dos
+anfitriones. 
+
 ****************************************************************************************************
 67
+
+Los sitios que no son comprometidos hoy en día no son inmunes al phishing el día de
+mañana. Los phishers tienen una variedad de usos para cuentas robadas – cualquier tipo de
+comercio electrónico es utilizable. Por ejemplo:
+Cuentas bancarias: Robar dinero. Pero también existen otros usos: lavado de dinero. Si no
+pueden convertir el dinero en efectivo, entonces comienzan a moverlo. Solo porque no usted no
+tenga cualquier cosa de valor en su cuenta no significa que la cuenta no tenga valor. Muchas
+cuentas bancarias se encuentran enlazadas. Entonces comprometiendo una puede probablemente
+comprometer muchas otras. Las cuentas bancarias pueden dirigir hacia números de seguridad
+social y otros números de cuentas. (¿Usted paga sus cuentas utilizando un sistema automático de
+pago? Estos números de cuenta son accesibles. Lo mismo ocurre con los depósitos directos.)
+Paypal: todos los beneficios de un banco sin ser un banco. No es posible un rastreo en papel
+de las operaciones financieras.
+eBay: lavado de dinero.
+Western Union: conversión de dinero robado en efectivo.
+Música en línea y otras tiendas de comercio electrónico: lavado de dinero. A veces los bienes
+(ej. música) son mas deseables que dinero. Convertir el dinero robado en efectivo toma una
+cantidad de recursos significativos. Solo obteniendo música (descargable, instantánea, no
+retornable) es fácil.
+Cuentas de PSI (proveedores de servicio de Internet): enviando correos masivos,
+comprometiendo los servidores web, distribuyendo virus, etc. También puede dirigir hacia
+cuentas bancarias. Por ejemplo, si utiliza un sistema de pago automático para abonar su cuenta
+de PSI, entonces la cuenta de PSI usualmente lo dirigirá hacia su cuenta bancaria.
+Empresas de servicios públicos (teléfono, gas, electricidad, agua) dirigen directamente a robo
+de identidad.
+Y la lista continúa…
+Educación del usuario
+Los usuarios son el primer vector de ataque para el phishing. Sin entrenar a sus usuarios en
+desconfiar de los intentos de phishing, ellos caerán victimas del phishing tarde o temprano. 
+
+
 ****************************************************************************************************
 68
+
+Es insuficiente decir que los usuarios no deberían preocuparse acerca de este problema, pero
+desafortunadamente, existen algunos controles técnicos efectivos de seguridad que funcionan
+contra los intentos de phishing ya que los atacantes están constantemente trabajando en nuevos e
+interesantes métodos para defraudar a los usuarios. Ellos son la primera, y frecuentemente la
+ultima, línea de defensa, por lo tanto cualquier solución viable debe incluirlos.
+Cree una política detallando exactamente que hará y que no hará. Comunique regularmente
+esta política en términos fáciles de comprender (tal como “mi madre entenderá esto”) a los
+usuarios. Asegúrese que ellos puedan acceder a las políticas en su sitio web.
+De vez en cuando, pídale a sus usuarios confirmar que han instalado software anti-virus, antispyware,
+que lo mantienen al día, y que parches han sido aplicados recientemente a sus
+ordenadores. Esto promueve una higiene básica del ordenador en la mente de los usuarios.
+Considere hacer acuerdos con empresas de anti-virus para ofrecer acuerdos especiales a sus
+usuarios para ofrecer protección de bajo coste a ellos (y usted!).
+Sin embargo, sea consciente que la educación de los usuarios es difícil. Los usuarios han sido
+adormecidos en “aprendido desamparo”, y activamente ignoran políticas de privacidad, políticas
+de seguridad, acuerdos de licencias, y paginas de ayuda. No espere que ellos lean nada de lo que
+usted le ha comunicado.
+Haga fácil a sus usuarios reportar estafas
+Monitoree abusos@sudominio.com y considere configurar un formulario de sugerencias. Los
+usuarios son frecuentemente la primera línea de defensa, y pueden alertarlo mucho antes que
+simplemente esperar a que llegue el primer caso de estafa. Todo minuto en una estafa de
+phishing cuenta.
+Comuníquese con los clientes a través de correo electrónico
+La gestión de relaciones con clientes (CRM) es un negocio inmenso, por lo tanto es
+altamente improbable que pueda prevenir a su negocio enviar materiales de marketing a los
+clientes. Sin embargo, es vital comunicarse con sus usuarios en una manera segura: 
+
 ****************************************************************************************************
 69
+
+Educación – Indique a los usuarios cada vez que se comunica con ellos, lo siguiente:
+Deben escribir la URL en sus navegadores para acceder su sitio.
+Usted no proporciona enlaces para que ellos hagan clic.
+Usted no preguntara nunca por sus secretos.
+Y en el caso que los usuarios reciban tales mensajes, deberán comunicarse inmediatamente
+con usted para reportarlo a las autoridades competentes.
+Marca consistente – no envíe correos electrónicos que referencia a otra compañía o dominio.
+Si su dominio es “ejemplo.com”, todos los enlaces, URLs, y direcciones de correo electrónico
+deben estrictamente referenciar “ejemplo.com”. La utilización de diferentes marcas y múltiples
+dominios – incluso cuando su compañía es propietaria de múltiples nombres de dominio – genera
+confusión del usuario y permite a los atacantes personificar a su compañía.
+Reduzca el Riesgo – directamente no envíe correos electrónicos. Comuníquese con sus
+usuarios utilizando su sitio web en lugar de correo electrónico. Las ventajas son muchas: el
+contenido puede ser HTML, es mas seguro (ya que el contenido no puede ser imitado
+sencillamente por los atacantes), es mas económico que los envíos masivos de correo, no
+involucra bombardear Internet, y sus clientes saben que usted nunca les enviara un correo
+electrónico, por lo tanto cualquier mensaje recibido de “usted” es fraudulento.
+Reduzca el Riesgo – no envíe correos electrónicos en HTML. Si debe enviar correo
+electrónico que contenga HTML, no permita que se pueda hacer clic las URLs y siempre envíe
+correos con contenido MIME que contengan una parte legible en texto. El contenido en HTML
+nunca debe incluir javascript, formularios, o pedir por información del usuario.
+Reduzca el Riesgo – sea cuidadoso cuando utilice URL cortas ofuscadas
+(http://redir.ejemplo.com/f45jgk) a ser escritas por los usuarios, ya que los estafadores pueden
+descifrar como funciona el proceso de ofuscado y dirigir a sus usuarios hacia un sitio malicioso.
+En general, sea cauto cuando utilice re-direccionamientos – la mayoría de ellos son vulnerables a
+XSS.
+Incremente la confianza – Muchas grandes organizaciones subcontratan a terceras partes para
+las comunicaciones con los clientes. Trabaje con estas organizaciones para hacer aparentar que
+todas las comunicaciones por correo electrónico provengan de su organización. (ej.
+crm.ejemplo.com donde ejemplo.com es su dominio, en lugar de smtp.correomasivo.com o peor 
+
 ****************************************************************************************************
 
 70
+
+aun, solo una dirección IP). Esto aplica para cualquier proveedor de imágenes que sean utilizadas
+en el cuerpo principal de la comunicación.
+Incremente la confianza – Establezca un esquema de políticas de remitentes (SPF) en vuestro
+DNS para validar sus servidores SMTP. Los correos electrónicos de phishing no enviados por los
+servidores listados en sus registros SPF serán rechazados por vuestros agentes de transporte de
+correo (MTA). Si eso falla, los mensajes de estafa serán marcados por nuevos productos como
+Outlook 2003 (con las ultimas actualizaciones aplicadas), Thunderbird, y Eudora. Con el tiempo,
+este control se convertirá más y más efectivo a medida que ISPs, usuarios y organizaciones
+actualicen a versiones de software que tengan SPF habilitado por defecto.
+Incremente la confianza – Considere utilizar S/Mime para firmar digitalmente sus
+comunicaciones.
+Respuesta a Incidentes – No envíe a los usuarios notificaciones electrónicas que sus cuentas
+han sido bloqueadas o que ha ocurrido un fraude – si ello ha sucedido, solamente bloquee sus
+cuentas y provea de un número de teléfono o dirección de correo electrónico para que lo
+contacten (o mejor aun, llame al usuario).
+Nunca pedir a sus clientes por sus secretos
+Los estafadores usualmente preguntaran a sus usuarios por números de tarjeta de crédito,
+contraseñas, PIN para “re-activar” sus cuentas. Frecuentemente los estafadores presentaran al
+usuario parte de un número de tarjeta de crédito u otro tipo de verificación (nombre de soltera de
+la madre – el cual se puede obtener en registros públicos), lo cual hace al ataque de phishing más
+creíble.
+Asegúrese que vuestros procesos nunca pidan a los usuarios por sus secretos; incluso secretos
+parciales como los últimos cuatro dígitos de la tarjeta de crédito, o que confíen en “secretos”
+fácilmente obtenibles en registros públicos o historias crediticias.
+Dígales a los usuarios que usted nunca preguntara por sus secretos, y que lo notifiquen
+inmediatamente si reciben un correo electrónico o visitan una pagina web similar a la de usted
+que les solicita revelar sus secretos. 
+
 ****************************************************************************************************
 71
+
+Arregle todos sus problemas de XSS
+No exponer cualquier código que contenga problemas de XSS, particularmente código no
+autenticado. Los phisers usualmente atacan código vulnerable, tales como re-direccionamientos,
+campos de búsqueda, y otros formularios en su sitio web que empujen al usuario hacia sitios
+maliciosos.
+Para mayor información sobre prevención de XSS, por favor diríjase a la sección de
+Inyección de Agente de Usuario en el capitulo sobre Inyección de Interpretes.
+No utilice ventanas emergentes
+Las ventanas emergentes son una técnica comúnmente utilizada por estafadores para
+aparentar provenir de vuestro dominio. Si no los utiliza, les dificulta mucho más la tarea a los
+estafadores en usurpar la sesión del usuario sin ser detectados.
+Dígales a vuestros usuarios que no utilicen ventanas emergentes y que le reporten cualquier
+ejemplo inmediatamente.
+¡No sea enmarcado!
+A medida que las ventanas emergentes empezaron a ser bloqueadas por la mayoría de los
+navegadores web, los phishers han comenzado a utilizar iframes y frames para albergar
+contenido malicioso donde alberga su actual aplicación. Pueden utilizar errores o funcionalidades
+del modelo DOM para descubrir secretos en su aplicación.
+Utilice la directiva TARGET para crear una nueva ventana, la cual usualmente lo liberara de
+trampas en IFRAME y Javascript. Esto significa algo como lo siguiente:
+<A HREF=http://www.ejemplo.com/login TARGET=”_top”>
+para abrir una nueva pagina en la misma ventana, pero sin utilizar ventanas emergentes.
+Su aplicación debería regularmente verificar el modelo DOM para inspeccionar el entorno
+del cliente y lo que esperaría visualizar, y rechazar los intentos de acceso que contengan marcos
+adicionales. 
+
 ****************************************************************************************************
 72
+
+Esto no ayuda con los Objetos de Ayuda del Explorador (BHO’s) o barras de herramientas de
+spyware, pero puede ayudar a evitar muchas estafas.
+Mueva su aplicación a un enlace de distancia de su página principal
+Es posible disminuir ataques de phishing ingenuos:
+Ubique al autenticador de su aplicación en una página separada.
+Considere implementar un control de referencias. Por ejemplo, en la sección “Error! Origen
+de referencia no encontrado”, se muestra que los campos de referencia son fácilmente burlados
+por atacantes motivados, por lo tanto este control no funciona tan bien ni siquiera con atacantes
+moderadamente cualificados, pero elimina a los enlaces en correos electrónicos como un vector
+de ataque.
+Aliente a sus usuarios a escribir las URL’s o simplemente no les provea de un enlace para
+hacer clic.
+El chequeo de referencias es efectivo contra ataques indirectos tales como phishers – un sitio
+hostil no puede forzar al navegador del usuario a enviar encabezados de referencias falsificados.
+Imponga el uso de referencias locales para imágenes y otros recursos
+Los estafadores intentaran utilizar imágenes de su sitio web, o de sitios web socios (tales
+como programas de fidelización)
+Haga utilizar a los estafadores sus propias copias locales de imágenes y recursos, ya que esto
+incrementara las posibilidades que les salga mal, o que las imágenes hayan cambiado al
+momento de realizar el ataque.
+La funcionalidad es típicamente denominada “anti-sanguijuela”, y es implementada en la
+mayoría de los servidores web pero deshabilitada por defecto. Akamai, que denomina esta
+funcionalidad “Bloqueo basado en la Petición”, y similares empresas, pueden proveer este
+servicio a sus clientes. 
+
 ****************************************************************************************************
 73
+
+Considere utilizar “imágenes de filigrana”, de manera que pueda determinar cuando ha sido
+utilizada dicha imagen y poder rastrearla. Puede no ser posible realizar esto en sitios web con
+mucho tráfico, pero puede ser útil esta técnica en una imagen por día.
+Investigue todos los accesos que enumeren su sitio entero o solo accesos de imágenes – usted
+puede realizar esto en su sitio web para comprobar como se visualizaría y pueda capturar
+entradas de acceso que puedan ser utilizadas para identificar dicha actividad. Frecuentemente los
+estafadores utilizan sus propios ordenadores para realizar estas actividades, por lo tanto es
+posible que pueda suministrar a las autoridades competentes con direcciones IP para investigar.
+Mantenga la barra de direcciones, utilice SSL, no utilice direcciones IP
+Muchos sitios web intentan ocultar a los usuarios la barra de direcciones en un intento débil
+de prevenir a los usuarios manipular la información, marcar a su sitio web como favorito o hacer
+clic en el botón “Atrás” de su navegador. Todas estas son excusas que no ayudan a los usuarios a
+prevenir ataques de phishing.
+Información que es sensitiva para los usuarios debería ser movida a una sesión de objetos o –
+en el peor de los casos – esconderla utilizando campos ocultos. Marcar como favorito no
+funciona si la autorización obliga hacer cumplir los requisitos de acceso. Hacer clic en el botón
+“Atrás” de su navegador puede ser derrotado a través de hacks de Javascript y secuencias de
+cookies.
+Los usuarios deberían poder visualizar su nombre de dominio – no direcciones IP. Esto
+significa que usted deberá registrar todos sus hosts en lugar de publicar sus direcciones IP.
+No sea la fuente de robos de identidad
+Si usted posee una gran cantidad de información acerca de sus usuarios, tal como un banco u
+organización gubernamental, no permita a las aplicaciones mostrar esta información a los
+usuarios. 
+
 ****************************************************************************************************
 74
+
+Por ejemplo, las soluciones de banca electrónica pueden permitir a los usuarios actualizar sus
+registros de dirección postal. No es necesario mostrar la dirección actual dentro de la aplicación,
+ya que de esa manera la base de datos de la banca electrónica no necesitara contener información
+sobre direcciones – solo los sistemas secundarios.
+En general, minimice la cantidad de información mantenida en la aplicación. Si no se
+encuentra disponible en primera instancia para ser robada, la aplicación será más segura para los
+usuarios.
+Implemente protecciones dentro de su aplicación
+Considere implementar lo siguiente:
+Si usted es un ISP o registrador de DNS; asegúrese que el registrante espere 24 horas antes
+de proveerle acceso a su dominio; frecuentemente los estafadores registran y botan un dominio
+en las primeras 24 horas a medida que la estafa es descubierta.
+Si una cuenta es creada, pero no es utilizada por un periodo de tiempo (por ejemplo una
+semana o mes), deshabilite dicha cuenta.
+¿Es toda la información de registro valida? Por ejemplo, ¿es el código postal de California,
+pero el número de teléfono es de Nueva York? De no ser así, no habilite la cuenta.
+Limites diarios, particularmente para clientes no validados.
+Periodos de asentamiento en transacciones fuera de línea para permitir a los usuarios repudiar
+dichas transacciones.
+Solo realice envíos de bienes a los domicilios actuales de los clientes y utilizar las
+direcciones de facturación (por ejemplo, no envíe una cámara fotográfica a Fiji si el cliente vive
+en Noumea).
+Solo envíe bienes a clientes verificados (o considere implementar un límite para tales
+transacciones).
+Si su aplicación permite actualizaciones por correo electrónico o direcciones postales, envíe
+una notificación a las dos direcciones (vieja y nueva) cuando se realiza una actualización. Esto
+permite al usuario detectar cambios fraudulentos. 
+
 ****************************************************************************************************
 75
+
+No envíe contraseñas por correo electrónico o postal. Utilice contraseñas de un solo uso.
+Envíe notificaciones a los usuarios que su contraseña ha sido cambiada utilizando este
+mecanismo.
+Implemente SMS o notificaciones por correo electrónico al realizar operaciones en la cuenta,
+particularmente las que involucran transferencias o cambio de dirección postal o detalles
+telefónicos.
+Prevenga la posibilidad de realizar muchas transacciones por el mismo usuario en un periodo
+corto de tiempo – esto desacelera un ataque automático.
+Utilice autenticación de dos factores para cuentas extremadamente sensible o con mucho
+volumen de transacciones.
+Monitoree actividad inusual en las cuentas
+Utilice heurística y otros mecanismos para determinar la probabilidad que los usuarios actúen
+en una secuencia de eventos, tales como:
+Vaciar sus cuentas.
+Realizar muchas transacciones pequeñas para evitar el límite diario de transacciones.
+Si muchas cuentas están realizando envíos a una misma dirección.
+Si las mismas transacciones son realizadas rápidamente de la misma dirección IP.
+Evite el pharming – considere escalonar las demoras de las transacciones utilizando un
+monitoreo de recursos o agregando una demora. Cada transacción incrementara la demora por un
+número aleatorio incremental, de manera que para la tercera o ciertamente décima transacción, la
+demora es significativa (3 minutos o más entre páginas).
+Ponga rápidamente fuera de línea los servidores victimas de phishing
+Trabaje con autoridades competentes, reguladoras de bancos, ISPs y demás para poner el
+servidor de phishing fuera de línea lo antes posible. Esto no significa destruirlos!
+Estos sistemas contienen una significante cantidad de información acerca del atacante, por lo
+tanto nunca destruya el sistema – si el mundo fuera un lugar perfecto, podría ser analizado
+utilizando técnicas forenses por un experto en el tema. Cualquier software malicioso que sea 
+
 ****************************************************************************************************
 76
+
+identificado debe ser inmediatamente enviado a la mayor cantidad de empresas posible de
+antivirus y antispyware.
+Las victimas de servidores de phishing usualmente no estarán enteradas que su host ha sido
+comprometido y le agradecerán que les haya avisado, por lo tanto no intente una incursión
+durante el alba con un equipo SWAT!
+Si piensa que el servidor esta bajo el control directo de un estafador, usted debería dejar a las
+autoridades competentes manejar el caso, ya que por cuestiones de seguridad nunca debería tratar
+con el estafador.
+Si representa un ISP, es importante que comprenda que simplemente formateando y clonando
+nuevamente el servidor, a pesar de ser bueno para el negocio, prácticamente garantiza que sus
+sistemas serán repetidamente violados por las mismas organizaciones criminales. De todas las
+victimas de phishing, los ISPs necesitan ser los más prudentes en encontrar y resolver estos
+casos, y trabajar conjuntamente con las autoridades competentes.
+Tome control de los nombres de dominio fraudulentos
+Muchos estafadores intentan utilizar homógrafos y nombres de dominio mal deletreados para
+burlar su sitio web. Por ejemplo, si un usuario visualiza http://www.ejemplo.com pero la j en el
+ejemplo es un homógrafo de otro conjunto de caracteres, o el usuario visualiza errores
+ortográficos tales como http://www.ejamplo.com o http://www.ejimplo.com el típico usuario no
+notara la diferencia.
+Es importante utilizar el proceso de resolución de disputas del registro de dominios para
+tomar control de este dominio lo antes posible. Una vez que se encuentra bajo su control, no
+podrá ser re-utilizado por los atacantes en el futuro. Una vez que tenga control, bloquee el
+dominio para que no pueda ser transferido de usted sin una autorización firmada.
+Las limitaciones con este enfoque incluyen: 
+
 ****************************************************************************************************
 77
+
+Existe una gran variedad de variaciones de dominio, por lo tanto los costos pueden aumentar
+considerablemente.
+Puede ser un proceso lento, particularmente con algunas políticas de DRP – las disputas
+pueden tomar varios meses y mucho dinero para llegar a una resolución.
+Monitorear un TLD tales como .COM es casi imposible – particularmente en regimenes
+competitivos.
+Algunas disputas no pueden ser ganadas si usted no posee una marca registrada para su
+nombre de dominio, y mejor aun…
+El crimen organizado es organizado – algunos incluso poseen sus propios registradores de
+dominio o trabajan tan cercanos a ellos que la diferencia se hace indistinguible.
+Trabaje con las autoridades competentes
+La única manera de eliminar el problema es poner a los perpetradores bajo rejas. Trabaje con
+las autoridades competentes – ayúdelos a reportar el crimen, maneje la evidencia con cuidado, y
+persígalos! No re-envíe cada correo electrónico o pídale a sus usuarios que hagan esto, ya que es
+el mismo crimen. Coteje toda la información de sus usuarios, repórtelo solo una vez, y haga
+evidente que usted toma al asunto seriamente.
+Ayude a sus usuarios a demandar a los estafadores por daños civiles. Por ejemplo, asesore a
+los clientes sobre sus derechos y cuales son los pleitos posibles contra los estafadores.
+Desafortunadamente, muchos estafadores provienen de países con poca o nula legislación
+criminal contra fraude y phishing. Adicionalmente, estos estafadores pertenecen a (o actúan en
+nombre) del crimen organizado. Es peligroso contactar estos criminales directamente, por lo
+tanto siempre escuche las advertencias de las autoridades competentes y trabaje a través de ellos.
+Cuando ocurre un ataque
+Sea amable con sus clientes – ellos son las victimas inconscientes. Si desea mantener un
+cliente de por vida, este es el momento de ser amable con ellos. Ayúdelos en todo lo posible.
+Disponga de una política de manejo de incidentes de phishing lista y testeada. Asegúrese que
+todos conozcan su rol para restringir el daño causado por los ataques. 
+
 ****************************************************************************************************
 78
+
+Si usted es una agencia de reporte crediticio o trabaja con un organismo regulador, haga
+posible a los usuarios legítimos mover sus identidades crediticias. Esto permitirá mantener el
+historial del usuario, pero marcara cualquier nuevo acceso como fraudulento.
+Lectura adicional
+Anti-phishing working group
+http://www.antiphishing.org/
+
 ****************************************************************************************************
 79
+
+Servicios Web
+Esta sección de la guía detalla los problemas comunes los desarrolladores de servicios Web
+encaran y los métodos para resolver esos problemas. Dadas las limitaciones de espacio, no
+podemos ver todos los problemas menores en gran detalle, dado que cada uno de ellos requiere
+un libro por separado. En ves de eso, hicimos un intento por dirigir al lector al uso apropiado de
+patrones y advertirle sobre posibles obstáculos en el camino.
+Los servicios Web han recibido mucha publicidad y con ello como mucha confusión sobre
+que son realmente. Algunos han sostenido que los servicios Web son el mayor descubrimiento
+tecnológico desde la web en sí. Otros son más escépticos y mencionan que solo son aplicaciones
+web evolucionadas. En cualquier caso, los problemas de seguridad en aplicaciones web aplican a
+los servicios Web tal como aplican a las aplicaciones Web.
+En el nivel más simple, los servicios web pueden ser vistos como aplicaciones web
+especializadas que difieren principalmente en la capa de presentación. Mientras que las
+aplicaciones web son típicamente basadas en HTML, los servicios web son basados en XML.
+Usuarios interactivos de transacciones negocio a consumidor (B2C por sus siglas en ingles) son
+quienes normalmente acceden a las aplicaciones web, mientras que los servicios Web son
+empleados como bloques de construcción por otras aplicaciones Web para formar cadenas
+negocio a negocio (B2B por sus siglas en inglés) usando el llamado modelo SOA. Los servicios
+Web típicamente representan una interfaz pública funcional, que se llama de forma programática,
+mientras que las aplicaciones Web tienden a lidiar con un conjunto de características más rico y
+son dirigidas al contenido en la mayoría de las veces.
+Asegurando los servicios Web
+Los servicios Web, como otras aplicaciones distribuidas, requieren protección en múltiples
+niveles: 
+
 ****************************************************************************************************
 80
+
+• Los mensajes SOAP que son enviados en la red deben ser entregados confiablemente y
+sin modificaciones
+• El servidor necesita saber con confianza con quien esta hablando y a que tienen derecho
+los clientes
+• Los clientes necesitan saber que están hablando al servidor correcto y no a un sitio de
+“phishing” (vea el capítulo de “Phishing” para más información)
+• El registro de eventos debe contener suficiente información para reconstruir
+confiablemente la cadena de eventos y rastrear de vuelta a los que llamaron funciones sin
+autentificación previa
+A su vez, las soluciones a alto nivel que se discuten en las siguientes secciones, son válidas
+para la mayoría de las aplicaciones distribuidas, con algunas variantes en los detalles de
+implementación
+Las buenas noticias para los desarrolladores de servicios Web son que estas son tareas a nivel
+infraestructura, así que, teóricamente, es solo el administrador del sistema el que debe
+preocuparse por estos problemas. Sin embargo, por varias de razones discutimos después en este
+capítulo, los desarrolladores de WB usualmente tienen que al menos saber de todos estos riesgos,
+y muchas veces ellos aun tienen que codificar manualmente o ajustar los componentes de
+protección.
+Seguridad en la comunicación
+Hay una frase común e incluso una solución más comúnmente implementada: “Estamos
+usando SSL para proteger todas las comunicaciones, estamos seguros”. Al mismo tiempo ha
+habido tantos artículos publicados sobre el tema de “seguridad en el canal contra seguridad de
+testigos (tokens)” que hace difícil repetir ese argumento aquí. Por lo tanto, abajo tenemos una
+pequeña lista de las fallas más comunes cuando se usa un canal seguro solamente:
+• Solo provee seguridad “punto a punto”
+Cualquier comunicación con múltiples “brincos” requiere que se establezcan canales
+separados (y confiables) entre cada nodo de comunicación en todo el camino. Hay también un
+problema sutil de transitividad de confianza, dado que la confianza entre los pares de nodos
+{A,B} y {B,C} no implica automáticamente una relación de confianza entre {A,C}. 
+
 ****************************************************************************************************
 81
+
+• Problemas de almacenamiento
+Después de que los mensajes son recibidos en el servidor (Incluso si no es el receptor
+adecuado), ellos existen en forma de texto claro, al menos temporalmente. El almacenamiento de
+la información transmitida en el intervalo, agrava el problema como en los registros de eventos
+del servidor destino (donde puede ser vista por cualquiera) o en la memoria rápida (cache) de los
+servidores locales.
+• Falta de interoperabilidad
+Mientras que SSL provee un mecanismo estándar para la protección del transporte, las
+aplicaciones tienen que usar mecanismos altamente propietarios para transmitir las credenciales,
+asegurarse de la frescura, integridad y confidencialidad de los datos que se envían en el canal
+seguro. Usar un servidor diferente, el cual es semánticamente equivalente, pero que acepta un
+formato diferente de las mismas credenciales, requerirá que se altere el cliente y que se evite
+formar cadenas automáticas con servicios B2B anteriores.
+La protección de testigos basada en estándares provee en muchos casos una alternativa
+superior para el modelo de comunicación en los servicios web orientados a SOAP.
+Dicho esto, la realidad es, que la mayoría de los servicios Web actuales están protegido por
+alguna forma de mecanismo de seguridad, el cual por si solo puede ser suficiente para una
+aplicación interna simple. Sin embargo, uno debe darse cuenta claramente de las limitaciones de
+tal solución y hacer un análisis concienzudo en el tiempo de diseño sobre el canal, el testigo o
+una protección combinada que funcionaría mejor para el caso en específico.
+Pasando las credenciales
+Para poder estableces el intercambio de credenciales y la autentificación en servicios web,
+sus desarrolladores deben resolver los siguientes problemas.
+Primero, dado que los mensajes de SOAP son basados en XML, todas las credenciales que se
+pasen deben ser convertidas a formato texto. Esto no es un problema para las credenciales del
+tipo Usuario / contraseña, sino para los binarios (como certificados X.509 o testigos de Kerberos)
+lo que requiere que se conviertan en texto antes de enviarlos a reestablecerlos sin ambigüedad
+una ves recibidos. Lo cual se hace usualmente por medio de una llamada a un procedimiento
+Base64 para codificar y decodificarlos. 
+
 ****************************************************************************************************
 82
+
+Segundo, pasar las credenciales conlleva un riesgo inherente a su descubrimiento, ya sea por
+“olerlos” mientras están siendo transmitidos en la red o al analizar los registros de eventos del
+servidor. Pro lo tanto, cosas como contraseñas y llaves privadas tienen que ser o cifradas o
+enviadas en “texto claro”. Usualmente las alternativas para evitar enviar credenciales delicadas
+es usar cifrado de una vía o firmas digitales criptográficas.
+Asegurarse de la frescura del mensaje
+Incluso los mensajes válidos pueden ser peligrosos si se usa un ataque de re envío, por
+ejemplo, que es enviado múltiples veces al servidor para hacer que se repita la operación de
+petición. Esto se logra por la captura del mensaje completo, incluso si esta protegido contra
+modificación, dado que es el mensaje en sí el que es usado para al ataque (vea la sección de
+inyección de XML del capítulo sobre inyección en interpretes).
+Las medidas usuales para protegerse contra mensajes re enviados son usar identificadores
+únicos en los mensajes y llevar registro de los procesados o usar un tiempo de validez
+relativamente corto. En el mundo de los servicios Web, la información sobre el tiempo de
+creación de es comunicado usualmente usando estampillas de tiempo (timestamps), las cuales
+pueden simplemente indicar el instante en que fue creado el mensaje, o tener información
+adicional, como su tiempo de expiración o ciertas condiciones.
+La última solución, aunque es más fácil de implementar, requiere la sincronización del reloj y
+es sensible a “sesgos de tiempo” en el servidor, si el servidor y el cliente se mueven mucho
+evitarán que se entregue el mensaje a tiempo, aunque esto usualmente no representa un problema
+importante con las computadoras modernas. Un problema mayor es el encolamiento de mensaje
+en el servidor, dado que los mensajes pueden expirar mientras esperan en la cola a ser
+procesados por un servidor especialmente ocupado o falto de respuesta.
+Proteger la integridad del mensaje
+Cuando un mensaje es recibido por un servicio Web, debe siempre preguntarse 2 cosas:
+“confiar en el emisor“, “confiar en el mensaje creado”. Asumiendo que la confianza del emisor
+ha sido establecida de una manera u otra. El servidor debe asegurarse que el mensaje que esta
+viendo fue, de hecho, enviado por el emisor y que no fue alterado en el camino
+(intencionalmente o no). Esto puede afectar la calidad técnica de un mensaje SOAP, como el 
 ****************************************************************************************************
 83
+
+estampado de tiempo del mensaje o el contenido de negocio, como el monto a ser retirado de una
+cuenta bancaria. Obviamente, ningún cambio debe pasar desapercibido por el servidor.
+En los protocolos de comunicación usualmente hay algunos mecanismos como una suma de
+comprobación para asegurar la integridad de los paquetes. Esto no sería suficiente, sin embargo,
+en el reino de los servicios Web públicamente expuestos, dado que las sumas de comprobación
+(o “digest” o su equivalente criptográfico) son fácilmente reemplazables y no puede ser rastreado
+confiablemente al emisor. La asociación requerida establecida al utilizar HMAC o por combinar
+“digests” de mensajes con una firma criptográfica o con cifrado de llave privada (asumiendo que
+las llaves son solo conocidas por las 2 partes en comunicación) para asegurarse que cualquier
+cambio resultará inmediatamente en un error criptográfico.
+Protegiendo la confidencialidad del mensaje
+Frecuentemente, no es suficiente con asegurar la integridad, en muchos casos también es
+deseable que nadie pueda ver los datos que son pasados y/o almacenados localmente. Puede
+aplicar el mensaje completo que se va a procesar o solo a ciertas partes de él. En cualquier caso,
+algún tipo de cifrado es requerido para encubrir el contenido. Normalmente, se usan los
+algoritmos de cifrado simétrico en fragmentos de datos, dado que es significativamente más
+rápido que los asimétricos. El cifrado asimétrico es aplicado entonces para proteger las llaves de
+sesión, las cuales, en muchas implementaciones, son válidas solo para una comunicación y
+después son desechadas.
+Aplicar el cifrado requiere de conducir un trabajo exhaustivo de configuración, dado que
+comunicar las partes ahora tienen que conocer que llaves pueden confiar, lidiar con validación de
+certificados o llaves y conocer cuales llaves debe ser usadas para la comunicación.
+En muchos casos, el cifrado se combina con firmas para proveer integridad y
+confidencialidad. Normalmente, las llaves de firmado son diferentes de las de cifrado,
+principalmente porque en sus ciclos de vida diferentes, las llaves de firmado son asociadas
+permanentemente con sus propietarios, mientras que las llaves de cifrado pueden ser invalidadas
+después del intercambio de mensajes. Otra razón puede ser la separación de responsabilidades de
+negocio, la autoridad firmante (y la llave correspondiente) puede pertenecer a un departamento o
+persona, mientras que las llaves de cifrado son generalmente controladas en el servidor por
+miembros del departamento de TI. 
+
 ****************************************************************************************************
 84
+
+Control de acceso
+Después de que el mensaje ha sido recibido y validado exitosamente, el servidor debe
+decidir:
+• Sabe quien esta pidiendo la operación (Identificación)
+• Confía en la identidad que el emisor dice tener (Autentificación)
+• Permitirá al emisor realizar esta operación (Autorización)
+Hay mucha actividad sobre WS que toma lugar en esta etapa, son muchas maneras nuevas de
+pasar las credenciales para la autentificación. La mayoría de las veces, las tareas de autorización
+ocurren completamente fuera de la implementación del servicio web en el servidor de políticas
+que protege el dominio entero.
+Hay otro problema significativo aquí, los cortafuegos tradicionales de HTTP no ayuda a
+detener ataques en los servicios Web. Una organización necesitaría un cortafuego de
+XML/SOAP, el cuál es capaz de conducir un análisis a nivel aplicación del tráfico del servidor
+web y hacer decisiones inteligentes sobre pasar los mensajes SOASP a su destino o no. El lector
+tendrá que ver otros libros y publicaciones en este tema tan importante, dado que es imposible
+cubrirlo en solo un capítulo.
+Auditoria
+Una tarea común, típicamente requerida par las auditorias, es reconstruir la cadena de
+eventos que llevó a un problema en particular. Usualmente, esto se logra al guardar registro de
+eventos en el servidor en una ubicación segura, disponible solo para los administradores de TI y
+los auditores de sistema, para crear lo que comúnmente se conoce como un rastro de auditoria.
+Los servicios web no son excepción a esta práctica y sigan la solución común a otros tipos de
+aplicación Web.
+Otro objetivo de las auditorias es el no repudio, que significa que un mensaje puede ser
+rastreado hacia el emisor confiablemente. Siguiendo prácticas legales estándar, los documentos
+electrónicos requieren alguna forma de “firma digital”, pero esta definición es extremadamente
+amplia y puede significar prácticamente cualquier cosa, en muchos casos escribiendo su nombre
+y fecha de nacimiento calificada como una e-firma (e-signature).
+En lo que concierne al WS, tal nivel de protección no sería suficiente y sería fácilmente
+olvidable. La práctica estándar requiere firmas digitales criptográficas sobre cualquier contenido 
+
 ****************************************************************************************************
 85
+que tiene que estar ligada legalmente, Si un documento con tal firma es guardado en registro de
+eventos. Puede ser rastreado confiablemente hacia el propietario de la llave de firmado.
+Jerarquía de seguridad en Servicios Web
+Técnicamente hablando, los servicios web en sí son simples y versátiles, son comunicaciones
+basadas en XML, descritos por una gramática basada en XML, llamada lenguaje descriptivo de
+servicios web (WSDL por sus siglas en inglés, vea http://www.w3.org/TR/2005/WD-wsdl20-
+20050510), el cual tiene interfaces abstractas de servicios, que consisten en mensajes expresados
+como un esquemas XML y operaciones a el formato de red. Aunque no es un requerimiento, el
+formato elegido actualmente es SOAP sobre http. Esto significa que las interfaces de los
+servicios web están descritas en términos de los mensajes SOAP de entrada y salida, transmitidos
+sobre el protocolo HTTP.
+Comités de estándares
+Antes de revisar los estándares individuales, vale la pena dar una mirada pequeña a las
+organizaciones, las cuales están desarrollando y promocionándolos. Hay unos pocos grupos a
+nivel industria y consorcios trabajando en esta área, las más importantes están listadas abajo.
+W3C (vea http://www.w3.org) es la más importante y bien conocido grupo industrial, el cual
+posee muchos estándares relacionados con la Web y los desarrolla en forma de grupo de trabajo.
+De particular interés para este capítulo sería los estándares de esquema XML (XML Schema)
+SOAP, XML-dsig, XML-enc y WSDL (llamadas recomendaciones en le jerga del W3C).
+OASIS (vea http://www.oasis-open.org) mayormente lidia con los estándares específicos a
+los servicios Web no necesariamente relacionados con seguridad. También opera en forma de
+comités que forman los llamados comités técnicos (TC) para los estándares que están siendo
+desarrollados. Para el interés de esta discusión, OASIS posee los estándares de WS-Security y
+SAML.
+El grupo de interoperabilidad de servicios web (WS-I por sus siglas en inglés vea
+http://www.ws-i.org/) fue formado para promover un marco de trabajo genérico para servicios
+web ínter operables. La mayoría de su trabajo consiste en tomar estándares ampliamente
+conocidos y desarrollar los llamados perfiles o conjuntos de requerimientos para la conformidad
+con implementaciones de servicios web. En particular, confía en perfiles de seguridad básicos 
+
 ****************************************************************************************************
 86
+
+(BSP por sus siglas en inglés) del estándar WS-Security y un conjunto de características de
+seguridad opcionales y requeridas por un servicio web que dice ser ínter operable.
+Liberty Alliance (LA, vea http://projectliberty.org), este consorcio fue formado para
+desarrollar y promover un marco de trabajo ínter operable para la federación de identidades.
+Aunque este marco no es estrictamente para servicios web, si no en general, es importante para
+este tema por su relación cercana con es estándar desarrollado por OASIS.
+Además de las organizaciones previamente listadas, hay otras asociaciones en la industria ya
+sea permanentemente establecidas o de corta vida, la cuales impulsaron varias actividades de
+seguridad para los servicios web. Ellos están conformados usualmente de compañía líderes en la
+industria como Microsoft, IBM, Verisign, BEA, Sun y otras que se unen a ellas para trabajar en
+una propuesta para un problema en particular. El resultado de estas actividades en conjunto, una
+vez que ellas alcanzan cierta madurez, es enviado a comités de estandarización para formar la
+base de un nuevo estándar de la industria
+SOAP
+O Simple Object Access Protocol en inglés (SOAP, vea http://www.w3.org/TR/2003/RECsoap12-part1-20030624/)
+provee un marco de trabajo basado en XML par intercambiar
+información estructurada y basada en tipos entre servicios. Esta información enviada en el
+encabezado y cuerpo, puede teóricamente ser transmitida sobre un número de protocolos de
+transporte pero solo el de http ha sido definido formalmente y está en uso activo en la actualidad.
+SOASP provee interacción para las llamadas remotas a procedimientos (RPC por sus siglas en
+inglés) similares a las llamadas remotas a funciones y la comunicación estilo documentos con
+contenidos de mensaje basados exclusivamente en definiciones de esquemas XML en el lenguaje
+WSDL de servicios web. Los resultados de invocarlos pueden ser opcionalmente regresados en
+un mensaje respuesta o una falla puede ser creada, la cual es equivalente a usar excepciones en
+los lenguajes de programación tradicionales.
+El protocolo SOAP, al mismo tiempo que define un marco de comunicación no provee ayuda
+en términos del intercambio seguro de mensajes, las comunicaciones deben de ocurrir ya sea
+sobre canales seguros o usando mecanismos de protección descritos después en este capítulo.
+Especificaciones de seguridad en XML (XML-dsig & Encryption)
+XML Signature (XML-dsig, vea http://www.w3.org/TR/2002/REC-xmldsig-core20020212/),
+y XML Encryption (XML-enc, vea http://www.w3.org/TR/2002/REC-xmlenc-core-
+
 ****************************************************************************************************
 87
+
+20021210/) agregan protección criptográfica a los documentos en XML plano. Estas
+especificaciones agregan integridad, autentificación de mensaje y firmante así como soporte para
+cifrado / descifrado del documento XML completo o solo algunos elementos dentro de él.
+El valor real de estos estándares viene del marco altamente flexible desarrollado para
+referenciar los datos a ser procesados (interna o externamente relacionados a un documento
+XML), refiérase a las llaves secretas y pares de llave y a la representación de resultados de firmar
+/ cifrar las operaciones como XML las cuales son agregadas / sustituidas en el documento
+original.
+Sin embargo, pos sí mismas, XML-dsig y XML-enc no resuelven el problema de la seguridad
+de servicios web basada en SOAP, dado que el cliente y servicio primero tiene que acordar el
+orden de estas operaciones, donde buscar la firma, donde obtener los testigos criptográficos, que
+elementos del mensaje deben ser firmados y cifrados, cuanto tiempo se considera el mensaje
+válido y así. Estos problemas son resueltos por las especificaciones de alto nivel, obtenidas en las
+siguientes secciones.
+Especificaciones de Seguridad
+Además de los estándares de arriba, hay un amplio conjunto de especificaciones relativas a
+seguridad que esta siendo actualmente desarrollado en carios aspectos de las operaciones de
+servicios Web.
+
+Uno de ellos es SAML, el cual define como deben intercambiarse las aserciones de identidad,
+atributo y autorización entre los servicios participantes en una manera segura e ínter operable.
+Un gran consorcio, dirigido por Microsoft e IBM, con la ayuda de Verisign, RSA Security y
+otros participantes, desarrolló una familia de especificaciones, llamadas en su conjunto como
+“Web Services Roadmap”. Su fundamento, WS-Security, ha sido enviado a OASIS y se
+convirtió en un estándar OASIS en 2004. Otras especificaciones importantes de esta familia se
+encuentran aun en diferentes etapas de desarrollo y los planes para su envío no han sido
+anunciados. Aunque cubren aspectos importantes como políticas de seguridad (WS-Policy),
+problemas de confianza e intercambio de testigos de seguridad (WS-Trust), establecer el
+contexto para conversaciones seguras (WS-SecureConversation). Una de las especificaciones de
+esta familia, WS-Federation, compite directamente con el trabajo hecho por el consorcio LA y
+aunque se supone que se incorporó en la versión Longhorn de Windows, su futuro no es claro en 
+
 ****************************************************************************************************
 88
 ****************************************************************************************************
