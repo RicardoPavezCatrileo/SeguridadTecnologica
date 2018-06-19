@@ -2376,252 +2376,2071 @@ aunque se supone que se incorporó en la versión Longhorn de Windows, su futuro n
 
 ****************************************************************************************************
 88
+
+este momento, dado que ha sido retrazado significativamente y actualmente no tiene empuje de
+la industria que lo respalde.
+Estándar WS-Security
+La especificación de WS-Security (WSS) fue desarrollada originalmente por Microsoft, IBM
+y Verisign como parte de un “plan de trabajo”, el cual fue renombrado como Arquitectura de
+Servicios Web (o WSA por sus siglas en inglés). La WSS sirvió como la base para todas las
+demás especificaciones en este dominio, creando una infraestructura básica para desarrollar el
+intercambio seguro de mensajes. Dada su importancia para establecer servicios Web ínter
+operables, fue enviada a OASIS y después del trabajo requerido por el proceso del comité, se
+convirtió en un estándar aceptado oficialmente. La versión actual es la 1.0 y el trabajo en la
+versión 1.1. de la especificación esta en progreso, se espera que termine en la segunda mitad del
+2005.
+Organización del estándar
+El estándar WSS lidia con varias áreas medulares de seguridad, dejando muchos detalles a
+los llamados documentos perfil. Las áreas principales, ampliamente definidas por el estándar
+son:
+• Maneras de agregar encabezados de seguridad (encabezados WSSE) a los sobres de
+SOAP
+• Adjuntar testigos de seguridad y credenciales al mensaje
+• Insertando un estampado de tiempo
+• Firmar el mensaje
+• Cifrado del mensaje
+• Extensibilidad
+La flexibilidad del estándar de WS-Security reside en su extensibilidad, de manera que
+permanece adaptable a nuevos tipos de testigos de seguridad y protocolos que han sido
+desarrollados. Esta flexibilidad es adquirida al definir perfiles adicionales para insertar nuevos
+tipos de testigos de seguridad en el marco de trabajo de WSS. Mientras que las partes de firmado
+y cifrado del estándar no se espera que requieran cambios significativos (solo cuando XML-dsig
+y XML-enc son actualizados), los tipos de testigos pasados a los mensajes WSS y la manera de 
+
 ****************************************************************************************************
 89
+
+adjuntarlos al mensaje pueden varias sustancialmente. A alto nivel el estándar WSS define tres
+tipos de testigos de seguridad adjuntables al encabezado WSS: Usuario/Contraseña, Binario y
+testigo XML.
+Cada uno de estos tipos es definido mas a detalle en uno (o más) de los documentos de perfil,
+los cuales definen atributos y elementos adicionales que se necesitan para representar un tipo en
+particular de testigo de seguridad. 
+
+Figura 1: Jerarquía de la especificación WSS
+Propósito
+El objetivo principal del estándar WSS es proveer herramientas para la protección de la
+comunicación a nivel mensaje, mientras que cada mensaje representa una pieza aislada de
+información, contiene suficiente información de seguridad para verificas todas las propiedades
+importantes del mensaje, como: Autenticidad, integridad, frescura y aquellas para iniciar el
+descifrado de cualquier parte cifrada del mensaje. Este concepto esta en contraste profundo con
+la seguridad de canal tradicional., la cual, metódicamente aplica contexto pre-negociados de
+seguridad a todo el flujo de datos, contrario al proceso selectivo de asegurar mensajes 
+
 ****************************************************************************************************
 90
+
+individuales de WSS. En el plan de trabajo, este tipo de servicios se espera que sea proveído
+eventualmente por implementaciones de estándares como WS-SecureConversation.
+Desde el principio, el estañar WSS fue concebido como un conjunto de herramientas a nivel
+de mensaje para la entrega segura de datos a protocolos de nivel superior. Estos protocolos
+basados en estándares como WS-Policy, WS-trust y Liberty Alliance confían en los testigos
+trasmitidos para implementar políticas de control de acceso, intercambio de testigos y otros tipos
+de protección e integración, Sin embargo, si se implementa solo, el estándar WSS no obliga
+ninguna propiedad de seguridad en particular y una aplicación a la medida puede guiar a
+vulnerabilidades de seguridad sutiles y difíciles de detectar tal como se discute en las siguientes
+del capítulo.
+Bloques de construcción de WS-Security
+Es estándar de WSS actualmente consiste en un número de documentos, un documento
+principal el cual contiene como los encabezados de seguridad deben ser incluidos en el sobre
+SOAP y describe los bloques de alto niveles, los cuales deben estar presentes en un encabezado
+de seguridad válido. Los documentos perfile tienen la tarea doble de extender la definición de los
+tipos de testigos de su incumbencia, al proveer atributos y elementos, así como definir la relación
+que no está en la especificación principal, tal como el uso de archivos adjuntos.
+La especificación principal de WSS 1.0, localizada en http://docs.oasisopen.org/wss/2004/01/oasis-200401-wss-soap-message-security-1.0(En
+inglés), define varios
+tipos de testigos de seguridad (los que se discuten en esta sección) las maneras de referenciarlos,
+estampados de tiempo, y las maneras de aplicar XML-dsig y XML-enc en los encabezados de
+seguridad (vea la sección de XML-dsig para mas detalles sobre su estructura general).
+Las especificaciones asociadas son: 
+
 ****************************************************************************************************
-91
+91• Perfil de nombre de usuario 1.0 (Username profile 1.0), localizado en http://docs.oasisopen.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0(En
+inglés), el cual
+agrega varias extensiones relacionadas a contraseñas para el testigo básico
+UsernameToken de la especificación principal.
+• Perfil de testigo con certificado X.509, localizado en http://docs.oasisopen.org/wss/2004/01/oasis-200401-wss-x509-token-profile-1.0
+(En inglés) el cual
+especifica, como los certificados X.509 pueden ser pasados en el BinarySecurityToken
+especificado en el documento principal.
+• Perfil de testigo SAML, localizado en http://docs.oasis-open.org/wss/2004/01/oasis-wsssaml-token-profile-1.0.pdf
+el cual especifica como los testigos basados en XML de
+SAML pueden ser insertados en los encabezados WSS.
+Como son pasados los datos
+La especificación de seguridad WSS lidia con dos tipos distintos de datos: información de
+seguridad, la cual incluye testigos de seguridad, firmas, aserciones, etc.; y datos de mensaje, por
+ejemplo cualquier cosa que sea pasada en el mensaje SOAP, Siendo un estándar basado en SML,
+WSS trabaja con información textual agrupada en elementos XML, Cualquier dato binario, como
+las firmas criptográficas de los testigos de Kerberos, tiene que pasar por una transformación
+especial, llamada codificación y decodificación Base64, la cual provee una conversión sencilla
+de formato binario a ASCII y de regreso. El ejemplo abajo demuestra como luce la información
+binaria en forma codificada:
+cCBDQTAeFw0wNDA1MTIxNjIzMDRaFw0wNTA1MTIxNjIzMDRaMG8xCz
+Después de codificar el elemento binario un atributo con el identificador del algoritmo es
+agregado al elemento XML que contiene los datos, de manera que el receptor sabrá como aplicar
+la decodificación correcta para leerla. Estos identificadores están definidos en los documentos de
+la especificación WSS.
+Estructura del encabezado de seguridad
+El encabezado de seguridad en el mensaje es usado como un tipo de sobre para una carta
+(sella y protege la carta, pero no le importa su contenido). Esta “indiferencia” trabaja en la otra 
+
+
+
 ****************************************************************************************************
 92
+dirección también, dado que la carta (el mensaje SOAP) no sabrá ni le importa su sobre
+(encabezado WSS), dado que las diferentes unidades de la información llevadas en el sobre y en
+la carta están (presumiblemente) destinadas a diferentes personas o aplicaciones.
+El encabezado de SOAP puede contener múltiples encabezados de seguridad mientras que
+ellos sean manejados por diferentes actores (para SOAP 1.1) o roles (SOAP 1.2). Su contenido
+puede también ser referido por cada uno, pero tales referencias presentan un problema logístico
+complicado para determinar el orden apropiado de verificación de descifrado / firmado y deben
+ser evitadas generalmente. El encabezado de seguridad WSS en sí tiene una estructura relajada,
+ya que la especificación en si misma no pide que ningún elemento este presente, así que un
+encabezado minimalista con un mensaje vació luciría como:
+
+Sin embargo, para que sea útil, debe contener algo de información, la cual va a ayuda a
+asegurar el mensaje. Esto significa incluir uno o más testigos de seguridad con elementos de
+referencias, firma XML y Cifrado, si el mensaje esta firmado o cifrado. Así que un encabezado
+típico luciría mas como el siguiente:
+
 ****************************************************************************************************
 93
+ REVISAR CODIGO
+
 ****************************************************************************************************
 94
+REVISAR CODIGO
+
+Tipos de testigos
+Un encabezado WSS puede tener los siguientes tipos de testigos de seguridad en él: 
 ****************************************************************************************************
 95
+
+• Testigo de nombre de usuario
+Define un mecanismo para pasar el nombre de usuario y opcionalmente una contraseña, esta
+última es descrita en el documento de perfil de nombre de usuario. A menos que todo el testigo
+sea cifrado, un mensaje que incluye una contraseña en texto claro debe ser siempre transmitido
+en un canal seguro. En situaciones donde el servicio web objetivo tiene acceso a contraseñas en
+texto claro para verificación (esto puede no ser posible para LDAP o algunos otros directorios de
+usuarios, los cuales no regresan contraseñas en texto claro), es generalmente preferible usar una
+versión cifrada con nonce y estampado de tiempo. El documento de perfil define un algoritmo
+ambiguo para producir “hashes” de contraseñas:
+Password_Digest = Base64 ( SHA-1 ( nonce + created + password ) )
+• Testigo binario
+Ellos son usados para convertir datos binarios, como certificados X.509, es un formato de
+texto codificado, Base64 usualmente. La especificación principal define el elemento
+BinarySecurityToken, mientras que los documentos de perfil especifican sub elementos y
+atributos específicos para manejar varios testigos adjuntos. Actualmente, el perfil X.509 ha sido
+adoptado y hay trabajo en proceso para el perfil de Kerberos. 
+
+• Testigo XML
+Está destinado para cualquier tipo de testigo basado en XML, pero principalmente para las
+aserciones SAML. La especificación principal menciona la posibilidad de validar tales testigos,
+dejando los detalles a los documentos de perfil. En este momento, el perfil de SAML 1.1 ha sido
+aceptado por OASIS. 
+
 ****************************************************************************************************
 96
+Aunque técnicamente no es un testigo de seguridad, un elemento de estampado de tiempo
+puede ser insertado en el encabezado de seguridad para asegurar la frescura del mensaje. Vea la
+sección de más lecturas para un patrón de diseño sobre esto.
+Referenciando partes del mensaje
+Para obtener testigos de seguridad pasados en un mensaje o para identificar partes del
+mensaje firmadas o cifradas, la especificación principal adopta el uso del atributo especial
+wsu:Id. El único requerimiento en este atributo es que los calores como identificadores deben ser
+únicos en el alcance del documento XML donde ellos son definidos. Su aplicación tiene una
+ventaja principal para los procesadores intermedios, porque no requiere entendimiento del
+esquema XML del mensaje. Desafortunadamente, las especificaciones de firma y cifrado de
+XML no permiten la extensibilidad de los atributos (porque tienen un esquema cerrado) así que
+cuando se está ubicando los elementos de firma y cifrado, el ID local de los elementos de firma y
+cifrado debe ser considerado primero.
+La especificación principal de WSS también define un mecanismo general para referenciar
+los testigos de seguridad por medio del elemento SecurityTokenReference. Un ejemplo de tal
+elemento, relacionado a una aserción SAML en el mismo encabezado se muestra abajo: 
+
+Como este elemento esta diseñado para referirse a cualquier tipo de testigo posible
+(incluyendo las llaves de cifrado, certificados, aserciones SAML, etc.) ya sean internos o
+externos al encabezado WSS, es enormemente complicado. La especificación recomiendo usar
+dos de sus posibles 4 tipos, Referencia directa (por URI) e identificadores de llave(algún tipo de 
+
 ****************************************************************************************************
 97
+
+identificador de testigo). Documentos de perfil (por ejemplo SAML o X.509) proveer
+extensiones adicionales a estos mecanismos para tomar ventaja de las características especificas
+de los diferentes tipos de testigos.
+Mecanismos de protección para la comunicación
+Como ya explicamos antes, la seguridad del canal, aunque provee servicios importantes, no
+es una panacea dado que no resuelve el problema de muchos problemas a los que se enfrentan
+los desarrolladores de servicios Web. WSS ayuda a resolver algunos de ellos en el mensaje
+SOAP usando mecanismos descritos en la sección de abajo.
+Integridad
+La especificación WSS hace uso del estándar XML-dsig para asegurar la integridad del
+mensaje, restringiendo su funcionalidad en ciertos casos: por ejemplo, referenciado
+explícitamente y solamente que puede ser firmados (Los modos de firma inclustada o no
+incrustada están permitidos). Antes de firmar el documento XML, se requiere una
+transformación para crear una representación canónica, tomando en cuenta el hecho de que los
+documentos XML pueden ser representadas en varias formas semánticamente equivalentes. Hay
+2 transformaciones principales definidas por el WG de XML Signature en W3C, transformación
+canónica inclusiva y exclusiva (C14N y EXC-C14N), las cuales se diferencian en la manera en la
+que los nombres de espacio son procesados. La especificación principal de WSS recomienda
+específicamente EXC-C14N, ya que permite copiar el contenido XML firmado en otros
+documentos sin validar la firma.
+Para proveer una manera uniforme de manejar los testigos firmados, WSS agrega la opción
+de transformación dereferenciada de Security Token Reference (STR) la cual es comparable a la
+referencia de un puntero a un objeto de un tipo específico en los lenguajes de programación. De
+manera similar, además de las maneras para manejar llaves que define XML Signature, WSS
+permite referencias a testigos de seguridad a través del mecanismo STR, extendido por los
+perfiles de testigo para acomodarse a los diferentes tipos de testigos. Un ejemplo típico de firma
+se muestra en un ejemplo anterior.
+Típicamente una firma XML esta aplicada a los elementos seguros como el cuerpo SOAP y
+el estampado de tiempo, junto con cualquier credencial de usuario pasada en la petición. Hay un
+giro interesante cuando un elemento en particular es firmado y cifrado también. Dado que estas
+operaciones pueden seguirse (incluso repetidamente) en cualquier orden, se requiere conocer el 
+
 ****************************************************************************************************
 98
+orden para la verificación de la firma. Para resolver este problema, la especificación principal de
+WSS requiere que cada nuevo elemento sea pre agregado al encabezado de seguridad, definiendo
+el orden “natural” de las operaciones. Un problema molesto en particular existe cuando hay
+varios encabezados de seguridad en un solo mensaje SOAP, usando bloques traslapados de
+firmas y cifrados, dado que no hay nada en este caso que apunte al orden correcto de las
+operaciones.
+Confidencialidad
+Para la protección de la confidencialidad, WSS confía en otro estándar, XML Encryption. De
+manera similar a XML-dsig, este estándar opera en elementos selectos del mensaje SOAP, pero
+reemplaza el elemento con los datos cifrados con un sub elemento <xenc:EncryptedData> que
+contiene los bytes cifrados. Para la eficiencia del cifrado, la especificación recomienda usar una
+llave única, la cual es cifrada por la llave pública del receptor y pre agregada al encabezado de
+seguridad en un elemento <xenc:EncryptedKey>.
+Frescura
+La frescura de los mensajes SOAP se resuelve con un mecanismo de estampado de tiempo,
+cada encabezado de seguridad puede contener solo un elemento de este tipo, la cual indica en
+formato UTC y usando el formato de tiempo UTC, el momento de la creación o expiración del
+encabezado WSS. Es importante darse cuenta de que el estampado de tiempo se aplica al
+encabezado WSS no al mensaje SOAP en sí, dado que después puede contener múltiples
+encabezados de seguridad, cada uno con un estampado de tiempo diferente. Hay un problema no
+resuelto con esta forma de “estampado de tiempo simple” dado que el estampado de tiempo es
+creado y firmado, es imposible actualizarlo sin romper las firmas existentes, incluso en caso de
+un cambio legítimo en el encabezado WSS. 
+
+
+Si un estampado de tiempo es incluido en el mensaje, usualmente es firmado para evitar
+ataques de modificación y re-envío. No hay un mecanismo identificado para resolver el problema
+de sincronización del reloj (el cual, como ha sido mencionado antes, no es generalmente un
+problema en los modernos sistemas de hoy en día) esto tienen que ser resuelto tanto como el
+
+
 ****************************************************************************************************
 99
+
+mecanismo WSS permita. Vea la sección de lecturas para un patrón de diseño que resuelve este
+problema.
+Mecanismos de control de acceso
+En cuanto nos referimos a decisiones de control de acceso, los Servicios Web no ofrecen
+mecanismos de protección específicos por si mismos, solo tienen medios para enviar testigos y
+datos de forma segura entre los puntos fuente y el destino.
+Para una descripción más completa de las tareas de control de acceso, por favor refiérase a
+otras secciones de esta guía.
+Identificación
+La identificación representa el clamar que se tiene cierta identidad, la cual es expresada al
+adjuntar cierta información al mensaje. Este puede ser un nombre de usuario, una aserción
+SAML, un testigo de Kerberos o cualquier otra pieza de información, de la cual el servicio puede
+inferir quien clama ser el emisor.
+WSS representa una muy buena manera de transmitir esta información cono esta definido en
+el mecanismo extensible para adjuntar varios tipos de testigos a un mensaje. Es el trabajo del
+receptor extraer el testigo adjunto e imaginarse que identidad transporta. O rechazar el mensaje si
+no puede encontrar un testigo aceptable.
+Autentificación
+La autentificación puede venir en dos sabores, credenciales de verificación o testigos de
+validación. La diferencia sutil entre los dos es que los testigos son creados después de que algún
+tipo de autentificación ha ocurrido antes de la invocación actual y ellos usualmente contienen la
+identidad del usuario junto con la prueba de su integridad.
+WSS ofrece apoyo a varios protocolos de autentificación estándar al definir mecanismos de
+vinculación para transmitir testigos específicos al protocolo y ligándolos confiablemente al
+emisor. Sin embargo, la mecánica de probar si el emisor es quien dice ser esta a total discreción
+del servicio Web. Ya sea que tome el nombre de usuario y hash de la contraseña y la verifique
+contra la base de datos o extraiga el nombre del sujeto del certificado X.509 usado para firmal el
+mensaje, verifica la cadena de certificados y busca al usuario en la DB. Al momento no hay
+requerimientos o estándares que dicten que debe ser de una u otra manera.
+Autorización 
+
 ****************************************************************************************************
 100
+
+XACML puede ser usado para expresar reglas de autorización, pero su uso no es específico a
+servicios Web, tiene un alcance mucho más amplio. Así que independientemente de la política o
+autorización basada en roles que el servidor ya tenga implementado, es muy probable que sea
+utilizado para publicar servicios web también.
+Dependiendo de la implementación, puede haber varias capas de autorización involucradas
+en el servidor. Por ejemplo, JSRs 224 (JAX-RPC 2.0) y 109 (implementando servicios web
+empresariales), la cual define vinculación Java para los servicios Web, que especifica la
+implementación de servicios web en contenedores J2EE. Esto significa que cuando un servicio
+web es accedido, habrá una autorización por URL que se ejecute por el contenedor J2EE,
+seguido por una verificación en la capa del servicio Web para el recurso del servicio web
+específico. La granularidad de las verificaciones es específica a la implementación y no esta
+dictada por ningún estándar. En el universo Windows ocurre de manera similar, dado que ISS va
+a ejecutar si control de acceso en la llamada entrante de http antes de que ellas alcancen
+ASP.NET, donde el mensaje SOAP va a ser descompuesto y analizado.
+Acuerdo de la política
+Usualmente, la comunicación con servicios web esta basada en la interfaz pública de los
+puntos finales, definidas en su archivo WSDL. Este descriptor tiene suficientes detalles para
+expresar los requerimientos de vinculación de SOAP, pero no define ningún parámetro de
+seguridad, dejando a los desarrolladores de servicios web batallando para hallar un mecanismo
+“fuera de banda” para determinar los requerimientos de seguridad del punto final.
+Para encarar estos obstáculos, la especificación WS-Policy ha concebido un mecanismo para
+expresar políticas de requerimientos y cualidades complejas, un tipo de WSDL con esteroides. A
+través de la política de SOAP publicada los puntos finales pueden publicar sus requerimientos de
+seguridad y sus clientes pueden aplicar las medidas de protección de mensajes apropiadas para
+construir las peticiones. La especificación general de WS-Policy (comprendida por 2 documentos
+separados) también tiene extensiones para tipos específicos de políticas, uno de ellos, para
+seguridad, llamado WS-SecurityPolicy.
+Si el solicitante no posee el testigo requerido, puede tratar de obtenerlo a través de un
+mecanismo confiable, usando los servicios WS-Trust-enabled, los cuales son llamados para
+intercambiar de manera segura varios tipos de testigos para la identidad requerida. 
+
 ****************************************************************************************************
 101
+
+Desafortunadamente, ambas especificaciones, WS-Policy y WS-trust no han sido enviadas
+para estandarización a los cuerpos públicos, y si desarrollo esta progresando con la colaboración
+privada de varias compañías, aunque ha sido abierto para otros participantes también. Como
+factor positivo, ha habido varios eventos de interoperabilidad conducidos por estas
+especificaciones, así que el proceso de desarrollo de estos vínculos críticos en la infraestructura
+de seguridad de los servicios Web no es totalmente una caja negra.
+Formado de cadenas en servicios Web
+Muchas implementaciones existentes o planeadas de SOA o sistemas B2B confían en las
+cadenas dinámicas de servicios Web para lograr varias tareas específicas a los negocios, desde
+tomar las órdenes a través de manufactura hasta los procesos distribuidos.
+
+Esto es en teoría. En la practica, no hay muchos obstáculos ocultos en el camino, y uno de los
+mayores entre ellos son las preocupaciones de seguridad sobre exponer públicamente funciones
+de procesamiento a los clientes basados en la intra o Internet.
+Aquí hay unos cuantos problemas que golpean la interacción de servicios web. Los modelos
+de autentificación y autorización incompatibles para usuarios, la cantidad de confianza entre los
+servicios y las vías para establecer tal confianza, manteniendo conexiones seguras y la
+sincronización de los directorios de usuario o de otra manera intercambiar los atributos de los
+usuarios. Estos problemas serán brevemente sobrepasados en los siguientes párrafos.
+Modelos incompatibles de control de acceso a usuario 
+
 ****************************************************************************************************
 102
+
+Como fue explicado antes, los servicios web por si mismos no incluyen extensiones
+separadas por control de acceso, más bien confían en los marcos de seguridad ya existentes. Lo
+que sí proveen son mecanismos de descubrimiento y descripción de requerimientos de seguridad
+de un servicio SOAP (vía WS-Policy) y de obtener las credenciales de seguridad apropiadas vía
+servicios basados en WS-Trust.
+Confianza de servicio
+Para establecer confianza mutua entre el cliente y el servicio, tienen que satisfacer los
+requerimientos del otro, un modelo simple y popular de certificar la autentificación mutua es el
+uso de SSL, pero no es escalabre a modelos de servicio abierto y soporta solo un tipo de
+autentificación. Los servicios que requieren más flexibilidad tienen que usar el mismo
+mecanismo de control de acceso con sus usuarios para establecer las identidades del otro antes de
+iniciar una conversación.
+Conexiones seguras
+Una ves que una conexión segura es establecida sería impráctico requerir su confirmación en
+cada interacción, en ves de eso un enlace seguro entre el cliente y servidor se forma y mantienen
+todo el tiempo mientras la sesión del cliente este activa. De nuevo el mecanismo más popular
+hoy para mantener tal enlace es SSL, pero no es un mecanismo específico a los servicios Web y
+tienen varios problemas cuando es aplicado a la comunicación SOAP.
+Sincronización de directorios de usuarios
+Este es un problema muy severo cuando se lidia con aplicaciones inter-dominio, conforme la
+población de usuario tiende a cambiar frecuentemente en los dominios. Entonces, ¿Cómo decide
+un servicio en el dominio B si va a confiar en un usuario que dice que ya ha sido autentificado en
+el dominio A? Existen diferentes aspectos en este problema. Primero, un mecanismo de SSO
+común, el cual implica que un usuario sea conocido en ambos dominios (a través de
+sincronización o por otros medios) y que los testigos de autentificación de un domino sean
+aceptables en otro. En el mundo de los servicios web, esto se lograría al pasar un testigo de
+SAML o Kerberos para el usuario.
+Federación de dominios
+Otro aspecto de este problema es cuando los usuarios no son compartidos entre los dominios,
+sino solo el hecho de que el usuario con cierto ID ha sido autentificado satisfactoriamente en otro 
+
 ****************************************************************************************************
 103
+
+dominio, como sería el caso de varias grandes corporaciones, las cuales les gustaría formar una
+sociedad, pero que se negarían a compartir los detalles de sus clientes. La decisión de aceptar la
+petición esta basada entonces en los procedimientos entre dominios, estableciendo un la relación
+de confianza especial y permitiendo el intercambio de tales testigos “opacos”, los cuales serían
+un ejemplo de relaciones de federación. De estos esfuerzos, el ejemplo más notable es el
+proyecto de Liberty Alliance, el cual esta siendo usado ahora como la base para la especificación
+de SAML 2.0. Al trabajo en esta área le falta mucho para ser completado y las publicaciones
+existentes son solo POC (pruebas de concepto) o proyectos de piloto internos mas que
+desarrollos reales entre compañías, aunque el sitio de LA lista algunos de los casos de estudio de
+proyectos a larga escala.
+Implementaciones disponibles
+Es importante darse cuenta desde el principio que ningún estándar de seguridad por si mismo
+va a proveer seguridad al intercambio de mensajes, son las implementaciones instaladas, la
+cuales medirían la conformidad de el mensaje SOAP de entrada con los estándares aplicables, así
+como asegurar los mensajes de salida.
+Extensiones de servicio .NET
+Desde que los nuevos estándares han sido desarrollados a paso lento, la plataforma .NET no
+esta tratando de adecuarse inmediatamente, sino que usa extensiones de servicios web (WSE por
+sus siglas en inglés) en ves de eso. WSE, actualmente en la versión 2.0, agrega apoyo para el
+desarrollo con los últimos estándares de seguridad en servicios web para la plataforma y
+herramientas de desarrollo. Incluso cuando ellos están “en progreso”. Una ves que los estándares
+están maduros, se incluye el soporte en versiones futuras de la plataforma .NET. La cual es lo
+que pasará cuando .NET 2.0 finalmente vea el mundo. La próxima publicación de WSE 3.0 va a
+coincidir con la publicación de VS.2005 y va a tomar ventaja de las últimas innovaciones en la
+plataforma .NET 2.0 en las áreas de mensajería y aplicaciones web.
+Considerando que Microsoft es uno de los jugadores más activos en el área de seguridad en
+servicios web y se reconoce su influencia en la industria, su implementación de WSE es
+probablemente una de las mas completas y actualizadas y es muy recomendable correr al menos
+una prueba rápida de interoperabilidad con clientes de servicios Web asegurados con WSE si
+tiene un servicio basado en Java y la interoperabilidad es un requerimiento (el cual usualmente es 
+
 ****************************************************************************************************
 104
+
+el caso). Además de las cuestiones de pruebas de seguridad recuerde que la interoperabilidad
+básica entre las estructuras de datos de los servicios web en Java y .NET.
+Esto es especialmente importante dado que las versiones actuales de las herramientas de
+servicios web frecuentemente no manejan claramente los esquemas XML relacionados con WSSecurity
+tal cual se publican por OASIS, así que se necesita algo de creatividad en al parte del
+diseñador de servicios web. Dicho estos, el paquete de WSE contiene funcionalidad amplia y
+bien estructurada, la cual puede ser utilizada clientes de servicios web basados en ASP.NET o
+independientes para verificar los mensajes SOAP entrantes y asegurar los de salida a nivel de
+infraestructura, dejando a los programadores de servicios Web el saber estos detalles entre otras
+cosas. WSE 2.0 soporta el conjunto mas reciente de WS-Policy y WS-SecureConversation. Estos
+se necesitan para establecer intercambio seguros de mensajes y sesiones, parecido a los que SSL
+hace a nivel de transporte, pero aplicado a la comunicación a nivel mensaje.
+Herramientas Java
+La mayoría de las herramientas disponibles para Java trabajan a nivel de seguridad XML por
+ejemplo XML-dsig y XML-enc, como la suite de seguridad XML de IBM y el proyecto de
+seguridad en XML de Apache. Java’s JSR 105 y JSR 106 (aun no están terminados) definen la
+vinculación de Java para firmas y cifrado, los cuales permitirán conectar las implementaciones
+con los proveedores de JCA una ves que el trabajo en esos JSR sea completado.
+Moviéndonos al siguiente nivel, para manejar los servicios web por sí mismos, el horizonte
+se vuelve brumoso, en este momento hay muchas implementaciones en varias etapas de
+incompletes. Pro ejemplo, Apache esta trabajando en el proyecto WSS4J, el cual se esta
+moviendo bastante lento. Ya hay software comercial de Phaos (comprado como Oracle), el cual
+sufre muchos problemas de implementación.
+Una opción popular entre los desarrolladores de servicios web es el JWSDP de Sun, el cual
+soporta seguridad en servicios web. Sin embargo, su soporte a las especificaciones de seguridad
+en servicios web (en la versión 1.5) esta limitada al estándar WSS principal para los perfiles de
+nombres de usuario y certificados X.509. Las características de seguridad están implementadas
+como parte del marco de trabajo JAX-RPC y están basadas en configuración, lo que permite una
+separación clara de la implementación del servicio Web.
+Sistemas de Hardware y Software 
+
 ****************************************************************************************************
 105
+
+Esta categoría incluye sistemas completos, más que herramientas o marcos de trabajo. Por un
+lado, usualmente ellos proveen mucha funcionalidad “recién salidos de la caja” y por otro lado su
+modelo de uso esta ligado fuertemente a la implementación y solución de arquitectura. En
+contraste con las herramientas, las cuales no proveen ningún servicio por sí mismo. Sino que
+manejan las herramientas necesarias de los desarrolladores de sistemas para incluir las
+características de seguridad en los servicios web de sus productos o para golpearse en el pie al no
+aplicarlas adecuadamente.
+Estos sistemas pueden ser usados en la capa de infraestructura para verificar los mensajes
+entrantes contra la política efectiva, verificar firmas, testigos, etc. Antes de pasarlas al servicio
+web destino. Cuando es aplicado a los mensajes SOAP salientes, actúan como un proxy, esta
+vez, alterando el mensaje para decorarlo con elementos de seguridad, firma y cifrado.
+Los sistemas de software se caracterizan por su gran flexibilidad de configuración, pero lento
+procesamiento. En el lado brillante, ellos proveen un alto nivel de integración con la
+infraestructura empresarial existente, confiando en el usuario de base de datos y el
+almacenamiento de políticas para verificar las credenciales, extraídas del encabezado WSS,
+desde una perspectiva más amplia. Un ejemplo de este servicio es TransactionMinder de (el
+anteriormente) Netegrity un punto de forzado de políticas de servicios web tras de él, colocado
+encima del servidor de políticas, el cual hace las decisiones de políticas al verificar las
+credenciales extraídas de las políticas y almacenamientos considerados.
+Para sistemas de hardware, el desempeño es la clave, ellos han llegado a pasar el umbral de 1
+giga bite de procesamiento, y permiten el procesamiento en tiempo real en documentos enormes,
+decorados de acuerdo a la variedad de los estándares de seguridad en servicio web mas
+actualizados, no solo WSS. El uso simplemente es otro punto atractivo de estos sistemas, en los
+casos más triviales, la caja de hardware puede ser literalmente abierto, conectado y ser usado
+inmediatamente. Estas cualidades vienen con un precio, este desempeño y desempeño pueden ser
+adquiridos mientras que el usuario permanezca en los confines pre-configurados de la caja de
+hardware. En el momento que intente integrarlo con una base de datos por medio de retro
+llamadas (para aquellas soluciones que tienen esta capacidad, dado que no todas la tienen), la
+mayoría de las ventajas se pierden. Como ejemplo de tal aparato, DataPower provee el buen
+puente de seguridad XML XS40, el cual actúa como ambos, el cortafuego de entrada y el proxy
+de salida para manejar el tráfico XML en tiempo real. 
+
 ****************************************************************************************************
 106
+
+Problemas
+Como es probablemente claro ya desde las secciones previas. Los servicios web un
+experimentan mucha turbulencia y tomara un tiempo antes de que ellos puedan realmente
+ponerse al corriente. Aquí hay una pequeña lista de los problemas que rodean a los estándares de
+seguridad existentes y sus implementaciones.
+Inmadurez de los estándares
+La mayoría de los estándares son o muy recientes (un par de años a lo mucho) o aun están en
+desarrollo. Aunque el desarrollo de estándares esta hecho por comités, los cuales
+presumiblemente reduce riesgos de procesos de revisiones y discusiones extensas, algunos
+escenarios de error se cuelan periódicamente, como ninguna teoría puede congeniar con las
+pruebas resultantes de las corazonadas de miles de desarrolladores trabajando en el campo.
+Adicionalmente, no ayuda que por razones políticas algunos de los estándares no se liberan al
+público, este es el caso de muchos estándares en el área de WSA o que algunos de los esfuerzos
+se dupliquen, como es el caso de as especificaciones de LA y WS-Federation.
+Desempeño
+El procesamiento de XML es una tarea lenta, la cual es una realidad aceptada y la lentitud de
+procesamiento de SOAP es incluso mayor. Ahora, con caras operaciones de conversión textual y
+criptográfica mezcladas, estas tareas se convierten en un cuello de botella, incluso con las más
+recientes soluciones de hardware para procesamiento de XML y criptografía ofrecidas hoy.
+Todos los productos actualmente en el mercado encaran un problema que están tratando de
+resolver con variados grados de éxito.
+Las soluciones de hardware, aunque sustancialmente (en magnitud) mejoran el desempeño,
+no pueden ser siempre usadas como una solución óptima, dado que no son integradas fácilmente
+con la infraestructura de bases de datos existentes, al menos no sin hacer sacrificios de
+desempeño Otra consideración, incluso si los sistemas de hardware son la solución correcta, ellas
+son usualmente altamente especializadas en lo que hacen, aunque los servidores de aplicación
+modernos y marcos de seguridad pueden usualmente ofrecer una mayor variedad de mecanismos
+de protección. Protegiendo no solo los servicios web, sino también otras aplicaciones publicadas
+de manera uniforme y consistente.
+Complejidad e Interoperabilidad 
+
 ****************************************************************************************************
 107
+
+Como puede ser deducido de las secciones previas, estándares de seguridad en servicios web
+son muy complejos, y una curva de aprendizaje muy pronunciada esta asociada con ellos.
+Muchos de los productos actuales que lidian con la seguridad de servicios web, sufren de
+usabilidad muy mediocre dada la complejidad de la infraestructura de soporte. Configurar todas
+las políticas, identidades, llaves, y protocolos diferentes toma mucho tiempo y un buen
+entendimiento de las tecnologías involucradas, muchas veces los errores que ven los usuarios
+finales tienen descripciones muy obscuras y engañosas.
+Para ayudar a los administradores y reducir los riesgos de seguridad de malas
+configuraciones del sistema, muchas compañías desarrollan plantillas de políticas, las cuales
+agrupan mejores prácticas para proteger los mensajes SOAP entrantes y salientes.
+Desafortunadamente, este trabajo no esta actualmente en el radar de ningún cuerpo de
+estandarización, y parece improbable que tales plantillas sean liberadas al público en el futuro
+cercano. Lo más cercano a este esfuerzo puede ser el perfil básico de WS-I (BSP por sus siglas
+en inglés), el cual intenta definir las reglas para una mejor interoperabilidad entres los servicios
+web usando un subconjunto de características de seguridad comunes para varios estándares de
+seguridad como WSS. Sin embargo, este trabajo no esta dirigido a proveer a los administradores
+plantillas de seguridad listas para publicar que concuerden con los casos de uso más comunes en
+los negocios, sino estableciendo el común denominador mínimo.
+Manejo de llaves
+El manejo de llaves está usualmente en la base de cualquier otra actividad de seguridad,
+como la mayoría de los mecanismos de protección confía en llaves criptográficas de una forma u
+otra. Mientras que los servicios web usan el protocolo XKMS para la distribución de llaves, el
+manejo local de llaves presenta aun un enorme reto en la mayoría de los casos, dado que el
+mecanismo PKI tiene muchos problemas de usabilidad bien documentados. Estos sistemas optan
+por usar mecanismos de manejo de llaves hechos a la medida y corren un riesgo importante en
+muchos casos, dado que es cuestionable el almacenamiento, actualización y recuperación del
+secreto y las llaves privadas, la mayoría de las veces no son manejados adecuadamente en estas
+soluciones. 
+
 ****************************************************************************************************
 108
+
+Lectura adicional
+• Piliptchouk, D., WS-Security in the Enterprise, O’Reilly ONJava
+http://www.onjava.com/pub/a/onjava/2005/02/09/wssecurity.html
+http://www.onjava.com/pub/a/onjava/2005/03/30/wssecurity2.html
+• Sitio de WS-Security OASIS
+http://www.oasis-open.org/committees/tc_home.php?wg_abbrev=wss
+• Microsoft, What’s new with WSE 3.0
+http://msdn.microsoft.com/webservices/webservices/building/wse/default.aspx?pull=/libr
+ary/en-us/dnwse/html/newwse3.asp
+• Eoin Keary, Evitando ataques de negación de servicio en servicios Web
+https://www.threatsandcountermeasures.com/wiki/default.aspx/ThreatsAndCountermeasu
+resCommunityKB.PreventingDOSAttacksOnWebServices 
+
 ****************************************************************************************************
 109
+
+Autenticación
+Objetivo
+Proveer servicios de autenticación segura a las aplicaciones Web, mediante:
+• Vinculando una unidad del sistema a un usuario individual mediante el uso de una
+credencial
+• Proveyendo controles de autenticación razonables de acuerdo al riesgo de la aplicación.
+• Denegando el acceso a atacantes que usan varios métodos para atacar el sistema de
+autenticación.
+Entornos afectados
+Todos.
+Temas relevantes de COBIT
+DS5 – Todas las secciones deberían ser revisadas. Esta sección cubre casi los objetivos de
+control detallados COBIT. 
+
 ****************************************************************************************************
 110
+
+Mejores prácticas
+• La autenticación es solo tan fuerte como sus procesos de administración de usuarios,
+y en particular la emisión de usuarios y evidencia de políticas de identidad. Mientras más
+fuerte sea el requerimiento para el no repudio, más caro es el proceso.
+• Use la forma más apropiada de autenticación adecuada para su clasificación de
+bienes. Por ejemplo, nombres de usuario y contraseñas es adecuado para sistemas de bajo
+valor como blogs y foros, respuesta de reto SMS es adecuada para sistemas de comercio
+electrónico de bajo valor (en 2005), mientras que el formado de transacción es adecuado
+para sistemas de alto valor como sistemas de comercio electrónico de alto valor (todos los
+sitios de comercio electrónico deberían considerarla en 2007), bancos e intercambios.
+• Re-autenticar al usuario para transacciones de alto valor y acceso a áreas protegidas
+(como cambiar de usuario a acceso de nivel administrativo)
+• Autenticar la transacción, no el usuario. Los pescadores (Phishers) confían en
+esquemas de autenticación de usuarios pobremente implementados
+• Las contraseñas son trivialmente rotas y no son adecuadas para sistemas de alto
+valor. Por lo tanto, los controles deberían reflejar esto. Cualquier contraseña de menos de
+16 caracteres puede ser obtenida mediante fuerza bruta en menos de 2 semanas, así que
+establezca su política de contraseñas para que sea razonable:
+1. Entrene a sus usuarios para construir contraseñas adecuadas
+2. Permita que los usuarios escriban sus contraseñas mientras que las mantengan
+seguras
+3. Aliente a sus usuarios a usar frases claves en lugar de palabras claves
+4. Relaje los requerimientos de expiración de una contraseña de acuerdo a la
+fortaleza de la contraseña elegida – contraseñas entre 8 y 16 caracteres no pueden
+ser rotas fácilmente no deberían expirar en menos de 30 días, y las frases clave
+mayores de 16 caracteres probablemente no necesitan un fuerte limite de
+expiración, sino un recordatorio gentil después de (digamos) 90 días.
+Técnicas de autenticación Web comunes
+Autenticación básica y segura (Digest) 
+
+
 ****************************************************************************************************
 111
+
+Casi todos los servidores Web y de aplicación soportan el uso de autenticación básica y
+digest. Esto requiere que el explorador Web presente un cuadro de diálogo para obtener el
+nombre de usuario y contraseña, y enviarlos al servidor Web, el cual la procesará contra su
+propia base de datos de usuario, o en el caso de IIS, con Active Directory.
+• La autenticación básica envía la credencial en texto claro. No debería ser usada a menos
+que se combine con SSL
+• La autenticación HTTP 1.0 Digest solo ofusca la contraseña. No debería ser usada.
+• La autenticación HTTP 1.1 Digest un mecanismo de respuesta de reto, lo cual es
+razonablemente seguro para aplicaciones de bajo valor.
+La razón principal en contra del uso de autenticación básica o digest es debido a:
+• Transmisión insegura de credenciales
+• Ambas formas de autenticación sufren de ataques de replay y man-in-the-middle
+• Ambas requieren SSL para proporcionar alguna forma de confidencialidad e integridad
+• La interfaz de usuario es razonablemente fea
+• No proporciona una gran cantidad de control a la aplicación final.
+Esto no quiere decir que la autenticación básica o digest no son útiles. Puede ser usada para
+escudar sitios de desarrollo contra el uso casual o proteger interfaces administrativas de bajo
+valor, de ahí en más, esta forma de autenticación no es recomendada.
+Autenticación basada en formas
+La autenticación basada en formas provee al diseñador de la aplicación Web el mayor control
+sobre la interfaz de usuario, y de ahí que es ampliamente usada.
+La autenticación basada en formas requiere que la aplicación haga una buena cantidad de
+trabajo para implementar autenticación y autorización. Raramente las aplicaciones Web lo hacen
+bien. Esta sección de cómo determinar si es vulnerable tiene más de 15 controles específicos para
+revisar, y este es el mínimo requerido para autenticar con algo de seguridad.
+Si es posible, si elige usar autenticación basada en formas, trate de re-usar un componente de
+control de acceso confiable en lugar de escribir el suyo.
+La autenticación basada en formas sufre de: 
+
 ****************************************************************************************************
 112
+
+• Ataques de replay
+• Ataques de man-in-the-middle
+• Credenciales en texto claro
+• Ataques de engaño (luring)
+• Controles de contraseñas débiles
+Y muchos otros ataques como está documentado en “Como determinar si usted es
+vulnerable”
+Es vital que proteja los intercambios de acceso usando SSL, e implemente tantos controles
+como sea posible. Un problema principal para los diseñadores de aplicaciones Web es el costo de
+implementar estos controles cuando el valor de la información no es alto. Un balance necesita ser
+establecido para asegurarse que las preocupaciones de seguridad no superen un complejo
+esquema de autenticación.
+Autenticación integrada
+La autenticación integrada es más comúnmente vista en aplicaciones de Intranet usando el
+servidor Web Microsoft IIS y aplicaciones ASP.NET. La mayoría de los demás servidores Web
+no ofrecen esta alternativa. Aunque puede ser seguro
+1
+ – a la par con un certificado de
+autenticación del lado del cliente debido al uso de la integración de Active Directory basado en
+Kerberos (lo que significa que no se necesita almacenar credenciales por la aplicación ni escritas
+por el usuario), no es común en aplicaciones en Internet.
+Si está desarrollando una aplicación para Intranet y su entorno de desarrollo soporta
+autenticación integrada, debería usarla. Significa menos trabajo para usted para desarrollar
+controles de autenticación y autorización, una credencial menos para que recuerden los usuarios,
+y puede re-utilizar infraestructura de autenticación y autorización pre-existente.
+Autenticación basada en certificado
+La autenticación basada en certificado es ampliamente implementada en muchos servidores
+Web y de aplicación. El sitio Web expide certificados (o intenta confiar en certificados emitidos
+externamente). Los certificados públicos son cargados en la base de datos de autenticación del
+servidor, y comparados con las sesiones entrantes del navegador. Si los certificados coinciden, el
+usuario es autenticado.
+
+1
+ Por favor revise el estudio NTLM de Klein en la sección de referencias de este capítulo
+
 ****************************************************************************************************
 113
 
+
+La calidad de la autenticación está directamente relacionada con la calidad de la
+infraestructura de la llave pública para expedir certificados. Un certificado emitido a cualquiera
+que lo pida no es tan confiable como los certificados emitidos después de ver tres formas de
+identificación por foto (como pasaporte, licencia de conducir o tarjeta de identificación
+nacional).
+Hay algunos inconvenientes para el acceso basado en certificado:
+• Muchos usuarios comparten las PC’s y necesitan traer sus certificados con ellos. Esto no
+es trivial si la aplicación instaló el certificado por ellos – la mayoría de los usuarios están
+completamente inconscientes de cómo exportar e importar certificados
+• La administración de certificados en un navegador no es trivial en muchos casos
+• La revocación certificados con certificados auto emitidos es casi imposible en ambientes
+de extranet
+• Confiar en certificados “privados” de servidores requiere las decisiones de confianza del
+usuario final, como importar certificados CA raíz, para lo cual los usuarios finales
+probablemente no están calificados para tomar esta decisión de confianza
+• El costo de los certificados y su parte en el modelo de negocio de compañías de
+certificados públicas no está relacionado con el costo de la prestación, de ahí que es caro
+mantener una base de datos de certificados pública con un gran número de usuarios
+Junto con la mala administración de muchas CA’s, particularmente relacionado con
+renovación de certificados, el acceso basado en certificado casi siempre ha fallado. Un buen
+ejemplo es el servicio en línea de Telstra. En una etapa, solo certificados digitales eran
+aceptados. Ahora, esta opción está siendo removida.
+Autenticación fuerte
+La autenticación fuerte (como tokens, certificados, etc) proporciona un nivel más alto de
+seguridad que nombres de usuario y contraseñas. La forma generalizada de autenticación fuerte
+es “algo que sabes, algo que tienes”. Por lo tanto, cualquier cosa que requiera un secreto (el “algo
+que sabes”) y autenticador como un token, llave USB, o certificado (el “algo que tienes”) es un
+control más fuerte que nombres de usuario y contraseñas (que es solo “algo que sabes”) o
+biométricos (“algo que eres”).
+Cuando usar autenticación fuerte 
+
 ****************************************************************************************************
 114
+
+Ciertas aplicaciones deberían usar autenticación fuerte:
+• Para transacciones de alto valor
+• Donde la privacidad es una consideración fuerte o requerida legalmente (como registros
+de salud, registros del gobierno, etc)
+• Donde las auditorías son requeridas legalmente y requieren una fuerte asociación entre
+una persona y la auditoria, como en las aplicaciones bancarias
+• Acceso administrativo para sistemas de alto valor o alto riesgo
+¿Qué significa alto riesgo?
+Cada organización tiene un cierto umbral para el riesgo, que puede variar desde la completa
+ignorancia del riesgo hasta la paranoia.
+Por ejemplo, el software para foros de discusiones de jardinería no requiere una autenticación
+fuerte, mientras que el acceso administrativo a una aplicación financiera procesando millones de
+dólares de transacciones al día debería ser obligada a usar autenticación fuerte.
+Biométricos no son autenticación fuerte… por si solos
+Los biométricos puede ser el “algo que tienes”, pero no remplazan el “algo que sabes”.
+Siempre debería usar biométricos junto con nombres de usuario y contraseñas, de otra forma,
+debilita significativamente la confianza en el mecanismo de autenticación.
+Los biométricos no son tan fuertes como otras formas de autenticación fuerte para
+aplicaciones que se acceden remotamente porque:
+Los dispositivos están en control del atacante – y la mayoría de los dispositivos biométricos
+de bajo nivel no son a prueba de manipulación ni tienen una fuerte protección contra intentos
+sucesivos.
+No se puede confiar en la inscripción remota – los usuarios podrían sustituir a otros, enlistar
+un ojo de vidrio, o una foto de una revista.
+Las características biométricas que son medidas no pueden ser revocadas – usted tiene dos
+ojos, diez dedos y una cara. Esta es una combinación mortal para sistemas de alto valor – los
+atacantes han mostrado previamente que cortarán dedos para obtener un coche. Por lo tanto los
+biométricos son demasiado arriesgados para sistemas de alto valor 
+
+
 ****************************************************************************************************
 115
+
+Las características biométricas siendo medidas no cambian – las llaves USB con sistemas de
+cifrado y otras llaves tienen una salida pseudo-aleatoria que cambia cada 30 segundos. Las
+características distintivas no cambian
+Altos rangos de falsos positivos comparado con el costo del mecanismo de autenticación.
+Con otras formas de autenticación fuerte, no hay falsas aceptaciones.
+La mayoría de los dispositivos biométricos para los consumidores son fácilmente engañados
+o sujetos a ataques de repeticiones. Mientras más caros sean los dispositivos no significa que
+sean mucho mejor que sus contrapartes costeables, pero por el mismo precio de un dispositivo
+biométrico de alto nivel, puede obtener 50 o 60 llaves y hasta 1000 tarjetas inteligentes.
+Cuando se usa un método de autenticación de un solo factor (por ejemplo, solo una huella
+digital sin nombre de usuario o contraseña), los biométricos son la forma más débil de
+autenticación disponible y no son adecuadas para aplicaciones inclusive de riesgo moderado. Tal
+uso debería ser restringido a dispositivos que el usuario posee sin datos sensibles o riesgosos.
+Fortalezas relativas y usos de autenticación fuerte
+Contraseñas de una sola vez
+Las llaves de contraseñas de una sola vez son baratas – muchas pueden obtenerse por tan solo
+$5-10, pero solamente protegen contra repetición de contraseña. Las llaves con contraseñas de
+una sola vez usualmente tienen un número desplegado en una pantalla, el usuario escribirá su
+nombre de usuario, frase clave y contraseña de una vez.
+Las contraseñas de una sola vez no ayudan en contra de ataques man-in-the-middle y como
+no presentan ningún detalle del uso al usuario, falsos sitios Web podrían recolectar una
+contraseña de una sola vez e ingresar como el usuario y realizar una transacción.
+Certificados suaves
+Los certificados suaves (también conocidos como autenticación por certificado en el cliente)
+son un poco más fuertes que las contraseñas, pero sufren del mismo problema que las
+contraseñas y cualquier método de autenticación que procese credenciales automáticamente.
+Certificados duros conectados
+USB, tarjeta de PC, o cualquier otro dispositivo conectado que pueda ser interrogado
+programáticamente por el sistema parece ser la mejor forma de almacenar una credencial.
+Aunque típicamente protegen contra la duplicación no autorizada de la credencial y
+manipulación del algoritmo, como el dispositivo está conectado a un anfitrión no confiable, el
+
 ****************************************************************************************************
 116
+
+certificado duro podría ser usado directamente por el sitio de un atacante, evadiendo otro
+mecanismo robusto de autenticación proporcionado.
+La mayoría de los tokens muestran una ventana emergente que pide permiso al usuario para
+proporcionar la credencial. Un atacante podría mostrar una ventana, obtener la autenticación y
+redirigirla al sistema real mientras que se realiza una transacción completamente diferente. Este
+ataque funciona debido a dos razones:
+• Ventana de petición de autenticación – la ventana no tiene relación clara entre la
+aplicación y la autenticación. Este es un problema con todas las alertas de Javascript, y no
+es exclusivo de esta funcionalidad
+• Evadiendo el cerebro del usuario – la mayoría de los usuarios familiares con una
+aplicación simplemente aceptarán un dialogo que ven todo el tiempo. Mientras que el
+atacante haga una buena reproducción de la ventana de autenticación, los usuarios
+aceptarán
+Muchos otros problemas rodean a los dispositivos conectados, incluyendo problemas de
+soporte si los controladores para el certificado duro interfieren con la operación de la
+computadora del usuario.
+Los dispositivos conectados son adecuados para acceso interno confiado, y comunidades de
+usuario cerradas y confiables.
+Respuesta de reto
+Respuesta de reto funciona tomando un valor (reto) del sistema y procesándolos en una
+forma cifradamente segura para entregar un resultado.
+Las calculadoras de respuesta de reto tienen un teclado, y por lo tanto la contraseña es
+usualmente considerada ser el NIP requerido para acceder a la calculadora. El usuario introduce
+su nombre y respuesta al sistema, lo cual es verificado por el servidor de autenticación.
+Aunque protege en contra de ataques de replay, respuesta de reto sufre del problema de
+desconexión por autenticación discutido arriba. El usuario está aprobando algo, pero no está
+claro qué.
+Respuesta de reto SMS
+El reto SMS funciona en países con una alta penetración de teléfonos móviles capaces de
+enviar mensajes de texto. El método típico es enlistar al usuario en una forma confiable,
+registrando su número de teléfono móvil. Cuando una autenticación o transacción es requerida, 
+
+
 ****************************************************************************************************
 117
+
+la aplicación envía al usuario un número de transacción a su teléfono móvil, esperemos que con
+algún texto para verificar lo que se está siendo firmado (como el ID de referencia de la
+transacción).
+Los problemas con el reto SMS incluyen:
+• Es una ruta pública; no enviar información sensible con el reto
+• Si se envía la cantidad de la transacción, el usuario podría confiar en esta figura, pero un
+atacante podría enviar al usuario una figura y aprobar otra
+• Usted no es la única fuente de mensajes SMS; el usuario no puede verificar la fuente del
+SMS, solo esperarlos cuando se usa el sistema
+A pesar de esto, respuesta de reto SMS es significativamente más fuerte que nombre de
+usuario y contraseña con costo mínimo general.
+Firma de transacciones
+La firma de transacciones es realizada por calculadoras de respuesta de reto desconectadas.
+Al usuario se le presentarán varios elementos para introducir en la calculadora, y calculará una
+respuesta basado en estas entradas. Esta es la forma más fuerte de autenticación como el usuario
+debe introducir los detalles de la transacción – cualquier otra transacción fallará en producir una
+respuesta adecuada. Este tipo de autenticación tiene altas propiedades de no repudio, es robusta
+en contra de ataques de man-in-the-middle, no puede ser repetida, y es robusta en contra de
+diferentes limites de transacción.
+Para el mejor efecto, cuando menos lo siguiente se debe resolver en el reto:
+• ID de referencia
+• Cuenta origen
+• Cantidad de la transacción
+Los tokens están basados usualmente en fecha y hora, así que solo hay una pequeña ganancia
+si se introduce la fecha de la transacción. Lo malo de esto es:
+• Puede tomar hasta 20 o 40 pulsaciones de teclado para completar una transacción, lo cual
+es problemático si el usuario tiene que aprobar toda transacción
+• Si un token está conectado a la computadora del usuario o usa alguna forma de entrada
+automática, aunque los factores humanos son mejores (no hay detalles para introducir),
+entonces la propiedad de no repudio es removida ya que no se requiere que el usuario 
+****************************************************************************************************
 118
+
+piensa acerca del valor de la transacción – solo aprueban la ventana de firmado, que no es
+mejor que un certificado suave.
+Por lo tanto, aunque la mayoría de las calculadoras para firmado de transacciones permiten la
+conexión a la máquina cliente, esta funcionalidad no debería ser usada o hacerse disponible.
+Aunque las calculadoras para el firmado de transacciones y EMV (tarjeta inteligente) tipo
+calculadoras son idénticas en funcionalidad desde el punto de vista de la aplicación, tienen
+valores diferentes para el usuario. Una calculadora será dejada en un escritorio para que todos la
+vean, mientras que una tarjeta inteligente EMV disfrazada como la tarjeta de crédito corporativa
+del usuario tiene el valor apropiado para el usuario – no la dejarán en el escritorio o en su cajón
+sin llave. El valor del sistema debería decidir qué tipo de dispositivo para el firmado de
+transacción va a ser proveído al usuario.
+Retos de usar autenticación fuerte
+La mayoría de los frameworks para aplicaciones son difíciles de integrar con mecanismos de
+autenticación fuerte, con la posible excepción de ingreso basado en certificado, que es soportado
+por J2EE y .NET.
+Su código debe estar integrado con un servidor de autenticación, e implícitamente confiar en
+los resultados que emite. Debería considerar cuidadosamente como integrar su aplicación con su
+mecanismo elegido para asegurar que es robusto contra inyección, ataques de replay y
+modificación.
+Muchas organizaciones se resisten a opciones de autenticación fuerte por ser percibidas como
+“costosas”. Lo son, pero también las contraseñas. Los costos de la administración de usuarios no
+están relacionados usualmente al costo de la infraestructura de autenticación, sino a la emisión y
+mantenimiento de los registros de usuarios. Si necesita tener un no-repudio fuerte, el aspecto más
+formidable y costeable de la administración de usuarios es el enlistado, mantenimiento y bajas.
+Simplemente enviando un token a cualquiera que pida una cuenta no sabremos si el usuario es
+quien dice ser. Una ruta de enlistado confiable y robusta es requerida para asegurarse que el
+sistema de autenticación es “fuerte”.
+Autenticación federada
+La autenticación federada le permite externalizar su base de datos de usuario a un tercero, o
+para tener varios sitios con un enfoque SSO. La principal razón de negocio para seguridad 
+
+****************************************************************************************************
 119
+
+federada es que los usuarios sólo tienen que ingresar una vez, y todos los sitios que soporten esa
+autenticación pueden confiar en el token de ingreso y de ahí confiar en el usuario y proveer
+servicios personalizados.
+Ventajas de autenticación federada:
+• Reducir el número total de credenciales que sus usuarios tienen que recordar
+• Su(s) sitio(s) es(son) parte de una gran asociación comercial, como una extranet
+• Le gustaría ofrecer servicios personalizados a otros usuarios anónimos.
+No debería usar autenticación federada, a menos que:
+• Confía en el proveedor de la autenticación
+• Sus requerimientos de cumplimiento de privacidad son cumplidos por el proveedor de la
+autenticación
+Las leyes de identidad
+Kim Cameron, arquitecto de identidad de Microsoft ha establecido un blog grupal enfocado
+en los riesgos alrededor de esquemas de identidad federados. El blog estableció un conjunto de
+documentos, con siete leyes de identidad. Estas son: 
+
+****************************************************************************************************
 120
+1. Control de usuario y consentimiento: Los sistemas de identidad digitales solo
+deben revelar información identificando un usuario con el consentimiento del
+usuario.
+2. Divulgación limitada para uso limitado: La solución que divulga la información
+de identificación menor y limita mejor su uso es la más estable, solución a largo
+término.
+3. La ley de menor partes: Los sistemas de identidad digitales deben limitar la
+divulgación de información identificable a partes teniendo un lugar necesario y
+justificable en una relación de identidad dada.
+4. Identidad dirigida: Un metasistema de identidad universal debe soportar
+identificadores “omnidireccionales” para su uso por entidades públicas e
+identificadores “unidireccionales” para entidades privadas, de ahí facilitando el
+descubrimiento mientras se previene la liberación innecesaria de correspondencias
+que maneja.
+5. Pluralismo de operadores y tecnologías: Un metasistema de identidad universal
+debe canalizar y habilitar el trabajo interno de múltiples entidades tecnológicas
+ejecutándose en múltiples proveedores de identidad.
+6. Integración humana: Un metasistema de identidad unificado debe definir el
+usuario humano como un componente integrado a través de comunicaciones
+hombre-máquina protegidas y no ambiguas.
+7. Experiencia consistente a través de contextos: Un metasistema de identidad
+unificado debe proveer una experiencia simple y consistente mientras habilita
+separación de contextos a través de múltiples operadores y tecnologías.
+Fuente: http://www.identityblog.com/stories/2005/05/13/TheLawsOfIdentity.html
+No está claro al momento de escribir si “leyes” acabarán cambiando el panorama de la
+identidad, pero muchos de los problemas discutidos en las leyes deberían ser considerados por
+los implementadores de autenticación federada.
+SAML
+SAML es una parte del mecanismo de la Alianza de la Libertad para proveer autenticación
+federada, aunque no es solo para la autenticación federada. 
+
+****************************************************************************************************
 121
+
+Al momento de escribir, no hay soporte directo para SAML en ningún framework mayor de
+aplicación (J2EE, PHP, o .NET). Bibliotecas de terceros, incluyendo implementaciones open
+source, están disponibles para J2EE. Microsoft tiene soporte (muy) limitado para SAML en Web
+Services Enhancement 2.0 SP2, que requiere .NET Framework 1.1.
+Para más detalles en cómo funciona el protocolo SAML, ver el capítulo de Servicios Web.
+Microsoft Passport
+Microsoft Passport es un ejemplo de autenticación federada, usada para Hotmail, entrega de
+software, mensajería instantánea, y por un tiempo, por socios como eBay. El framework .NET de
+Microsoft soporta Passport sign-on. Hay soporte limitado para otras plataformas. Sin embargo,
+Microsoft ha retirado el uso de Passport con sus socios, así que usar Passport ya no está
+disponible y no es objeto de mayor análisis.
+Consideraciones
+Hay una toma limitada de sing-on federado en este momento, y a menos que sus
+requerimientos de negocio estipulen que necesita soporte para single-sign-on con muchos
+cuerpos diferentes, debería evitar el uso de sign-on federado.
+Controles de autenticación en el cliente
+La validación en el cliente (usualmente escrita en JavaScript) es un buen control para proveer
+retroalimentación inmediata para los usuarios si violan las reglas de negocio y para aligerar la
+carga del servidor Web. Sin embargo, la validación en el cliente es trivialmente evadida.
+Como determinar si usted es vulnerable
+Para probar, reduzca la página de acceso a solamente una forma básica como un archivo
+HTML local y estático, con una acción POST hacia el servidor Web objetivo.
+Ahora es libre de violar las validaciones de entrada en el cliente. Esta forma es también
+mucho más fácil de usar con herramientas de ataque automatizadas.
+Como protegerse
+Para proteger su aplicación, asegure que cada validación y cada política/regla de negocio está
+siendo validada en el servidor.
+
+****************************************************************************************************
 122
+
+Por ejemplo, si no permite contraseñas en blanco (y no debería), esto debería ser probado
+cuando menos en el lado del servidor, y opcionalmente en el cliente. Esto también aplica para
+funcionalidades de “cambiar contraseña”.
+Para más información, por favor lea la sección de Validación en este libro.
+Autenticación positiva
+Desafortunadamente, un buen patrón de diseño genérico para autenticación no se ajusta para
+todos los casos. Sin embargo, algunos diseños son mejores que otros. Si una aplicación utiliza el
+siguiente pseudo-código para autenticar usuarios, cualquier forma de caída terminará con el
+usuario siendo autenticado debido a la falsa suposición de que los usuarios casi siempre se
+autentican de forma correcta: 
+
+REVISAR CODIGO
+
+Como determinar si usted es vulnerable
+Para probar, trate de forzar que falle el mecanismo de autenticación.
+Si se cuenta con un algoritmo de autenticación positiva, es probable que cualquier falla o
+falla parcial terminará permitiendo el acceso a otras partes de la aplicación. En particular, pruebe
+extensivamente cualquier cookie, encabezados, campos de forma y campos ocultos de forma.
+Juegue con signos, tipos, longitud y sintaxis. Inyecte NULL, Unicode y CRLF, y pruebe por XSS
+e inyecciones SQL. Vea si condiciones de carrera (race conditions) pueden ser explotadas al
+simplemente por la intensificación de dos navegadores utilizando un depurador de JavaScript. 
+
+
+****************************************************************************************************
 123
+
+Como protegerse
+La mitigación para la autenticación positiva es simple: forzar la autenticación negativa en cada paso: 
+
+Afirmando que la autenticación es verdadera y aplicando correctamente el rol de seguridad al
+final del bloque try, detiene la autenticación de manera completa y forzada.
+Búsquedas de llave múltiple
+El código que usa múltiples claves para buscar registros de usuarios puede llevar a problemas
+con inyección SQL o LDAP. Por ejemplo, si el nombre de usuario y la contraseña son usados 
+
+****************************************************************************************************
 124
+
+como las llaves para encontrar los registros, y no se valida por inyección SQL o LDAP, el riesgo
+es que cualquier campo puede ser abusado.
+Por ejemplo, si quiere obtener el primer usuario con la contraseña “password”, sáltese el
+campo de nombre de usuario. Alternativamente, como la mayoría de las consultas SQL están
+escritas como “select * from table where username = username and password = password”, este
+conocimiento podría ser usado por un atacante para simplemente ingresar sin contraseña (es
+decir, truncando la consulta a “select * from username=’username’; -- and password = ‘don’t
+care’’”). Si el usuario es único, es la llave.
+Como determinar si usted es vulnerable
+Su aplicación está en riesgo si todo lo siguiente es verdadero:
+• Algo además del nombre de usuario es usado en la consulta de búsqueda
+• Los campos usados en la consulta de búsqueda (ejemplo, usuario y contraseña) no son
+escapados y pueden ser usados para inyección SQL o LDAP.
+Para probar esto, intente:
+• Realizar una inyección SQL (o LDAP) en contra de la página de acceso, mascarando un
+campo para hacerla tomar un valor verdadero: 
+
+Usuario: a’ or ‘1’=’1
+Contraseña: password
+Usuario: a)(|(objectclass=*)
+Contraseña: password
+Si lo anterior funciona, será autenticado con la primera cuenta con la contraseña “password”,
+o generará un error que podría llevar a nuevas rupturas. Se sorprendería de lo a menudo que
+funciona.
+
+
+****************************************************************************************************
 125
+Como protegerse 
+• Pruebe y descarte fuertemente, o en el peor caso limpie – nombres de usuario adecuados
+para almacenar sus usuarios (es decir, trate de escapar los meta caracteres de SQL o
+LDAP)
+• Use solo el nombre de usuario como llave para las consultas
+• Verifique que solamente cero o un registro es regresado
+
+REVISAR CODIGO EN JAVA 
+REVISAR CODIGO EN NET 
+REVISAR CODIGO EN PHP 
+
+****************************************************************************************************
 126
+
+Verificaciones de referencia (referer)
+“Referer” es una cabecera HTTP opcional que normalmente contiene la ubicación previa (es
+decir, la referencia) de donde vino el navegador. Como el atacante puede cambiarlo trivialmente,
+la referencia debe ser tratada con cautela, como es más probable que los atacantes usen la
+referencia correcta para evadir controles en su aplicación que usar contenido inválido o dañado.
+En general, las aplicaciones están mejor si no contienen ningún código de referencia.
+Como determinar si usted es vulnerable
+La vulnerabilidad viene en muchas partes: 
+
+****************************************************************************************************
 127
+
+• ¿Su código checa la referencia? Si lo hace, ¿Es completamente necesario?
+• El código de referencia, ¿Es simple y robusto en contra de todas las formas de ataques del
+usuario?
+• ¿Lo usa para construir URLs? No lo haga, ya que es casi imposible probar todas las
+URLs válidas
+Por ejemplo, si login.jsp solo puede ser invocada desde http://www.example.com/index.jsp,
+la referencia debería verificar que la referencia es precisamente este valor.
+Como protegerse
+La mayor parte del tiempo, usar el campo de referencia no es deseable ya que es muy fácil
+modificada o falsificada por los atacantes. Muy poca o ninguna confianza puede ser asignada a
+su valor, y puede ser difícil de limpiar y usar correctamente.
+Programas que desplieguen el contenido de campos de referencia como un analizador de
+registros Web deben proteger cuidadosamente contra XSS y otros ataques de inyección HTML.
+Si su aplicación tiene que usar la referencia, debería únicamente hacerlo como una defensa
+en mecanismo de profundidad, y no tratar de limpiar el campo, solo rechazarlo si no es correcto.
+Todo código tiene errores, así que minimice la cantidad de código que trata con el campo de
+referencia.
+Por ejemplo, si login.jsp solo puede ser invocada desde http://www.example.com/index.jsp,
+la referencia podría verificar que la referencia sea este valor. 
+
+REVISAR CODIGO EN JAVA 
+REVISAR CODIGO EN NET 
+REVISAR CODIGO EN PHP 
+
+****************************************************************************************************
 128
+
+Pero comparado a simplemente verificar una variable de sesión contra una matriz de
+autorización, las referencias son un débil control de autorización o secuencia.
+El navegador recuerda contraseñas
+Los navegadores modernos ofrecen la habilidad de administrar la multitud de credenciales
+almacenándolas de forma insegura en la computadora.
+Como determinar si usted es vulnerable
+• Borre todo el estado de su navegador. A menudo la forma más confiable de hacer esto es
+crear una cuenta nueva en la computadora de prueba y borrar y re-crear la cuenta entre
+iteraciones de prueba
+• Use un navegador e ingrese a la aplicación
+• Si el navegador ofrece recordar alguna credencial, su aplicación está en riesgo.
+• El riesgo es particularmente severo para aplicaciones que contienen información sensible
+o financiera.
+Como protegerse
+Los navegadores modernos ofrecen la habilidad de administrar la multitud de credenciales
+almacenándolas de forma insegura en la computadora.
+Envíe lo siguiente en cualquier campo de entrada sensitivo, como nombres de usuario,
+contraseñas, re-validación de contraseñas, tarjetas de crédito y campos CCV, etc: 
+
+<form … AUTOCOMPLETE="off"> - para todos los campos de la forma
+<input … AUTOCOMPLETE="off"> - para solo un campo 
+
+****************************************************************************************************
 129
+
+Esto le indica a la mayoría de los navegadores que no almacenen ese campo en la
+característica de administración de contraseñas. Recuerde, es solo una sugerencia amable al
+navegador, y no todos los navegadores soportan esta etiqueta.
+Cuentas predeterminadas
+Una vulnerabilidad común son las cuentas predeterminadas – cuentas con nombres de
+usuario y/o contraseñas bien conocidas. Particularmente, malos ejemplos son:
+• Microsoft SQL Server hasta SQL 2000 Service Pack 3 con seguridad débil o inexistente
+para “sa”
+• Oracle – un gran número de cuentas conocidas con contraseñas (corregido en versiones
+posteriores de Oracle)
+Como determinar si usted es vulnerable
+• Determine si la infraestructura no tiene cuentas predeterminadas activas (como
+Administrator, root, sa, ora, dbsnmp, etc)
+• Determine si el código contiene alguna credencial predeterminada, especial, de
+depuración o puerta trasera
+• Determine si el instalador crea alguna credencial predeterminada, especial o de
+depuración.
+• Asegúrese que todas las cuentas, particularmente las administrativas, están
+completamente especificadas por el instalador/usuario.
+No debería haber ejemplos o imágenes en la documentación con nombres de usuario.
+Como protegerse
+****************************************************************************************************
 130
+• Nuevas aplicaciones no deberían tener cuentas predeterminadas.
+• Asegúrese que la documentación diga que hay que determinar que la infraestructura no
+tenga cuentas predeterminadas activas (como Administrator, root, sa, ora, dbsnmp, etc)
+• No permita que el código contenga ninguna credencial predeterminada, especial o de
+depuración.
+• Cuando se crea el instalador, asegúrese que el instalador no cree ninguna credencial
+predeterminada, especial o de depuración
+• Asegúrese que todas las cuentas, particularmente las administrativas, están
+completamente especificadas por el instalador/usuario.
+• No debería haber ejemplos o imágenes en la documentación con nombres de usuario
+Elección de nombres de usuario
+Si elige un esquena de nombres de usuario que es predecible, es probable que los atacantes
+puedan realizar una negación de servicio en contra suya. Por ejemplo, los bancos están
+particularmente en riesgo si usan números de cliente incrementales monolíticamente o números
+de tarjetas de crédito para acceder sus cuentas.
+Como determinar si usted es vulnerable
+• Formas de malos nombres de usuario incluyen:
+• Nombre.Apellido
+• Dirección de correo electrónico (a menos que los usuarios sean lo suficientemente
+aleatorios para que esto no sea un problema … o si es un proveedor de correo web)
+• Cualquier número incrementado monolíticamente
+• Información semi-pública, como números de seguro social (solo Estados Unidos –
+también conocido como SSN), número de empleado, o similar.
+De hecho, usar el SSN como nombre de usuario es ilegal ya que no puede recaudar esta
+información sin un propósito adecuado.
+Como protegerse
+Cuando sea posible, permita al usuario a crear su propio nombre de usuario. Los nombres de
+usuario tienen que ser únicos. 
+
+****************************************************************************************************
 131
+
+Los nombres de usuario deben ser seguros de HTML, SQL y LDAP – se sugiere solo
+permitir A..Z, a..z, y 0-9. Si desea permitir espacios, símbolos @ o apóstrofos, asegúrese que
+escapa apropiadamente los caracteres especiales (ver el capítulo de Validación de datos para más
+detalles)
+Evite el uso de Nombre.Apellido, dirección de correo electrónico, números de tarjeta de
+crédito o número de cliente, o cualquier información semi-pública, como número de seguro
+social (solo en Estados Unidos – también conocido como SSN), número de empleado, o similar.
+Cambio de contraseñas
+Cuando el usuario tiene que recordar una parte de la credencial, a veces es necesario
+cambiarla, por ejemplo si la contraseña es accidentalmente divulgada a un tercero o el usuario
+siente que es tiempo de cambiar la contraseña.
+Como determinar si usted es vulnerable
+Para probar:
+• Cambie la contraseña.
+• Cambie la contraseña de nuevo – si hay períodos mínimos antes de poder elegir nuevas
+contraseñas (a menudo un día), debería fallar
+Como protegerse
+• Asegure que su aplicación tiene una función para cambiar contraseña.
+• La forma debe incluir la contraseña anterior, la contraseña nueva y la confirmación de la
+nueva contraseña
+• Use AUTOCOMPLETE=off para prevenir que los navegadores guarden la contraseña
+localmente
+• Si el usuario ingresa incorrectamente la contraseña anterior varias veces, bloquee la
+cuenta y elimine la sesión
+Para aplicaciones de mayor riesgo o aquellas con problemas de cumplimiento, debería incluir
+la habilidad de prevenir que las contraseñas sean guardadas de manera muy frecuente, lo cual
+requiere una historia de contraseñas. El historial de contraseñas debe consistir solamente de
+hashes anteriores, no versiones en texto claro de la contraseña. Permita hasta 24 hashes de
+contraseñas anteriores. 
+
+****************************************************************************************************
 132
+
+Contraseñas cortas
+Las contraseñas pueden ser obtenidas por fuerza bruta, rainbow cracked (ataques de
+diccionario pre-computados), o fallar a simples ataques de diccionario. Desafortunadamente,
+también son el método principal de ingresar usuarios a aplicaciones de todo tipo de riesgos. Entre
+más corta sea la contraseña, más alta la tasa de éxito de herramientas de obtención de
+contraseñas.
+Como determinar si usted es vulnerable
+• Determine si la aplicación le permite al usuario no tener una contraseña. Esto nunca
+debería ser permitido.
+• Determine si la aplicación le permite al usuario usar contraseñas peligrosamente cortas
+(menos de cuatro caracteres). Aplicaciones con un requerimiento de autenticación más
+fuerte no permitirán esto. Las aplicaciones promedio deberían advertir al usuario que es
+débil, pero permitir cambiarla de todas maneras. Aplicaciones pobres simplemente
+cambiarán la contraseña
+• Cambiar la contraseña para ser incrementalmente más y más grande hasta que la
+aplicación le advierta al usuario del tamaño excesivo de la contraseña. Una buena
+aplicación permitirá longitudes de contraseñas arbitrarias, y de ahí que no advertirá
+En cada iteración, vea si una versión más corta de la contraseña funciona (a menudo solo 8 o
+16 caracteres son necesitados) 
+
+****************************************************************************************************
 133
+Como protegerse 
+
+• Asegure que su aplicación no permita contraseñas en blanco
+• Imponga una longitud de contraseña mínima. Para aplicaciones de mayor riesgo, evite
+que el usuario use contraseñas muy cortas (configurable). Para aplicaciones de bajo
+riesgo, una advertencia para el usuario es aceptable para contraseñas de menos de seis
+caracteres de longitud.
+• Aliente a los usuarios a usar frases clave grandes (como “My milk shake brings all the
+boys to the yard” o “Let me not to the marriage of true minds Admit impediments”) al no
+imponer explícitamente controles de complejidad para contraseñas de más de 14
+caracteres
+• Asegure que su aplicación permita frases clave arbitrariamente grandes usando un
+algoritmo decente de cifrado de una vía, como AES-128 o SHA-256.
+Controles de contraseñas débiles
+ISO 17799 y muchas políticas de seguridad requieren que los usuarios usen y seleccionen
+contraseñas razonables, y cambiarlas con cierta frecuencia. La mayoría de las aplicaciones Web
+simplemente no cumplen con estas políticas de seguridad. Si es probable que su aplicación sea
+usada con ajustes empresariales o requiere cumplimiento con ISO 17799 o estándares similares,
+debe implementar controles de autenticación básicos. Esto no significa que deban ser usados de
+forma predeterminada, pero deberían existir.
+Como determinar si usted es vulnerable
+Determine si la aplicación
+• Permite contraseñas en blanco
+• Permite palabras de diccionario como contraseñas. Este diccionario debe ser el
+diccionario local, y no solo el inglés
+• Permite elegir contraseñas anteriores. Aplicaciones con autenticación más fuerte o
+necesidades de cumplimiento necesitan mantener un historial de hashes de contraseñas
+para prevenir que el usuario las re-use. 
+
+****************************************************************************************************
 134
+
+Como protegerse 
+
+• Permitir otros idiomas además del Inglés (posiblemente permitiendo más de un idioma a
+la vez con locales bilingües multi-lingues como Bélgica o Suiza)
+• La aplicación debería tener los siguientes controles (pero impuestos opcionalmente):
+• Longitud mínima de contraseña (pero nunca una máxima)
+• Frecuencia de cambio de contraseñas
+• Edad mínima de la contraseña (para prevenir que los usuarios dar vueltas en el historial
+de contraseñas)
+• Requerimientos de complejidad de contraseña
+• Historial de contraseña
+• Duración de bloqueo de contraseña y política (es decir, no bloqueo, bloqueo por X
+minutos, permanentemente bloqueada)
+Para aplicaciones de más alto riesgo, usar un diccionario de contraseñas débiles para decidir
+si la elección del usuario para la contraseña es demasiado débil.
+Nota: Complejidad en la frecuencia de cambiar contraseñas es
+contraproducente para la seguridad. Es mejor tener una antigua
+frase clave fuerte que un revoltijo de 10 caracteres cambiado cada
+30 días. Los 30 días asegurarán que no existan PostIt™ en toda la
+organización con contraseñas escritas.
+Cifrado de contraseñas reversible
+Las contraseñas son secretas. No hay razón para descifrarlas baja ninguna circunstancia. El
+equipo de soporta debe ser capaz de establecer nuevas contraseñas (con una pista de auditoría,
+obviamente), no leer viejas contraseñas. Por lo tanto, no hay razón para almacenar contraseñas
+en una forma reversible.
+El mecanismo usual es usar un algoritmo de cifrado, como MD5 o SHA1. Sin embargo,
+algunas formas han mostrado recientemente ser débiles, así que es necesario moverse a
+algoritmos más fuertes a menos de que tenga una gran colección de hashes viejos.
+Como determinar si usted es vulnerable 
+
+****************************************************************************************************
 135
+
+Para código personalizado usando autenticación basada en formas, analice el algoritmo usada
+por el mecanismo de autenticación. El algoritmo debería estar usando AES-128, SHA1 de 256
+bits, salteado.
+• Algoritmos más viejos como MD5 y SHA1 (de 160 bits) han mostrado ser
+potencialmente débiles, y no deberían ser usados más.
+• No usar algoritmo (es decir, ve la contraseña en texto claro) es inseguro y no debería ser
+usado
+• Algoritmos como DES, 3DES, Blowfish, o AES, que permiten que las contraseñas sean
+descifradas deberían ser mal vistos.
+Como protegerse
+Si no comprende la criptografía detrás del cifrado de contraseñas, tal vez vaya a hacerlo mal.
+Por favor trate de re-usar implementaciones de contraseñas confiables.
+• Use AES-128 o SHA1 de 256 bits
+• Use un mecanismo no estático de salteo
+• Nunca mande el hash de la contraseña o la contraseña al usuario en ninguna manera
+Restablecimiento automático de contraseñas
+Los mecanismos de restablecimiento automático de contraseñas son comunes cuando las
+organizaciones creen que necesitan evitar altos costos de soporte de la autenticación. Desde la
+perspectiva de la administración de riesgos la funcionalidad de restablecimiento de contraseñas
+parece aceptable en muchas circunstancias. Sin embargo, la funcionalidad de restablecimiento de
+contraseñas equivale a un mecanismo secundario mucho más débil. De un estudio próximo (ver
+referencias), parece que los sistemas de restablecimiento de contraseñas con cinco respuestas son
+el equivalente a contraseñas con dos caracteres y requieren contraseñas reversibles o en texto
+claro que sean almacenadas en la base de datos del sistema, lo cual es lo contrario a las mejores
+prácticas de seguridad y la mayoría de las políticas de seguridad de información.
+En general, las preguntas requeridas por los sistemas de restablecimiento de contraseñas son
+fácilmente encontradas de registros públicos (apellido materno de la madre, color de coche, etc).
+En muchos casos, el restablecimiento de contraseña pide información que es ilegal o altamente
+problemática de colectar, como números de seguro social. En la mayoría de los regímenes de 
+
+****************************************************************************************************
 136
+
+seguridad, puede únicamente colectar información directamente útil para las necesidades de su
+aplicación, y mostrarle al usuario por qué está colectando esa información.
+En general, a menos de que la información protegida por su mecanismo de autenticación
+prácticamente no tenga valor alguno, no debería usar mecanismos de restablecimiento de
+contraseñas.
+Como determinar si usted es vulnerable
+Los mecanismos de restablecimiento de contraseñas varían en complejidad, pero a menudo
+son fácilmente abusados.
+• Si usa pistas, verifique las pistas por información de conocimiento público o semipúblico
+como fecha de nacimiento, SSN, nombre de la madre, etc. No debería usarlas ya
+que pueden ser descubiertas en otras fuentes y mediante ingeniería social
+• No debería haber pistas en el código HTML
+• Si se usa la dirección electrónica como la llave para desbloquear la cuenta, el correo
+resultante no debería contener la contraseña, sino un token de validación de una sola vez
+válido sólo por un corto periodo de tiempo (digamos 15 minutos). Si es válido por un
+largo periodo de tiempo, verifique si es predecible o fácil de generar
+• Si el correo contienen un enlace, determine si puede ser usado para phishing
+Como protegerse
+
+****************************************************************************************************
 137
+
+• Sistemas de transacciones de alto valor no deberían usar sistemas de restablecimiento de
+contraseñas. No es recomendado para todas las demás aplicaciones.
+• Considere sistemas más baratos y seguros, como pre-enviar al usuario un token de
+restablecimiento de contraseña en un sobre cerrado que se repone al ser utilizado.
+• Si las preguntas son usadas para identificar al usuario con soporte, simplemente genere
+un número aleatorio en la página de “Como llamar a soporte” en su sitio Web y verificar
+este número cuando el usuario llame.
+• Sea cuidadoso cuando implemente restablecimientos automáticos de contraseñas. La
+forma más fácil de hacer lo correcto es “mandar correo electrónico al usuario” ya que
+crea un rastro de auditoria y contiene únicamente un secreto – la dirección del usuario.
+Sin embargo, esto es riesgoso si la cuenta de correo electrónico ha sido comprometida.
+• Enviar un mensaje al usuario explicando que alguien ha activado la funcionalidad de
+restablecimiento de contraseña. Pídales que si no lo solicitaron, reportar el incidente. Si lo
+solicitaron, proporcione un token corto, criptográficamente único y limitado por el
+tiempo listo para ser copiado y pegado. No proporcione un hipervínculo ya que va en
+contra de las mejores prácticas para phishing y hará más fácil la estafa a usuarios con el
+tiempo. Este valor deberá ser introducido en la aplicación que está esperando el token.
+Verifique que el token no ha expirado y es válido para esa cuenta de usuario. Pida al
+usuario cambiar su contraseña ahí mismo. Si fue exitoso, envíe un correo de seguimiento
+al usuario y al administrador. Registre todo.
+Si tiene que elegir la alternativa basada en pistas, use pistas libres de forma, sin sugerencias
+públicamente conocidas, como “¿Cuál es su color favorito?” “¿Cuál es su memoria favorita?,”
+etc. No use el nombre de la madre, SSN, o similar. El usuario debería de introducir cinco pistas
+durante el registro, y presentar tres cuando restablezcan la contraseña.
+Obviamente, ambos mecanismos de restablecimiento de contraseña deben ser sobre SSL para
+proporcionar integridad y privacidad.
+Fuerza bruta
+Un ataque común es tratar de ingresar a una cuenta privilegiada bien conocida o alguna otra
+cuenta adivinada y tratar fuerza bruta o ataques de diccionario contra la contraseña. Los usuarios 
+
+****************************************************************************************************
 138
+
+son buenos para escoger contraseñas realmente malas (como “password”), así que este enfoque
+funciona sorprendentemente bien.
+Las aplicaciones deberían ser robustas contra ataques de fuerza bruta o de diccionario, como
+de Brutus o scripts personalizados. Los ataques de fuerza bruta no pueden ser derrotados
+fácilmente, solo demorados.
+Como determinar si usted es vulnerable
+Para probar la aplicación:
+• Use una aplicación de fuerza bruta, como Brutus o un script en Perl personalizado. Este
+ataque solo funciona con herramientas.
+• Use múltiples diccionarios, no solo inglés
+• Use diccionarios de “contraseñas comunes”. Se sorprendería de lo seguido que “root”,
+“password”, “”, y otros son usados
+• ¿El mensaje de error le dice qué salió mal en la autenticación?
+• ¿Los registros de intentos de autenticación fallida ligados a un mecanismo de fuerza
+bruta? ¿Bloquea su IP o sesión?
+• ¿Puede continuar con la fuerza bruta dejando la sesión cuando queda un intento? Es
+decir, si se destruye la sesión a los 5 intentos, ¿Funciona si utiliza 4 y luego inicia una
+nueva sesión?
+Si la aplicación permite más de cinco intentos de una misma dirección IP, o una tasa de
+colección en exceso de 10 peticiones por segundo, es probable que la aplicación caiga en un
+ataque de fuerza bruta.
+Como protegerse
+Verifique que la aplicación: 
+
+****************************************************************************************************
 139
+
+• Tiene un retardo desde que el usuario manda la credencial hasta que un suceso o falla es
+reportado. Un retardo de tres segundos puede hacer que los ataques de fuerza bruta sean
+no sean factibles. Un retardo progresivo (3 segundos, luego 15, luego 30, luego
+desconectar) puede hacer los ataques de fuerza bruta casuales completamente inefectivos
+• Advierte al usuario con mensajes de error adecuados que no despliegan que parte de la
+credencial de la aplicación es incorrecta, usando una página de error de autenticación
+común:
+
+• Registra intentos fallidos de autenticación (de hecho, una buena aplicación registra todos
+los intentos de autenticación)
+• Para aplicaciones que requieren controles más fuertes, bloquear el acceso de direcciones
+IP abusivas (es decir, accediendo a más de tres cuentas desde la misma dirección IP, o
+intentos de bloquear más de una cuenta)
+• Destruya la sesión después de varios intentos.
+En tal escenario, el análisis de registros podría revelar múltiples accesos a la misma página
+de la misma dirección IP en un corto período de tiempo. Software de correlación de eventos
+como Simple Event Correlator (SEC) puede ser usado para definir reglas para analizar los
+registros y generar alertas basado en eventos agregados. Esto podría también ser hecho
+añadiendo una regla de Snort para alertar en mensajes de error de Autorización fallida de HTTP
+yendo de su servidor Web al usuario, y SEC puede ser usado para agregar y correlacionar estas
+alertas. 
+
+****************************************************************************************************
 140
+
+Recordarme
+En las computadoras públicas, la funcionalidad “¿Recordarme?”, donde un usuario puede
+simplemente regresar a su cuenta personalizada puede ser peligrosa. Por ejemplo, en Internet
+Cafés, puede encontrar sitios a los que usuarios previos han accedido, y publicar ellos, u ordenar
+bienes como ellos (por ejemplo con eBay).
+Como determinar si usted es vulnerable
+• ¿La aplicación tiene la funcionalidad de “recordarme”?
+• Si es así, ¿Cuánto dura? Si es permanente, ¿Cuánto dura la cookie antes de expirar?
+• ¿Usa un valor predecible en la cookie? Si es así, ¿Puede todo esto ser usado para evadir la
+autenticación?
+Como protegerse
+• Si su aplicación maneja transacciones de alto valor, no debería tener la funcionalidad de
+“recordarme”.
+• Si el riesgo es mínimo, es suficiente advertir a los usuarios de los peligros antes de
+permitirles marcar la casilla.
+• Nunca use un token de “pre-autenticado” predecible. El token debería mantenerse en el
+registro para asegurarse que el mecanismo de autenticación no sea evitable
+Tiempo inactivo
+Las aplicaciones que exponen información privada o que pueden causar robo de identidad si
+se dejan abiertas no deberían ser accesibles después de un cierto periodo de tiempo.
+Como determinar si usted es vulnerable 
+
+****************************************************************************************************
 141
+
+• Ingrese a la aplicación
+• ¿La aplicación tiene una función de mantener vivo o “ingresar automáticamente”? Si es
+así, la probabilidad de que la aplicación falle esta prueba es alta.
+• Espere 20 minutos
+• Trate de usar la aplicación de nuevo.
+• Si la aplicación le permite el uso, la aplicación está en riesgo.
+Como protegerse
+• Determine un periodo de tiempo adecuado con el negocio.
+• Configure el tiempo en el manejador de sesión para cerrar la sesión después de que el
+tiempo ha expirado.
+Salir
+Todas las aplicaciones deberían tener un método para salir de la aplicación. Esto es
+particularmente vital para aplicaciones que contengan datos privados o podrían ser usadas para
+robo de identidad.
+Como determinar si usted es vulnerable
+• ¿La aplicación tiene un botón o enlace para salir en alguna parte?
+• ¿Cada vista contiene el botón o enlace para salir?
+• Cuando usa salir, ¿Puede re-utilizar la sesión? (es decir, copie y pegue una URL de hace
+dos o tres clics, y trate de re-usarla)
+• (Aplicaciones de alto riesgo) Cuando se usa salir, ¿La aplicación le advierte limpiar la
+historia y cache del navegador?
+Como protegerse
+
+****************************************************************************************************
 142
+
+• Implementar la funcionalidad de salir
+• Incluya un botón o enlace para salir en cada vista, y no solo en la página de inicio
+• Asegúrese que al salir se cierre la sesión y se limpia cualquier cookie en el navegador
+• (Aplicaciones de alto riesgo) Incluya texto para advertir al usuario para limpiar el
+historial y cache del navegador si están en una PC compartida.
+Expiración de cuenta
+Usuarios que tengan que registrarse para su servicio tal vez deseen terminar su asociación
+con usted, o en su mayor parte, muchos usuarios simplemente nunca regresan a completar otra
+transacción.
+Como determinar si usted es vulnerable
+• ¿La aplicación tiene un mecanismo para terminar la cuenta?
+• ¿Elimina todos los registros del usuario? (registros requeridos para proporcionar historial
+de transacciones adecuada para propósitos de impuestos y contabilidad)
+• Si los registros son parcialmente borrados, ¿Eliminan todos los registros no esenciales?
+Como protegerse
+• Los usuarios deberían tener la habilidad de eliminar su cuenta. Este proceso debería
+requerir confirmación, pero no debería hacer muy difícil para el usuario eliminar sus
+registros.
+• Las cuentas que han ingresado in un largo periodo de tiempo deberían ser bloqueadas, o
+preferentemente borradas.
+• Si conserva registros, está requerido por la mayoría de los regímenes de privacidad a
+detallar lo que conserva y por qué al usuario en su declaración de privacidad.
+Cuando se borran parcialmente las cuentas (es decir, necesita mantener una historia de las
+transacciones o historial de contabilidad), asegúrese que toda la información personalmente
+identificable no esté disponible o alcanzable desde la aplicación Web, es decir, expórtela a una
+base de datos externa de usuarios archivados o formato CSV 
+
+****************************************************************************************************
 143
+
+Auto-registro
+Los esquemas de auto-registro suenan como una muy buena idea hasta que se dé cuenta que
+permiten a los usuarios anónimos acceder a recursos protegidos. Cualquier aplicación que
+implemente auto-registro debería incluir pasos para protegerse a si misma de ser abusada.
+Como determinar si usted es vulnerable
+• La característica de auto-registro, ¿Permitirá acceso completo a todas las funciones sin
+intervención humana?
+• Si hay límites, ¿Son impuestos si sabe de ellos? Muchas aplicaciones simplemente no
+permiten ver una URL en particular, pero ¿funciona esa URL cuando la copia y pega
+desde una cuenta más privilegiada?
+• El proceso de aumentar las capacidades de la cuenta, ¿Puede ser forzado u obtenido
+mediante ingeniería social?
+Como protegerse
+• Implemente el auto-registro de manera cuidadosa basado en el riesgo para su negocio.
+Por ejemplo, podría desear poner límites monetarios o de transacciones para nuevas
+cuentas.
+• Si limites son impuestos, deberían ser validados por reglas de negocio, y no sólo usando
+seguridad a través de oscuridad.
+• Asegure que el proceso para aumentar las características de una cuenta es simple y
+transparente.
+• Cuando las cuentas son modificadas, asegúrese que se mantenga un rastro de auditoria o
+de actividad
+CAPTCHA
+Los sistemas CAPTCHA (“Prueba de Turing pública y automática para diferenciar a
+máquinas y humanos”) supuestamente permiten a los diseñadores Web para evitar que los nohumanos
+se registren en sitios Web. 
+
+****************************************************************************************************
 144
+La razón usual para implementar CAPTCHA es para prevenir que los spammers se registren
+y contaminen las aplicaciones con spam y enlaces pornográficos. Este es un problema
+particularmente malo con el software de blog y foros, pero cualquier aplicación está en riesgo si
+los motores de búsqueda pueden indexar contenido.
+Como determinar si usted es vulnerable
+El método principal de romper CAPTCHA es tomar la imagen y usar humanos para
+descifrarla. Esto ocurre con “pases de días gratis” para sitios de adultos. A una persona que
+quiere ver imágenes gratis se le presenta con el CAPTCHA capturado y muy a menudo, ellos
+escribirán las letras para una pequeña recompensa. Esto derrota completamente el mecanismo
+CAPTCHA.
+Los mecanismos CAPTCHA visuales o audibles por su naturaleza no son accesibles para
+usuarios ciegos (o sordos), y como consecuencia de tratar de derrotar a software de
+reconocimiento de caracteres, a menudo bloquean a los usuarios daltónicos (que puede ser hasta
+el 10 % de la población masculina).
+Nota: Cualquier sitio web que tiene el mandato o es legalmente requerido a ser
+accesible, no debe usar CAPTCHA.
+Como protegerse
+No use CAPTCHA. Son ilegales si es requerido que sea accesible a todos los usuarios (a
+menudo el caso de sitios de gobierno, salud, bancos, e infraestructura protegida nacionalmente,
+particularmente si no hay otro método de interactuar con esa organización).
+Si tiene que:
+• Siempre proporcione un método por el cual un usuario pueda registrarse en su sitio web
+sin conexión o vía otro método
+• Disuada el uso de registros automáticos usando la etiqueta “no follow”. Los motores de
+búsqueda ignorarán hipervínculos y páginas con esta etiqueta puesta, devaluando
+inmensamente el uso de spam de enlaces
+• Limite los privilegios de cuentas recién registradas hasta que una validación positiva haya
+ocurrida. Esto puede ser tan simple como incluir un ID de referencia único a una tarjeta
+de crédito registrada, o requiriendo una cierta cantidad de tiempo antes de que ciertas 
+
+****************************************************************************************************
 145
+
+características sean desbloqueadas, como derechos para publicaciones públicas o no
+permitir acceso a todas las características
+Lectura adicional
+• “Body Check”, Revista c’t. Artículo muy divertido de 2002
+http://www.heise.de/ct/english/02/11/114/
+• Klein, A., NTLM Authentication and HTTP proxies don’t mix, publicación a webappsec
+http://packetstormsecurity.nl/papers/general/NTLMhttp.txt
+• ¿Cuánto pasa antes de que su firma es verificada? Aparentemente tres pantallas de
+plasma:
+http://www.zug.com/pranks/credit_card/
+• Schneier, B., The failure of two factor authentication, blog / ensayo
+http://www.schneier.com/blog/archives/2005/03/the_failure_of.html
+• Blog grupal liderado por Kim Cameron, The Laws of Identity
+http://www.identityblog.com/stories/2004/12/09/thelaws.html
+• van der Stock, A., “On the entropy of password reset systems”, documento de
+investigación no publicado. Si desea participar en la encuesta de esta investigación, por
+favor contacte a vanderaj@owasp.org 
+
+****************************************************************************************************
 146
+
+Autorización
+Objetivos
+• Asegurar que únicamente usuarios autorizados puedan realizar acciones permitidas con
+su correspondiente nivel de privilegio.
+• Controlar el acceso a recursos protegidos mediante decisiones basadas en el rol o el nivel
+de privilegio.
+• Prevenir ataques de escalada de privilegios, como por ejemplo utilizar funciones de
+administrativas siendo un usuario anónimo o incluso un usuario autenticado.
+Entorno afectado
+Todas las aplicaciones.
+Temas relevantes de COBIT
+DS5 – Se deben revisar todas las secciones. Esta sección cubre casi todos los objetivos de
+control detallados del COBIT.
+Principio de menor privilegio
+La mayoría de las veces, las aplicaciones web se ejecutan con privilegios excesivos, ya sea
+dando a los usuarios demasiados privilegios sobre recursos protegidos, como en una base de
+datos (por ejemplo, permitiendo eliminar tablas o dando la posibilidad de seleccionar
+información de cualquier tabla para ejecutar procedimientos almacenados privilegiados como
+xp_cmdshell()), dejando que se ejecute la infraestructura de la aplicación Web con las cuentas
+del sistema más privilegiadas ( como por ejemplo LOCALSYSTEM o root), o programando en
+entornos gestionados ejecutándose con acceso total fuera de su “sandbox” ( por ejemplo
+AllPermission de Java o el FullTrust de .NET).
+Si se encuentra cualquier otro tema, los demasiados privilegios pueden proporcionar a un
+atacante el control total de la máquina, e incluso a menudo, de la infraestructura al completo. No
+se puede afirmar rigurosamente que las aplicaciones web funcionen con los menos privilegios
+posibles.
+Como determinar si se es vulnerable 
+
+****************************************************************************************************
 147
+
+• Las cuentas System (aquellas que ejecutan el entorno) deben poseer los menores
+privilegios posibles. Nunca se deben utilizar cuentas tales como “Administrador”, “root”,
+“sa”, “sysman”, “Supervisor”, o cualquier otra con máximos privilegios para ejecutar la
+aplicación o conectar al servidor Web, base de datos o middleware.
+• Las cuentas de usuario deben poseer únicamente los privilegios necesarios en la
+aplicación para realizar sus tareas asignadas.
+• Los usuarios no deben ser administradores
+• Los usuarios no deben ser capaces de utilizar cualquier función de administración o sin
+estar autorizados.
+Como protegerse
+• Tanto los entornos de desarrollo, como de pruebas y de “staging”, deben ser configurados
+para funcionar con los menores privilegios posibles, así como en producción.
+• Hay que asegurar que las cuentas del sistema (aquellas que ejecutan el entorno) poseen
+los menores privilegios posibles. Nunca deben utilizarse las de “Administrador”, “root”,
+“sa”, “sysman”, “Supervisor”, o cualquier otra con máximos privilegios para ejecutar la
+aplicación o conectar al servidor Web, base de datos o middleware.
+• Las cuentas de usuario deben poseer únicamente los privilegios necesarios en la
+aplicación para realizar sus tareas asignadas.
+• Los usuarios no deben ser administradores
+• Los usuarios no deben ser capaces de utilizar funciones de administración o para las que
+no se tenga autorización. Ver la sección de autorización para más detalles.
+• El acceso a base de datos debe realizarse mediante procedimientos almacenados
+parametrizados (o similiar) para permitir que todos los accesos a una tabla sean
+revocados (por ejemplo, selección, eliminación, actualización, inserción, etc.) utilizando
+una cuenta de la base de datos con pocos privilegios. Esta cuenta no deben tener un rol
+SQL mayor al de “usuario” (o similar)
+• La seguridad en el código de acceso debe ser evaluado y reafirmado. Si sólo se necesita
+la posibilidad de resolver nombres DNS, sólo se deben pedir permisos de acceso que 
+
+****************************************************************************************************
 148
+
+permitan esto. De esta manera, si el código intenta leer el /etc/passwd, no podrá y
+finalizará.
+• Las cuentas de la infraestructura deberá poseer privilegios mínimos, como LOCAL
+SERVICE o “nobody”. Sin embargo, si todo el código se ejecuta bajo estas cuentas,
+aparecerá el problema de las “llaves del reino”. Si se sabe lo que se está haciendo, con la
+replicación cuidadosa de los atributos de las cuentas menos privilegiadas como LOCAL
+SERVICE o “nobody” es mejor crear usuarios con pocos privilegios que compartir dichas
+cuentas LOCAL SERVICE o “nobody”.
+Listas de Control de Acceso
+Muchos controles de acceso son inseguros al implantarse. Por ejemplo, la política de
+seguridad por omisión en el sistema de ficheros Java 2 es “All Permission”, un nivel de acceso
+que normalmente no es requerido por las aplicaciones.
+grant codeBase "file:${{java.ext.dirs}}/*" {
+ permission java.security.AllPermission;
+};
+Las aplicaciones deben funcionar correctamente con los mínimos privilegios que necesiten y
+deben crear listas de control de acceso que reafirmen los privilegios más ajustados posibles.
+Como determinar si se es vulnerable
+• Determinar si los controles de ficheros, red, usuarios y otros niveles del sistema son
+demasiado permisivos.
+• Determinar si los usuarios se encuentran el menor número de grupos o roles.
+• Determinar si los roles poseen el menor conjunto de privilegios posible
+• Determinar si la aplicación funciona con los privilegios reducidos, como por ejemplo al
+proporcionar un fichero de política o una configuración en “modo seguro”
+Como protegerse
+Controles de acceso a considerar 
+
+****************************************************************************************************
 149
+
+• Comenzar siempre las listas de control de acceso utilizando “deny all” (“denegar todo”) y
+seguidamente ir añadiendo sólo los privilegios y roles necesarios.
+• Controles de acceso a red: filtros basados en el host y cortafuegos
+• Controles de acceso al sistema de ficheros: permisos en ficheros y directorios
+• Controles de acceso de usuarios: seguridad en las plataformas de usuarios y grupos.
+Controles de acceso Java / .NET / PHP : Escribir siempre una política de seguridad de Java 2
+o en .NET para asegurar la seguridad en los accesos del código funciona tanto hablando en
+términos de programación como en los permisos de ensamblado. En PHP, considerar el uso de la
+funcionalidad “safe mode”, incluyendo las directivas open_basedir para limitar el acceso al
+sistema de ficheros.
+Controles de acceso a información: intentar utilizar únicamente procedimientos almacenados,
+para poder así rechazar la mayoría de los privilegios de los usuarios de la base de datos –
+previene la inyección de código SQL.
+Explote su plataforma: Muchas variantes UNIX tienen extensiones de “base segura o fiable
+de cómputo” (conocidas como “Trusted Computing Base”) que incluyen listas de control de
+accesos. Windows las lleva de fábrica. ¡Utilícelas!
+Controles de autorización personalizados
+La mayoría de los entornos aplicativos tienen mecanismos bien desarrollados de autorización
+(como el JAAS de JAVA o las posibilidades de autorización en el web.config de .NET)
+Sin embargo, muchas aplicaciones contienen sus propios mecanismos personalizados y
+propios. Esto añade complejidad y posibles fallos. A menos que exista una razón explicita de
+evitar las funcionalidades ya incluidas, el código debería dejar paso al soporte propio del
+entorno.
+Como determinar si se es vulnerable
+
+****************************************************************************************************
 150
+
+• ¿El código dificulta las capacidades de autorización que se incluyen por defecto en el
+entorno de programación?
+• ¿Se podría simplificar la aplicación si se tienen en cuenta el modelo de
+autenticación/autorización integrado en el Framework?
+• Si se utiliza el código personalizado, considere una correcta autenticación y problemas a
+la hora de manejar las excepciones - ¿se puede “autorizar” a un usuario y ocurre una
+excepción?
+• ¿Qué cobertura se obtiene utilizando los controles de autenticación propios? ¿Se
+encuentran protegidos por el mecanismo tanto el código como los recursos?
+Como protegerse
+• Siempre se debe escribir la menor cantidad de código posible, sobretodo cuando los
+propios entornos facilitan alternativas de gran calidad.
+• Si el código personalizado propio es requerido, se debe tener en consideración los
+problemas de autenticación y manejo de excepciones – asegurar que en el caso de que se
+lance una excepción, se cierra la sesión del usuario o que por lo menos se evita que se
+acceda a un recurso protegido o a una función.
+• Asegurar que por omisión, la cobertura alcanza el 100%
+Rutinas de autorización centralizadas
+Un error común es la de llevar a cabo una comprobación de la autorización copiando y
+pegando un trozo de código, o incluso peor, reescribiéndola cada vez. Las aplicaciones bien
+desarrolladas centralizan las rutinas de control de acceso, sobre todo las de autorización, por lo
+que si se encuentra algún fallo o vulnerabilidad, pueden arreglarse todas las ocurrencias sólo
+modificando el código una vez, aplicándose a todas las secciones al mismo tiempo.
+Como determinar si se es vulnerable
+Las aplicaciones que son vulnerables a este ataque tienen fragmentos de código sobre
+autorización a lo largo de todo el código.
+Como protegerse 
+
+****************************************************************************************************
 151
+****************************************************************************************************
 152
+****************************************************************************************************
 153
+****************************************************************************************************
 154
+****************************************************************************************************
 155
+****************************************************************************************************
 156
+****************************************************************************************************
 157
+****************************************************************************************************
 158
+****************************************************************************************************
 159
+****************************************************************************************************
 160
+****************************************************************************************************
 161
+****************************************************************************************************
 162
+****************************************************************************************************
 163
+****************************************************************************************************
 164
+****************************************************************************************************
 165
+****************************************************************************************************
 166
+****************************************************************************************************
 167
+****************************************************************************************************
 168
+****************************************************************************************************
 169
+****************************************************************************************************
 170
+****************************************************************************************************
 171
+****************************************************************************************************
 172
+****************************************************************************************************
 173
+****************************************************************************************************
 174
+****************************************************************************************************
 175
+****************************************************************************************************
 176
+****************************************************************************************************
 177
+****************************************************************************************************
 178
+****************************************************************************************************
 179
+****************************************************************************************************
 180
+****************************************************************************************************
 181
+****************************************************************************************************
 182
+****************************************************************************************************
 183
+****************************************************************************************************
 184
+****************************************************************************************************
 185
+****************************************************************************************************
 186
+****************************************************************************************************
 187
+****************************************************************************************************
 188
+****************************************************************************************************
 189
+****************************************************************************************************
 190
+****************************************************************************************************
 191
+****************************************************************************************************
 192
+****************************************************************************************************
 193
+****************************************************************************************************
 194
+****************************************************************************************************
 195
+****************************************************************************************************
 196
+****************************************************************************************************
 197
+****************************************************************************************************
 198
+****************************************************************************************************
 199
+****************************************************************************************************
 200
+****************************************************************************************************
 201
+****************************************************************************************************
 202
+****************************************************************************************************
 203
+****************************************************************************************************
 204
+****************************************************************************************************
 205
+****************************************************************************************************
 206
+****************************************************************************************************
 207
+****************************************************************************************************
 208
+****************************************************************************************************
 209
+****************************************************************************************************
 210
+****************************************************************************************************
+
 211
+****************************************************************************************************
 212
+****************************************************************************************************
 213
+****************************************************************************************************
 214
+****************************************************************************************************
 215
+****************************************************************************************************
 216
+****************************************************************************************************
 217
+****************************************************************************************************
 218
+****************************************************************************************************
 219
+****************************************************************************************************
 220
+****************************************************************************************************
 221
+****************************************************************************************************
 222
+****************************************************************************************************
 223
+****************************************************************************************************
 224
+****************************************************************************************************
 225
+****************************************************************************************************
 226
+****************************************************************************************************
 227
+****************************************************************************************************
 228
+****************************************************************************************************
 229
+****************************************************************************************************
 230
+****************************************************************************************************
 231
+****************************************************************************************************
 232
+****************************************************************************************************
 233
+****************************************************************************************************
 234
+****************************************************************************************************
 235
+****************************************************************************************************
 236
+****************************************************************************************************
 237
+****************************************************************************************************
 238
+****************************************************************************************************
 239
+****************************************************************************************************
+
 240
+****************************************************************************************************
 241
+****************************************************************************************************
 242
+****************************************************************************************************
 243
+****************************************************************************************************
 244
+****************************************************************************************************
 245
+****************************************************************************************************
 246
+****************************************************************************************************
 247
+****************************************************************************************************
 248
+****************************************************************************************************
 249
+****************************************************************************************************
 250
+****************************************************************************************************
 251
+****************************************************************************************************
 252
+****************************************************************************************************
 253
+****************************************************************************************************
 254
+****************************************************************************************************
 255
+****************************************************************************************************
 256
+****************************************************************************************************
 257
+****************************************************************************************************
 258
+****************************************************************************************************
 259
+****************************************************************************************************
 260
+****************************************************************************************************
 261
+****************************************************************************************************
 262
+****************************************************************************************************
 263
+****************************************************************************************************
 264
+****************************************************************************************************
 265
+****************************************************************************************************
 266
+****************************************************************************************************
 267
+****************************************************************************************************
 268
+****************************************************************************************************
 269
+****************************************************************************************************
 270
+****************************************************************************************************
 271
+****************************************************************************************************
 272
+****************************************************************************************************
 273
+****************************************************************************************************
 274
+****************************************************************************************************
 275
+****************************************************************************************************
 276
+****************************************************************************************************
 277
+****************************************************************************************************
 278
+****************************************************************************************************
 279
+****************************************************************************************************
 280
+****************************************************************************************************
 281
+****************************************************************************************************
 282
+****************************************************************************************************
 283
+****************************************************************************************************
 284
+****************************************************************************************************
 285
+****************************************************************************************************
 286
+****************************************************************************************************
 287
+****************************************************************************************************
 288
+****************************************************************************************************
 289
+****************************************************************************************************
 290
+****************************************************************************************************
 291
+****************************************************************************************************
 292
+****************************************************************************************************
 293
+****************************************************************************************************
 294
+****************************************************************************************************
 295
+****************************************************************************************************
 296
+****************************************************************************************************
 297
+****************************************************************************************************
 298
+****************************************************************************************************
 299
+****************************************************************************************************
 300
+****************************************************************************************************
 301
+****************************************************************************************************
 302
+****************************************************************************************************
 303
 ****************************************************************************************************
+****************************************************************************************************
+
+
+
 304
 ****************************************************************************************************
 305
