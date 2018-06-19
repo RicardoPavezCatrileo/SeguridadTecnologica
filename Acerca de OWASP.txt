@@ -4130,30 +4130,376 @@ Como protegerse
 
 ****************************************************************************************************
 151
+
+• Programar una biblioteca de comprobaciones de la autorización
+• Estandarizar las llamadas a una o más de las comprobaciones de la autorización
+Matriz de autorización
+Las aplicaciones con el acceso controlado deben realizar la comprobación de que los usuarios
+tengan permiso para ver una página o utilizar una acción antes de que se muestre o suceda.
+Como determinar si se es vulnerable
+Comprobar:
+• ¿Existen comprobaciones del control de acceso en cada uno de los puntos no anónimos
+de entrada?
+• ¿Dichas comprobaciones se dan en o casi al final de la actividad?
+Como protegerse
+Utilizar las comprobaciones de seguridad integradas del propio Framework, o colocar una
+llamada a una comprobación centralizada de la autorización justo en la parte superior de la vista
+o acción.
+Tokens de autorización en el lado del cliente
+Muchos desarrolladores de aplicaciones Web son reacios a utilizar almacenamiento de
+sesiones – planteamiento equivocado cuando se refiere a control de accesos y secretos. Por lo
+que recurren al lado del cliente, tanto en forma de cookies, como cabeceras o campos escondidos
+en formularios.
+Como determinar si se es vulnerable
+Comprobar que su aplicación:
+• No lleva a cabo ningún tipo de autenticación o autorización en el lado cliente mediante
+cabeceras, cookies, campos de formulario escondidos o argumentos en la dirección URL.
+• No confía en tokens de autorización o autenticación en el lado del cliente ( a menudo en
+código antiguo)
+Si su aplicación utiliza un agente SSO, como por ejemplo Tivoli Access Manager de IBM,
+SiteMinder de Netegrity, o el ClearTrust de RSA, asegúrese de que su aplicación valida los
+tokens del agente, y que no únicamente los acepta, y asegúrese de que estos tokens no son 
+
 ****************************************************************************************************
 152
+
+visibles para el usuario de ninguna manera (cabecera, cookie, campos escondidos, etc). Si los
+tokens son visibles por el usuario final, asegurar que todas las propiedades del manejador de
+sesión criptográficamente seguro como en el capítulo 0 se tienen en cuenta.
+Como protegerse
+Cuando su aplicación confirma que un usuario se autentica, asocie el identificador de sesión
+con los tokens de autenticación, flags o estados. Por ejemplo, una vez el usuario inicia sesión, se
+establece en el objeto de sesión un flag con sus niveles de autorización. 
+
+Java
+if ( authenticated ) {
+}
+.NET (C#)
+if ( authenticated ) {
+
+}
+PHP
+if ( authenticated ) {
+ $_SESSION[‘authlevel’] = X_USER; // X_USER es definido en cualquier
+lado, con el significado de que está autorizado
+}
+Comprobar que su aplicación:
+• No envía ningún tipo de tokens de autenticación o autorización en cabeceras, cookies,
+campos de formulario ocultos o como argumentos de la dirección URL.
+• No confía en tokens de autorización o autenticación en el lado del cliente ( a menudo en
+código antiguo)
+Si su aplicación utiliza un agente SSO, como por ejemplo Tivoli Access Manager de IBM,
+SiteMinder de Netegrity, o el ClearTrust de RSA, asegúrese de que su aplicación valida los
+tokens del agente, y que no únicamente los acepta, y asegúrese de que estos tokens no son 
+
 ****************************************************************************************************
+
 153
+
+visibles para el usuario de ninguna manera (cabecera, cookie, campos escondidos, etc). Si los
+tokens son visibles por el usuario final, asegurar que todas las propiedades del manejador de
+sesión criptográficamente seguro como en el capítulo 12 se tienen en cuenta.
+Controlando el acceso a recursos protegidos
+Muchas aplicaciones realizan una comprobación para ver si tiene el permiso de realizar una
+acción en particular, pero no realiza la comprobación de si se permite pedir un recurso. Por
+ejemplo, un sistema de foros puede comprobar si se tiene el permiso de poder contestar a un
+mensaje anterior, pero no comprueba si el mensaje que se pretende contestar está protegido o
+pertenece a un subforo o hilo oculto. En una aplicación de banca online podría ser el caso de
+comprobar si se permite transferir dinero, pero no valida si la cuenta desde la cual se transferirá
+es nuestra.
+Como determinar si se es vulnerable
+• ¿Verifica la aplicación que todos los recursos que se piden son accesibles por el usuario?
+• Las sentencias que utilizan los recursos directamente, como sentencias SQL dinámicas,
+suelen ser a menudo las que más riesgo poseen en comparación con lo programado bajo
+el paradigma del modelo vista-controlador. La razón de esto es que el modelo es correcto
+a la hora de controlar el acceso a recursos protegidos, mientras que las sentencias SQL
+dinámicas a menudo realizan falsas suposiciones sobre el recurso.
+Como protegerse
+• Utilizar el código de modelo en vez del acceso directo a recursos protegidos.
+• Asegurar que el código del modelo comprueba que el usuario autenticado tienen acceso
+al recurso.
+• Asegurar que el fragmento de código que pide el recurso tiene una correcta
+comprobación de errores y no asume que el acceso será concedido siempre.
+Protegiendo el acceso a los recursos protegidos
+Algunas aplicaciones generan contenido estático (pongamos el ejemplo de un informe de una
+transacción, en formato PDF), y permite al servidor Web servir dicho contenido. A menudo esto
+implica que un informe confidencial pueda resultar disponible para usuarios no autorizados. 
+
 ****************************************************************************************************
 154
+
+Como determinar si se es vulnerable
+• ¿La aplicación genera o permite el acceso a contenido estático?
+• ¿Se controla el acceso al contenido estático mediante el usuario autenticado en curso?
+• En caso negativo, ¿puede un usuario anónimo acceder y obtener ese contenido protegido?
+Como protegerse
+• La mejor solución – generar el contenido estático en el momento y enviarlo directamente
+al navegador en vez de almacenarlo en el sistema de ficheros del servidor Web
+• Si se quiere proteger la información sensible estática, implementar comprobaciones de
+autorización para prevenir el acceso por parte de usuarios anónimos.
+• Si se tiene que almacenar en disco (no recomendado), utilizar nombres de ficheros
+aleatorios (como por el ejemplo el GUID) y limpiar regularmente los ficheros temporales.
+Lectura adicional
+Autorización en ASP.Net (Inglés):
+http://msdn.microsoft.com/library/default.asp?url=/library/enus/cpguide/html/cpconaspnetauthorization.asp
+
+
 ****************************************************************************************************
 155
+
+Manejo de sesiones
+Objetivo
+Asegurar que:
+Los usuarios autenticados tengan una robusta y criptográficamente segura asociación con sus
+sesiones.
+Se hagan cumplir los controles de autorización.
+Se prevengan los típicos ataques web, tales como la reutilización, falsificación e intercepción
+de sesiones.
+Entornos afectados
+Todos.
+Temas relevantes de COBIT
+PO8 – Todas las secciones deben ser revisadas.
+PO8.4 – Privacidad, Propiedad Intelectual y Flujo de Datos.
+Descripción
+Los clientes pesados (“thick clients”) nativamente guardan información en memoria asignada
+por el sistema operativo durante la duración de la ejecución del programa, tales como variables
+globales, pilas y colas. Con las aplicaciones web, el servidor web sirve páginas en respuesta a los
+pedidos de los clientes. Por diseño, el servidor web es libre de olvidar todo sobre las páginas que
+ha servido en el pasado, ya que no hay un estado explicito. 
+
 ****************************************************************************************************
 156
+
+Esto funciona bien cuando se renderiza contenido estático, tales como un folleto o imagen,
+pero no tan bien cuando desea completar un formulario, o si tiene múltiples usuarios que necesita
+mantener separados, tales como una aplicación de banca electrónica.
+Los servidores web son extendidos por los marcos de las aplicaciones, tales como J2EE o
+ASP.NET, implementando un esquema de manejo de estados vinculando los pedidos
+individuales de los usuarios con una sesión a través de un valor único aleatorio guardado en una
+cookie relacionada con el estado mantenido en el servidor, dándoles a los usuarios la apariencia
+de una aplicación dinámica. Esta habilidad de restringir y mantener las acciones de los usuarios
+dentro de sesiones únicas es crítica para la seguridad web.
+A pesar de que la mayoría de los usuarios de esta guía estarán utilizando un marco de
+aplicaciones con capacidad de manejo de sesiones, otros utilizaran lenguajes tales como Perl CGI
+que no dispone de dicha capacidad. Estos últimos se encuentran en una inmediata desventaja
+debida a que los desarrolladores se verán forzados a crear un sistema de manejo de sesiones
+desde cero. Estas implementaciones frecuentemente serán débiles y rompibles.
+Otro error común es implementar un esquema de manejo de sesiones débil arriba de uno
+fuerte. Es teóricamente posible escribir y usar un esquema criptográficamente seguro de manejo
+de sesiones, lo cual es el objetivo de este capitulo. Sin embargo, para meros mortales, no existe
+mejor solución que utilizar un marco de aplicaciones que disponga de un adecuado manejo de
+sesiones. No tiene sentido re-escribir dichos secciones básicas de código.
+Los marcos de aplicaciones tales como J2EE, PHP, ASP y ASP.NET se encargan de la
+mayoría de los detalles básicos en el manejo de sesiones y permiten un nivel de control fino a
+nivel de programación, en lugar de a nivel de configuración de servidores. Por ejemplo,
+ASP.NET utiliza un mecanismo ofuscado de “visualización de estados” resistente a
+manipulaciones, que esconde un campo en cada página. La visualización de estados puede ser
+usada para transmitir variables insensibles, ubicaciones de controles web, etc. Utilizando un
+nivel programático, es posible incluir o excluir una variable de la “visualización de estados”,
+particularmente si no es necesario mantener el control de un estado a través de paginas en una
+misma aplicación. Es también posible cifrar la “visualización de estados” si se transmiten datos 
+
 ****************************************************************************************************
 157
+
+sensitivos al usuario, pero es mejor mantener tales variables en un objeto del lado del servidor.
+Esto puede ahorrar tiempo de descarga, reducción de tráfico, y mejora de tiempos de ejecución.
+Un manejo cuidadoso de la “visualización de estados” hace la diferencia entre una aplicación
+bien optimizada, y una aplicación con mal rendimiento.
+Mejores prácticas
+Las mejores practicas no requieren reinventar la rueda, pero si utilizar un robusto y bien
+conocido manejador de sesiones. Los marcos de aplicaciones más populares contienen una
+adecuada implementación. Sin embargo, las primeras versiones frecuentemente tienen
+debilidades significativas. Siempre utilizar la ultima versión de tecnología elegida, ya que su
+manejador de sesiones probablemente será más robusto y usara credenciales criptográficas
+fuertes.
+Considere cuidadosamente donde guarda el estado de la aplicación:
+Datos sobre autorización y roles deben ser guardados solamente del lado del servidor.
+Datos sobre la navegación son ciertamente aceptables en la URL siempre y cuando los
+controles de validación y autorización sean efectivos.
+Las preferencias del usuario (ej. temas y lenguaje del usuario) puede ser almacenado en
+cookies.
+Datos de formularios no deberían contener campos ocultos – si se encuentran ocultos,
+probablemente necesiten estar protegidos y solo disponibles del lado del servidor. Sin embargo,
+los campos ocultos pueden (y deben) ser utilizados para la protección de secuencias y ataques de
+pharming.
+Los datos contenidos en formularios de varias páginas pueden ser enviados de vuelta al
+usuario en los siguientes dos casos:
+Cuando existen controles de integridad para prevenir la manipulación.
+Cuando los datos son validados luego de cada envío del formulario, o al menos al final del
+proceso de envío. 
+
 ****************************************************************************************************
 158
+
+Los secretos de la aplicación (tales como credenciales del lado del servidor e información
+sobre roles) nunca debería ser visible al cliente. Estos deben ser guardados en una sesión o del
+lado del servidor.
+Si tienes dudas, no se arriesgue y escóndalo en una sesión.
+ Ideas erróneas
+Las sesiones tiene una mal merecida baja reputación con algunos programadores,
+particularmente aquellos con experiencia en Java que prefieren la facilidad de programar
+componentes “sin estado” del lado del servidor.
+Sin embargo, esto es simplemente incorrecto desde una perspectiva de seguridad y
+rendimiento, ya que los estados deben ser guardados en algún lugar, y los estados sensitivos
+deben ser guardados de alguna manera del lado del servidor. La alternativa, que seria guardar
+todos los estados dentro de cada pedido, fuerza el uso extensivo de campos escondidos y
+consultas adicionales de base de datos para evitar el manejo de sesiones del lado del servidor, y
+es vulnerable a los ataques de reproducción y falsificación de pedidos, como así también produce
+código complejo.
+Otra típica percepción errónea es que utilizan altos recursos del servidor. Esto era verdad
+cuando los servidores se encontraban restringidos en la cantidad de RAM, pero es falso hoy en
+día. De hecho, transmitir datos de sesión a un cliente, y luego decodificarlos, de-serializarlos,
+realizar controles de manipulación, y por ultimo validar los datos contra cada pedido utiliza
+mayores recursos que mantenerlos seguros dentro de un objeto de sesión.
+Generación permisiva de sesiones
+Muchos marcos de aplicaciones web simplemente emitirán un nuevo identificador de sesión
+por cada solicitante en caso que no exista uno previamente. Esto se denomina “generación
+permisiva de sesiones”, y junto con algunas formas de phishing y una asociada falta de
+autorización, este ataque puede ser devastador.
+Como determinar si uno es vulnerable 
+
 ****************************************************************************************************
 159
+
+Abra un navegador para conectarse a una página protegida o utilice una aplicación web.
+Si un nuevo identificador de sesión es generado y la pagina funciona, los controles de
+autorización hacen una falsa hipótesis sobre la validez de las variables de sesión.
+Como protegerse
+Cuando inicie un nuevo objeto de sesión para un usuario, asegúrese que se encuentra “fuera
+del sistema” y ningún rol haya sido otorgado.
+Asegúrese que cada página protegida o acción controle el estado de autenticación y
+autorización antes de realizar cualquier cantidad significativa de trabajo, incluyendo la
+generación de contenido.
+Asegúrese que todas las paginas desprotegidas utilicen la menor cantidad de recursos para
+prevenir un ataque de negación de servicio, y no facilite la fuga de información de la parte
+protegida de la aplicación.
+Variables de sesión expuestas
+Algunos marcos de aplicaciones utilizan áreas compartidas del disco del servidor web para
+almacenar datos de la sesión. En particular, PHP utiliza /tmp en Unix y c:\windows\temp en
+Windows por defecto. Estas áreas no proveen protección de los datos de sesión, y pueden
+conducir al compromiso de la aplicación si el servidor web es compartido.
+Como determinar si uno es vulnerable
+Investigue la configuración del marco de aplicaciones.
+¿La sesión es guardada en memoria, disco o en una base de datos?
+Si se encuentra en disco o en una base de datos, ¿quien más puede leer los datos de sesión?
+Como protegerse
+Asegúrese que el servidor de aplicaciones sea configurado para usar áreas de ficheros
+temporales por cliente / aplicación. 
+
 ****************************************************************************************************
 160
+
+Si esto no es posible, los datos de sesión deben ser cifrados o contener solo información no
+sensitiva.
+Páginas y credenciales en formularios
+Las credenciales específicas de páginas pueden ser usadas en conjunto con credenciales
+específicas de sesión para proveer una medida de autenticidad cuando se manejan solicitudes de
+clientes. Utilizándolas en conjunto con mecanismos de seguridad en la capa de transporte, las
+credenciales de páginas pueden ayudar en asegurar que el cliente del otro lado de la sesión es de
+hecho el mismo cliente que ha solicitado la última página en una determinada sesión. Las
+credenciales de páginas son frecuentemente guardadas en cookies o cadenas de consulta y deben
+ser completamente aleatorias. Es posible evitar el envío de información sobre las credenciales de
+sesión al cliente a través del uso de credenciales de páginas, creando un mapeo entre ellos del
+lado del servidor, esta técnica debería incrementar aun más la dificultad en ataques de fuerza
+bruta.
+Como determinar si uno es vulnerable
+¿Requiere su aplicación ocultar el botón “Atrás” del navegador web?
+¿Sufre de ataques de sesión preprogramados?
+Como protegerse
+Incorpore un campo oculto con un número aleatorio en la página o formulario
+criptográficamente seguro.
+Elimine este número oculto de la lista activa ni bien haya sido utilizado para prevenir la reutilización
+de la página o formulario.
+Algoritmos criptográficos de sesión débiles
+Si un manejador de sesión emite credenciales que son predecibles, un atacante no necesita
+capturar las variables de sesión de los usuarios remotos – ellos pueden simplemente adivinar y 
+
 ****************************************************************************************************
 161
+
+probablemente encuentren una victima desafortunada. Las credenciales de sesión deberían ser
+únicas, no predecibles, y resistentes a ingeniería reversa.
+Como determinar si uno es vulnerable
+Pida por 1000 identificadores de sesión y vea si son previsibles (visualizándolos ayuda a
+identificar esta propiedad).
+Investigue el código fuente del manejador de sesiones para entender como los identificadores
+de sesión son generados. Estos deberían ser creados de manera totalmente aleatoria.
+Como protegerse
+Un origen aleatorio de confianza debería ser utilizado para crear la credencial (como un
+generador aleatorio de números, Yarrow, EGADS, etc.).
+Adicionalmente, para mayor seguridad, las credenciales de sesión deberían ser relacionadas
+de alguna manera a una instancia de cliente HTTP especifica (identificador de sesión y dirección
+IP) para prevenir ataques de secuestro y reutilización de sesiones.
+Ejemplos de mecanismos que hagan cumplir esta restricción pueden ser el uso de
+credenciales de páginas que sean únicos para cualquier página generada y puedan ser
+relacionadas con credenciales de sesión en el servidor. En general, un algoritmo de credencial de
+sesión nunca debería estar basado o utilizar información personal como variables (nombre de
+usuario, contraseña, dirección postal, etc.).
+Espacio de claves apropiado
+Incluso los algoritmos criptográficamente seguros permiten a una sesión activa ser fácilmente
+determinada si el espacio de claves de la credencial no es lo suficientemente grande. Los
+atacantes pueden esencialmente intentar la mayoría de las posibilidades en un determinado
+espacio de claves a través de scripts de fuerza bruta. Un espacio de claves en una credencial
+debería ser lo suficientemente grande para prevenir este tipo de ataques, teniendo en cuenta que a
+medida que la capacidad computacional y de ancho de banda se incrementen con el tiempo harán
+estos números insuficientes. 
+
 ****************************************************************************************************
 162
+
+Entropía de credencial de sesión
+La credencial de sesión debería utilizar el conjunto de caracteres mas grande disponible. Si
+una credencial de sesión esta hecha de 8 caracteres de 7 bits, la longitud efectiva de la clave es
+56 bits. Sin embargo si un carácter es hecho de solo enteros que pueden ser representados en 4
+bits la longitud de la clave será solamente de 32 bits. Una buena credencial de sesión debería
+utilizar la totalidad del conjunto de caracteres incluyendo mayúsculas y minúsculas.
+Desconexión de sesión
+Las credenciales de sesión que no expiran en el servidor HTTP pueden brindar a un atacante
+tiempo ilimitado para adivinar o utilizar fuerza bruta en una credencial de sesión valida. Un
+ejemplo es la opción “Recordarme” en muchos sitios web de compras. Si una cookie de usuario
+es capturada o atacada por fuerza bruta, el atacante puede usar estas credenciales “estáticas” de
+sesión para ganar acceso a las cuentas web de dicho usuario. Este problema es particularmente
+severo en un ambiente compartido, donde múltiples usuarios tienen acceso a un ordenador.
+Adicionalmente, las credenciales de sesión pueden ser potencialmente registradas y guardadas en
+cache de los servidores proxy que, si son accedidos por un atacante, podrán ser utilizadas si aun
+las sesiones no han expirado.
+Como determinar si uno es vulnerable
+Protección “inactiva”
+• ¿La aplicación utiliza “meta-refrescos” o algún truco similar de Javascript para que
+nunca expire la sesión? Si es así, entonces la aplicación es vulnerable.
+¿Me recuerdas?
+• ¿Tiene la aplicación una opción de “recordarme”? Si es así, la aplicación es
+vulnerable.
+Duración defectuosa de la sesión inactiva 
+
 ****************************************************************************************************
 163
+
+• Conéctese a la aplicación.
+• Vaya a almorzar.
+• Intente utilizar la aplicación. Si ha funcionado, entonces la aplicación es vulnerable.
+Como protegerse
+Configure el tiempo de inactividad de la sesión en 5 minutos para aplicaciones altamente
+protegidas y no más de 20 minutos para aplicaciones de bajo riesgo.
+Para aplicaciones altamente protegidas:
+• No escriba mecanismos para evadir el tiempo de inactividad.
+• No escriba funcionalidades como “recordarme”.
+Regeneración de credenciales de sesión
+Para reducir el riesgo de secuestro de sesión y ataques de fuerza bruta, el servidor HTTP
+puede sin problemas expirar y regenerar las credenciales. Esto acorta la ventana de oportunidad
+para ataques de este tipo.
+Como determinar si uno es vulnerable
+• Utilice una sesión por un tiempo largo con su aplicación.
+• Fíjese cual es el identificador de sesión antes y después de cada transacción de testeo
+significativa.
+• Si la sesión nunca ha cambiado, se puede encontrar en riesgo.
+Como protegerse
+Este control se adecua a sitios altamente protegidos. La regeneración de credenciales debería
+ser realizada:
+• Antes de cada transacción significativa.
+• Luego de una cierta cantidad de transacciones. 
+
 ****************************************************************************************************
 164
 ****************************************************************************************************
