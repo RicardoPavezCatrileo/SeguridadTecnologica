@@ -4502,10 +4502,88 @@ ser realizada:
 
 ****************************************************************************************************
 164
+
+• Luego de un determinado tiempo, por ejemplo 20 minutos.
+Falsificación de sesión/Detección de fuerza bruta y/o Bloqueo de sesión
+Muchos sitios web tienen prohibiciones contra la adivinación de contraseñas (ej. puede
+temporalmente bloquear la cuenta o dejar de escuchar la dirección IP), sin embargo un atacante
+puede frecuentemente intentar cientos o miles de credenciales de sesión embebidas en una URL
+legitima o cookie sin una sola queja del sitio web. Muchos sistemas de detección de intrusión no
+buscan efectivamente por este tipo de ataque; los testeos de penetración también pasan por alto
+esta debilidad en los sistemas de comercio electrónico.
+Como determinar si uno es vulnerable
+• Utilice un Proxy interceptor de HTTP para manipular el identificador de sesión.
+• Si el contexto de la aplicación se mantiene conectado, el marco de aplicación es
+defectuoso y no debería ser utilizado.
+Como protegerse
+• Considere utilizar credenciales de sesión “trampa” que nunca son asignadas pero que
+ayudaran a detectar si un atacante esta utilizando fuerza bruta en un rango de
+credenciales.
+Las acciones resultantes pueden ser:
+• Vaya despacio o bloquee la dirección IP (lo cual puede ser problemático ya que mas y
+mas ISP utilizan caches transparentes para reducir sus costos. Debido a esto: siempre
+controle el encabezado “proxy_via”.)
+• Bloquee la cuenta afectada (lo cual puede causar al verdadero usuario una negación
+de servicio)
+• Mecanismos de anomalías/mal uso pueden ser construidos dentro de la aplicación
+para detectar si un usuario autenticado intenta manipular su credencial para obtener
+mayores privilegios. 
+
 ****************************************************************************************************
 165
+
+• Existen módulos de servidor web Apache, tales como mod_dosevasive y
+mod_security, que pueden ser usados para este tipo de protección. A pesar que
+mod_dosevasive es utilizado para reducir el efecto de ataques de negación de
+servicio, puede ser reescrito también para otros propósitos.
+Transmisión de la Credencial de Sesión
+Si una credencial de sesión es capturada en transito a través de una intercepción en la red,
+una cuenta de aplicación web es entonces trivialmente propensa a un ataque de reproducción o
+secuestro. Tecnologías típicas de cifrado web incluyen pero no se encuentran limitadas a los
+protocolos Secure Socket Layer (SSLv3) y Transport Layer Security (TLSv1) que ayudan a
+proteger los mecanismos de credenciales de sesión.
+Como determinar si uno es vulnerable
+Todos los navegadores son potencialmente vulnerables debido a spyware, viruses y troyanos.
+Como protegerse
+Asocie el identificador de sesión, la dirección IP, y otros atributos de los encabezados de
+usuario en un hash. Si el hash cambia, y uno de los detalles ha cambiado, es probable que un
+ataque de sesión haya ocurrido.
+Credenciales de sesión durante el cierre de sesión
+Con la popularidad de terminales de Internet y ambientes computacionales compartidos en
+alza, las credenciales de sesión toman un nuevo riesgo. Un navegador solo destruye las cookies
+de sesión cuando el navegador es cerrado apropiadamente. La mayoría de las terminales de
+Internet mantienen el mismo navegador abierto para todas las sesiones.
+Como determinar si uno es vulnerable
+Cierre la sesión de la aplicación y: 
+
 ****************************************************************************************************
 166
+
+• Verifique si las cookies han mantenido el identificador de sesión o si ha sido
+eliminado.
+• Verifique si todas las variables relacionadas a las cookies, no pertenecientes a la
+sesión, han sido eliminadas.
+Como protegerse
+Cuando el usuario cierra la sesión de la aplicación:
+• Destruya la sesión.
+• Sobrescriba las cookies de sesión.
+Secuestro de sesión
+Cuando un atacante intercepta o crea una credencial de sesión valida en el servidor, ellos
+pueden personificar a otro usuario. El secuestro de sesión puede ser mitigado parcialmente
+utilizando controles adecuados de anti-secuestro en la aplicación. El nivel de estos controles
+debería ser influenciado por el riesgo de la organización o los datos del cliente; por ejemplo, una
+aplicación de banca electrónica online necesita tener mas recaudos que una aplicación mostrando
+los horarios del cine.
+El tipo más fácil de aplicación para secuestrar son aquellas que utilizan credenciales de
+sesión basadas en la URL, particularmente aquellas que no expiran. Esto es peligroso en
+ordenadores compartidos, tales como Internet cafés o terminales públicas donde es casi
+imposible limpiar la cache o eliminar el historial de navegación debido a restricciones en el
+mismo navegador. Para atacar estas aplicaciones, simplemente es necesario abrir el historial del
+navegador y hacer clic en la URL de la aplicación web. Voila, usted es el usuario anterior!
+Como determinar si uno es vulnerable
+Todos los navegadores son potencialmente vulnerables debido a spyware, viruses y troyanos.
+Como protegerse 
+
 ****************************************************************************************************
 167
 ****************************************************************************************************
