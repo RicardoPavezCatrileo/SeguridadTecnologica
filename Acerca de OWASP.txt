@@ -4586,97 +4586,1308 @@ Como protegerse
 
 ****************************************************************************************************
 167
+• Provea un método a los usuarios para desconectarse de la aplicación. La desconexión
+debería limpiar todos los estados de sesión y remover o invalidar cualquier cookie
+residual.
+• Establezca periodos cortos de tiempo para cookies persistentes, no mayor a un día o
+bien no utilice cookies persistentes.
+• No guarde credenciales de sesión en una URL u otro método trivial de almacenaje.
+Ataques de autenticación de sesión
+Uno de los errores más comunes es no verificar la autorización previamente a ejecutar una
+función restringida o acceder información.
+Un ejemplo particularmente vergonzoso de la vida real es el sitio web australiano de la
+Oficina Fiscal donde la mayoría de las compañías australianas envían electrónicamente sus
+declaraciones de impuestos. Dicho sitio web utiliza certificados del lado del cliente como
+autenticación. Parece seguro, ¿verdad? Sin embargo, este particular sitio web tenia inicialmente
+el ABN (un numero único, parecido a un numero de seguridad social para las compañías)
+embebido en la URL. Estos números no son secretos ni aleatorios. Un usuario adivino esto, y
+probó con otro número de compañía. Para su sorpresa, funciono, y fue capaz de visualizar los
+detalles de otras compañías. Entonces escribió un script para recolectar la información de la base
+de datos y envió un mail a cada uno de los correos electrónicos registrados por las compañías,
+notificando a cada una que el sitio de la Oficinal Fiscal de Australia tenía un serio defecto de
+seguridad. Más de 17000 organizaciones recibieron dichos correos electrónicos.
+Como determinar si uno es vulnerable
+Todos los navegadores son potencialmente vulnerables debido a spyware, viruses y troyanos.
+Como protegerse
+Siempre compruebe que el usuario conectado tenga la autorización necesaria para acceder,
+actualizar o eliminar información. 
 ****************************************************************************************************
 168
+Ataques de validación de sesión
+Tal como cualquier información, las variables de sesión deben ser validadas para asegurar
+que se encuentran en forma correcta, no contienen caracteres inesperados, y que son validas en la
+tabla de sesiones activas.
+En un testeo de penetración que fue conducido por el autor, era posible utilizar bytes nulos
+para truncar los objetos de sesión y debido a errores en el manejador de sesión, solo comparaba
+la longitud de la cadena mas corta. Como consecuencia, una variable de sesión de un carácter
+permitía al atacante romper el manejador de sesiones. Durante otro testeo, el código fuente de
+manejo de sesiones permitía cualquier número de caracteres.
+Como determinar si uno es vulnerable
+• Utilice un Proxy interceptor de HTTP para manipular el identificador de sesión.
+• Si el contexto de la aplicación se mantiene conectado, el marco de aplicación es
+defectuoso y no debería ser utilizado.
+Como protegerse
+Siempre compruebe que el usuario conectado tenga la autorización necesaria para acceder,
+actualizar o eliminar información.
+Ataques de sesión preprogramados
+Un atacante puede utilizar las propiedades de un marco de aplicaciones para generar un
+nuevo identificador de sesión valido, o intentar programar de antemano un identificador de
+sesión utilizado previamente para evadir los controles de accesos.
+Como determinar si uno es vulnerable
+• Verifique si el marco de aplicación genera un nuevo identificador de sesión
+simplemente visitando una página web. 
 ****************************************************************************************************
 169
+• Verifique si el marco de aplicación le permite suministrar el identificador de sesión
+en cualquier lugar aparte de una cookie no persistente. Por ejemplo, si utiliza PHP,
+tome el PHPSESSIONID de la cookie, e insértelo en una URL o como una variable
+de post como la siguiente:
+• http://www.ejemplo.com/foo.php?PHPSESSIONID=xxxxxx
+Si la reproducción ha funcionado, la aplicación se encuentra en riesgo, pero aun
+en un riesgo mayor si el identificador de sesión puede ser utilizado mismo cuando la
+sesión ha expirado o ha cerrado la conexión.
+Como protegerse
+Asegúrese que los identificadores de sesión en los marcos de aplicación solo puedan ser
+obtenibles a través del valor de la cookie. Este puede requerir cambiar el comportamiento
+habitual del marco de aplicaciones o sobrescribir el manejador de sesiones.
+Utilice controles de fijación de sesión (vea próxima sección) para combinar fuertemente al
+navegador con una única sesión de usuario.
+No asuma que una sesión valida implica un usuario conectado – mantenga secretos los
+estados de autorización y compruebe la autorización en cada página.
+Realizar fuerza bruta en una sesión
+Algunos sitios de comercio electrónico utilizan números consecutivos o algoritmos
+trivialmente predecibles para los identificadores de sesión. En estos sitios, es fácil cambiar a otro
+identificador de sesión parecido y por lo tanto convertirse en otra persona. Usualmente, todas las
+funciones disponibles a los usuarios funcionan, con obvios problemas de privacidad y fraude.
+Como determinar si uno es vulnerable
+• Abra una sesión valida en un navegador.
+• Utilice una herramienta de fuerza bruta para sesiones, como Brutus para intentar
+determinar si puede resumir otra sesión. 
 ****************************************************************************************************
 170
+• Si Brutus es capaz de resumir una sesión, el marco de aplicaciones requiere de una
+mayor entropía para el identificador de sesión.
+Como protegerse
+• Utilice un algoritmo criptográfico de generación de credenciales conocido en la
+industria. No genere su propio algoritmo, y provea al algoritmo de datos en una
+manera segura. O simplemente utilice el manejador de sesiones correspondiente a su
+marco de aplicaciones.
+• Preferentemente envíe la credencial al cliente en una cookie no persistente o dentro
+de un campo de formulario oculto dentro de la página generada.
+• Coloque credenciales “indicadoras” que detecten ataques de fuerza bruta.
+• Limite el numero de credenciales de sesión únicas pertenecientes a una misma
+dirección IP (ejemplo 20 en los últimos 5 minutos)
+• Periódicamente regenere las credenciales para reducir la ventana de oportunidad para
+ataques de fuerza bruta.
+• Si detecta un intento de fuerza bruta, limpie completamente los estados de sesión para
+prevenir que esa sesión sea utilizada nuevamente.
+Reproducción de la credencial de sesión
+Los ataques de reproducción de sesión son simples si el atacante se encuentra en posición de
+poder registrar una sesión. El atacante registrara la sesión entre el cliente y el servidor y
+reproducir la parte del cliente más adelante para atacar exitosamente el servidor. Este ataque solo
+funciona si el mecanismo de autenticación no utiliza números aleatorios para prevenir este
+ataque.
+Como determinar si uno es vulnerable
+• Tome una cookie de sesión e insértela en otro navegador.
+• Intente utilizarla simultáneamente – debería fallar.
+• Intente utilizarla cuando ha expirado – debería fallar. 
 ****************************************************************************************************
 171
+Como protegerse
+• Combine a la sesión con un navegador determinado utilizando una función de hash
+del lado del servidor (REMOTE_ADDR) y si el encabezado existe,
+PROXY_FORWARDED_FOR. Tenga en cuenta que no debería utilizar encabezados
+que sean fácilmente falsificados del lado del cliente, pero utilice un hash de ellos. Si
+el nuevo hash no concuerda con el hash anterior, entonces existe una gran posibilidad
+que la sesión haya sido reproducida.
+• Utilice tiempos máximos de desconexión de sesión y regeneración de credenciales
+para reducir la venta de oportunidad.
+• Utilice un buen generador criptográfico de números aleatorios para generar las
+credenciales de sesión.
+• Utilice cookies no persistentes para guardar la credencial de sesión, o como peor de
+los casos, un campo oculto en el formulario.
+• Implemente una función de cierre de sesión para la aplicación. Cuando un usuario se
+desconecte o expire la sesión por no ser utilizada en cierto tiempo, asegure que no
+solo la cookie del lado del cliente sea eliminada (si es posible), pero también que el
+estado de sesión del lado del servidor para ese navegador en particular sea eliminado.
+De esta manera se asegura que el ataque de reproducción no pueda ocurrir luego que
+el usuario se desconecte o la sesión expire.
+Lectura adicional
+• David Endler, "Brute-Force Exploitation of Web Application Session IDs"
+http://downloads.securityfocus.com/library/SessionIDs.pdf
+• Ruby CGI::Session creates session files insecurely
+http://www.securityfocus.com/advisories/7143
 ****************************************************************************************************
 172
+Validación de Datos
+Objetivo
+Garantizar que la aplicación sea robusta contra todas las formas de ingreso de datos, ya sea
+obtenida del usuario, de la infraestructura, de entidades externas o de sistemas de base de datos.
+Plataformas Afectadas
+Todas
+Temas relevantes de COBIT
+DS11 – Gestión de datos. Deben revisarse todas las secciones
+Descripción
+La debilidad de seguridad más común en aplicaciones web es la falta de validación apropiada
+de las entradas del cliente o del entorno. Esta debilidad lleva a casi todas las principales
+vulnerabilidades en las aplicaciones, tales como intérprete de inyección, ataques locale/Unicode,
+ataques al sistema de archivos y desbordamientos de memoria.
+Nunca se debe confiar en los datos introducidos por el cliente, ya que tiene todas las
+posibilidades de manipular los datos.
+Definiciones
+Las siguientes definiciones son utilizadas en el documento:
 ****************************************************************************************************
 173
+• Revisiones de integridad
+Asegurar que los datos no han sido manipulados y que siguen siendo los mismos
+• Validación
+Asegurar que los datos están solidamente escritos, con la sintaxis correcta, dentro de los
+limites de longitud, que contenga solo caracteres permitidos, si es numérico que tenga el
+signo correcto y dentro de los limites del rango.
+• Reglas de negocio
+Garantizar que los datos no solamente sean validos, sino que cumplas con las reglas de
+negocio. Por ejemplo, las tasas de interés entran dentro de los límites permitidos.
+Cierta documentación y referencias intercambiables utilizan diversos significados, lo cual es
+muy confuso para todos los interesados. Esta confusión provoca de forma continua pérdida
+financiera continua para la organización.
+Donde incluir revisiones de integridad
+Las revisiones de integridad deben ser incluidas en cualquier lugar en que los datos pasen de
+una frontera confiable a una menos confiable, tal como, de la aplicación al navegador del usuario
+en un campo oculto, o hacia un método de pago ofrecido por terceros, tal como un identificador
+utilizado internamente a su regreso.
+El tipo de control de integridad (suma de comprobación, HMAC, encriptación, firma digital)
+se debe seleccionar en relación directa con el riesgo que representa la transición de los datos a
+través de una frontera confiable.
+Donde incluir validación
+La validación debe ser llevada a cabo en cada capa de la aplicación. Sin embargo, la
+validación debería llevarse a cabo en función del servidor que esta ejecutando el código. Por
+ejemplo, la capa de web/presentación debe validar problemas relacionados con la web, las capas
+de persistencia deberían validar problemas de persistencia tales como inyección de SQL/HQL,
+las operaciones de búsqueda en directorio deberían revisar inyección de LDAP y así
+sucesivamente. 
 ****************************************************************************************************
 174
+
+Donde incluir validación de reglas de negocio
+Las reglas de negocio se conocen durante el diseño e influyen durante la implementación. Sin
+embargo, hay enfoques malos, buenos y “mejores”. Frecuentemente el mejor enfoque es el más
+simple en términos de código.
+Ejemplo – Escenario
+• Usted va a llenar una lista con cuentas proporcionada por el backend del sistema:
+• El usuario seleccionara una cuenta, selecciona un vendedor y presiona siguiente.
+Forma incorrecta
+La opción seleccionar cuenta es leída directamente y proporcionada en un mensaje de regreso
+al sistema backend sin validar si el numero de cuenta es una de las cuentas proporcionadas por
+sistema de backend.
+Porque es malo esto:
+Un atacante puede cambiar el código HTML de cualquier manera que elija:
+• La carencia de validación requiere un viaje redondo al backend para proveer un mensaje
+de error que el código de la interfaz de usuario podría fácilmente haber eliminado.
+• El backend puede ser incapaz de enfrentarse a la carga útil de datos que la interfaz del
+usuario fácilmente podría haber eliminado. Por ejemplo desbordamientos de memoria,
+inyección de XML o similares.
+Método Aceptable
+La opción de seleccionar el parámetro cuenta se lee por el código, y comparado con la lista
+previamente desplegada.
+if ( account.inList(session.getParameter('payeelstid') ) {
+backend.performTransfer(session.getParameter('payeelstid'));
+}
+Esto evita la manipulación de parámetros, pero todavía hace que el navegador haga mucho
+trabajo.
+El mejor método
+El código original mostraba índices <option calue=”1” … > en vez de nombres de cuenta. 
+
 ****************************************************************************************************
 175
+int payeeLstId = session.getParameter('payeelstid');
+accountFrom = account.getAcctNumberByIndex(payeeLstId);
+Esto no solo es más fácil que desplegar HTML, sino que hace trivial la validación y las reglas
+de negocio. El campo no puede ser manipulado.
+Conclusión
+Para proporcionar una defensa efectiva y prevenir ataques en la manipulación de información
+entre las fronteras confiables, tal como los servidores de backend, los cuales probablemente son
+incapaces de manipular entradas de datos arbitrarios, la validación de las reglas de negocio se
+realizaran (de preferencia en un flujo de trabajo o con patrones de comandos), aun si es sabido
+que el código del backend lleva a cabo validaciones de regla de negocio.
+Esto no quiere decir que todo el conjunto de reglas de negocio necesite ser aplicado –
+significa que las validaciones principales son realizadas para prevenir viajes de ida y vuelta
+innecesarios al backend y prevenir que el este reciba datos alterados.
+Estrategias de validación de datos
+Existen cuatro estrategias para validar datos, y deberán ser utilizadas en el siguiente orden:
+Aceptar buenos conocidos
+Si usted espera un código postal, valide un código postal (tipo, longitud y sintaxis):
+public String validateAUpostCode(String postcode) {
+ return (Pattern.matches("^(((2|8|9)\d{2})|((02|08|09)\d{2})|([1-
+9]\d{3}))$", postcode)) ? postcode : '';
+}
+• Rechace malos conocidos. Si usted no espera ver caracteres tales como %3f o código
+Javascript o similares, rechace las cadenas que los contengan:
+public String removeJavascript(String input) {
+ Pattern p = Pattern.compile("javascript", CASE_INSENSITIVE);
+ p.matcher(input);
+ return (!p.matches()) ? input : ''; 
 ****************************************************************************************************
 176
+
+Pueden ser mas de 90 expresiones (vea la guía de referencia de CSS en la Guía v.2.0)
+necesarias para eliminar software malicioso conocido, y cada expresión regular necesita ser
+ejecutada en cada campo. Obviamente, esto es lento e inseguro.
+Desinfectar
+Elimine o traduzca caracteres (a entidades HTML o para remover comillas) en un intento por
+hacer que la entrada sea “segura”:
+public String quoteApostrophe(String input) {
+ return str.replaceAll("[\']", "&rsquo;");
+}
+Esto no funciona bien en la práctica, ya que hay bastantes excepciones a la regla.
+No validar
+account.setAcctId(getParameter('formAcctNo'));
+...
+public setAcctId(String acctId) {
+ cAcctId = acctId;
+}
+Esto es intrínsecamente inseguro y enérgicamente desaconsejado. El negocio debe
+deshacerse de todos y cada uno de los casos en los que no haya validación, la falta de esta
+generalmente conduce directamente a la nulidad de los demás controles de seguridad en la
+aplicación, servidor y red.
+El solo rechazo de los actuales “malos conocidos” (que a este momento son cientos de
+cadenas y literalmente millones de combinaciones) es insuficiente si la entrada es una cadena de
+caracteres. Esta estrategia es similar a las actualizaciones de los patrones de un antivirus. A
+menos que el negocio permitiera las actualizaciones de las expresiones regulares diariamente y el 
+
 ****************************************************************************************************
 177
+
+soporte de alguien investigando regularmente nuevos ataques, este método será eliminado en
+poco tiempo.
+Como la mayoría de los campos tienen una gramática especial, es más simple, rápido y
+seguro simplemente validar una sola prueba correcta positiva que intentar incluir rutinas de
+desinfección lentas y complejas para todos los ataques actuales y futuros.
+Los datos deben ser:
+• Tecleados siempre con toda seguridad.
+• Revisados en lo que respecta a su longitud y ajustados a la longitud del campo.
+• Con sus rangos revisados, si se trata de cadenas numéricas.
+• Sin signo, a mes que lo requieran.
+• La sintaxis o gramática se debe revisar antes de utilizarse o inspeccionarse por primera
+vez.
+Los lineamientos de codificación deben utilizar alguna forma de contaminación visible en la
+entrada del cliente o de fuentes no confiables, tales como conectores de terceros para hacer obvio
+que la entrada es insegura.
+taintPostcode = getParameter('postcode');
+validation = new validation();
+postcode = validation.isPostcode(taintPostcode);
+Prevenir manipulación de parámetros
+Existen varias fuentes de entrada de datos:
+• Cabeceras HTTP, tales como REMOTE_ADDR, PROXY_VIA y similares.
+• Variables de ambiente, tales como getenv() o por medio de las propiedades del servidor.
+• Todos las peticiones GET y POST e información en Cookies.
+Esto incluye campos supuestamente resistentes a ser manipulados como botones de opción
+múltiple, listas desplegables, etc. – cualquier código HTML que se encuentre del lado del cliente
+puede ser sobrescrito para que haga lo que el atacante quiera.
+Datos de configuración (Los errores suceden :)) 
+
 ****************************************************************************************************
 178
+
+Sistemas externos (a través de cualquier forma o mecanismo de entrada, tal como entradas
+XML, RMI, servicios web, etcétera)
+Todas estas fuentes de información suministran entradas de datos no confiables. Los datos
+recibidos de una entrada no confiable deben ser revisados apropiadamente antes de utilizarse por
+primera vez.
+Campos ocultos
+Los campos ocultos son una manera simple de evitar almacenar un estado en el servidor. Su
+uso es particularmente frecuente en las formas de páginas múltiples tipo asistente. Sin embargo,
+su uso expone el funcionamiento interno de la aplicación, así como datos para su fácil
+manipulación, reenvió y ataques de validación. En general, solo utilice campos ocultos para
+preservar la secuencia de las páginas.
+Si usted tiene que utilizar campos ocultos, considere las siguientes reglas:
+• La información secreta, como las contraseñas por ejemplo, nunca deben ser enviadas en
+texto claro.
+• Es necesario que los objetos ocultos tengan revisiones de integridad y de preferencia que
+sean cifrados utilizando vectores de inicialización variables (por ejemplo, diferentes
+usuarios en momentos diferentes tienen vectores de inicialización aleatorios
+criptográficamente fuertes)
+• Los campos ocultos cifrados deben ser robustos frente a los ataques de repetición, lo cual
+significa alguna forma de manipulación temporal.
+• Los datos enviados al usuario deben ser validados en el servidor una vez que la ultima
+página ha sido recibida, aun si ha sido previamente validada en el servidor – esto ayuda a
+reducir el riesgo de ataques de repetición.
+El control preferido de integridad debe ser al menos HMAC utilizando SHA-256 o de
+preferencia digitalmente firmado o cifrado utilizando PGP. IBMJCE soporta SHA-256, pero el
+soporte de PGP JCE requiere de las clases JCE de la Legión del Castillo Inquieto
+(http://www.bouncycastle.org/)
+Es más simple almacenar esta información de manera temporal en el objeto de sesión.
+Utilizar el objeto de sesión es la opción más segura ya que el dato nunca es visible al usuario,
+requiere (mucho) menos código, casi no ocupa tiempo de proceso ni disco o utilización de E/S
+
 ****************************************************************************************************
 179
+
+menos memoria (especialmente en formas con múltiples páginas demasiado extensas), y menos
+consumo de recursos de red.
+En el caso de que el objeto de sesión sea respaldado por una base de datos, si existen objetos
+extensos estos podrían llegar a ser demasiado grandes para el manejador incorporado. En este
+caso, la estrategia recomendada es almacenar la información valida en la base de datos, pero
+marcar la transacción como “incompleta”. Cada página actualizará la transacción incompleta
+hasta que esté lista para su envío. Esto reduce al mínimo la carga en la base de datos, el tamaño
+de la sesión, y la actividad entre los usuarios mientras que sigue siendo inalterable.
+El código fuente que contenga campos ocultos deberá ser rechazado durante las revisiones.
+El estado de la vista de ASP.NET
+ASP.NET envía información de regreso al cliente en un campo “estado de vista” oculto. A
+pesar de que luce prohibitivo, este “cifrado” es simple texto plano y no cuenta con integridad de
+datos ni implementa medidas adicionales en ASP.NET 1.1. En ASP.NET 2.0, esta prueba esta
+habilitada por omisión.
+Cualquier marco de trabajo con un mecanismo similar podría tener esta falla – usted debe
+ponerse en contacto con el servicio de soporte de su marco de trabajo para investigar el manejo
+de envió de datos al usuario. De preferencia no debería hacer un viaje de ida y vuelta.
+Como determinar si usted es vulnerable
+Investigue la configuración de la maquina:
+• Si enableViewStateMac no esta igualado a “verdadero”, se corre el riesgo de que el
+estado de vista contenga estado de autorización.
+• Si viewStateEncryptionMode no tiene el valor “siempre”, se corre el riesgo de que su
+estado de vista contenga información secreta tal como credenciales de identidad.
+• Si usted comparte servidor con muchos clientes mas y cuenta con ASP.NET 1.1, también
+esta compartiendo el identificador de maquina por omisión. En ASP.NET 2.0, es posible
+configurar llaves de estados de vista exclusivos para cada aplicación.
+Como protegerse
+
 ****************************************************************************************************
 180
+• Si su aplicación confía en que la información devuelta por el estado de vista no esta
+manipulada, debería al menos habilitar la revisión de integridad del estado de vista, y
+considerar seriamente:
+• Cifre el estado de vista si cualquier dato de la aplicación es sensible.
+• Actualice a ASP.NET 2.0 tan pronto como le sea práctico si se encuentra en un hospedaje
+compartido.
+• Mover información verdaderamente sensible del estado de vista a variables de sesión.
+Listas de selección, botones de opción y cajas de verificación
+Comúnmente se cree que los valores de estos elementos no son manipulados tan fácilmente.
+Esto es mentira. En el siguiente ejemplo, son utilizados números de cuenta reales, los cuales
+pueden llegar a ser comprometidos:
+<html:radio value="<%=acct.getCardNumber(1).toString( )%>" property="acctNo">
+<bean:message key="msg.card.name" arg0="<%=acct.getCardName(1).toString( )%>"
+/>
+<html:radio value="<%=acct.getCardNumber(1).toString( )%>" property="acctNo">
+<bean:message key="msg.card.name" arg0="<%=acct.getCardName(2).toString( )%>"
+/>
+Esto produce (por ejemplo):
+<input type="radio" name="acctNo" value="455712341234">Gold Card
+<input type="radio" name="acctNo" value="455712341235">Platinum Card
+Si el valor es recuperado y utilizado directamente en una consulta SQL, entonces se puede
+dar una forma interesante de inyección SQL: autorización de manipulación para divulgar
+información. Como el administrador de conexiones se comunica a la base de datos utilizando un
+solo usuario, puede ser posible ver cuentas de otros usuarios si el comando SQL luce similar a lo
+siguiente:
+String acctNo = getParameter('acctNo');
+String sql = "SELECT acctBal FROM accounts WHERE acctNo = '?'";
+PreparedStatement st = conn.prepareStatement(sql);
+st.setString(1, acctNo); 
 ****************************************************************************************************
 181
+ResultSet rs = st.executeQuery();
+Esto podría ser sobrescrito para extraer el número de cuenta por medio del índice e incluir el
+identificador único del cliente para asegurar que otro número de cuenta valido es expuesto:
+String acctNo = acct.getCardNumber(getParameter('acctIndex'));
+String sql = "SELECT acctBal FROM accounts WHERE acct_id = '?' AND acctNo =
+'?'";
+PreparedStatement st = conn.prepareStatement(sql);
+st.setString(1, acct.getID());
+st.setString(2, acctNo);
+ResultSet rs = st.executeQuery();
+Este método necesita desplegar los valores de entrada desde 1 hasta … x, y asume que las
+cuentas están almacenadas en una colección que puede ser recorrida utilizando logic:iterate.
+<logic:iterate id="loopVar" name="MyForm" property="values">
+ <html:radio property="acctIndex" idName="loopVar" value="value"/>&nbsp;
+ <bean:write name="loopVar" property="name"/><br />
+</logic:iterate>
+El código generará código HTML con los valores “1” … “x” según el contenido de la
+colección.
+<input type="radio" name="acctIndex" value="1" />Gold Credit Card
+<input type="radio" name="acctIndex" value="2" />Platinum Credit Card
+Este método debe utilizarse para cualquier tipo de elemento de entrada que permita
+establecer un valor: botones de opción, cajas de verificación y particularmente listas de opción
+múltiple y listas desplegables.
+Información por usuario 
+
 ****************************************************************************************************
 182
+En una base de datos completamente normalizada, la meta es minimizar la cantidad de datos
+duplicados. Por ejemplo, los usuarios pueden ver mensajes que están almacenados en una tabla
+de mensajes. Algunos mensajes son privados para el usuario. Sin embargo, en una base de datos
+completamente personalizada, la lista de identificadores de mensaje se guarda en otra tabla: 
+
+Si un usuario marca un mensaje para borrarlo, la manera común es recuperar el identificador
+de mensaje del usuario y borrarlo:
+DELETE FROM message WHERE msgid=’frmMsgId’
+Sin embargo, ¿como sabe si el usuario es elegible para borrar el identificador de mensaje? En
+dichas tablas el proceso de normalización debe ser ligeramente revertido para incluir un
+identificador de usuario o hacer que sea más fácil llevar a cabo una consulta o eliminación de un
+mensaje de forma segura. Por ejemplo añadiéndole un nuevo campo uid, la eliminación se vuelve
+razonablemente más segura:
+DELETE FROM message WHERE uid='session.myUserID' and msgid='frmMsgId';
+En donde el dato puede tratarse de un recurso privado o publico (por ejemplo, en el servicio
+de mensajes seguros, difundir mensajes es solo un tipo especial de mensaje privado), deben
+tomarse precauciones adicionales para prevenir que los usuarios sin autorización borren recursos 
+
+
 ****************************************************************************************************
 183
+públicos. Esto puede hacerse utilizando revisiones basadas en roles, así como sentencias SQL
+para excluir por tipo de mensaje:
+DELETE FROM message
+WHERE
+uid='session.myUserID' AND
+msgid='frmMsgId' AND
+broadcastFlag = false;
+Cifrar URL
+Los datos enviados por medio del URL, lo cual se desaconseja enérgicamente, pueden ser
+cifrados y descifrados. Esto reduce la posibilidad de ataques del tipo “cross-site-scripting”.
+En general, nunca envíe datos por medio de peticiones GET excepto para propósitos de
+navegación.
+Cifrar HTML
+Los datos enviados al usuario deben ser seguros y él debe poder verlos. Esto se puede lograr
+mediante el uso de <bean:write …> y similares. No utilice <%=var%> solo en el caso de que se
+provea un argumento a <bean:write …> o similares.
+El cifrado de HTML traduce un rango de caracteres en entidades HTML. Por ejemplo, > se
+convierte en &gt;. Esto se seguirá desplegando como > en el navegador del usuario y es una
+alternativa segura.
+Cadenas de texto cifradas
+Algunas cosas pueden ser recibidas de forma cifrada. Es fundamental enviar los
+identificadores de lenguaje correctos al usuario para que el servidor de páginas web y el servidor
+de aplicaciones puedan proveer un nivel único de estandarización en la codificación de los
+caracteres antes de usarlos.
+No utilice getReader() o getInputStream() ya que estos métodos de entrada de datos no
+descifran cadenas de caracteres previamente cifradas. Si necesita utilizar estas funciones, debe
+estandarizar primero los caracteres de forma manual. 
+
 ****************************************************************************************************
 184
+
+Delimitadores y caracteres especiales
+Existen bastantes caracteres que tienen significados especiales en varios programas. Si usted
+sigue el consejo de aceptar solo caracteres considerados como buenos, es muy probable que se
+capturen algunos delimitadores.
+A continuación los sospechosos más comunes:
+• NULL (zero) %00
+• LF - ANSI chr(10) "\r"
+• CR - ANSI chr(13) "\n"
+• CRLF - "\n\r"
+• CR - EBCDIC 0x0f
+• Comillas " '
+• Comas, diagonales, espacios, tabuladores y otros caracteres no imprimibles – utilizados
+en CSV, información delimitada por tabuladores y otros formatos especializados.
+• <> - XML y etiquetas HTML así como caracteres de redirección.
+• ; & - Unix y persistencia de sistema de archivo NT
+• @ Utilizada para direcciones electrónicas
+• 0xff
+• … otras mas
+Siempre que codifique para una tecnología en particular, usted debería determinar que
+caracteres son “especiales” y prevenirse a que aparezcan en las entradas de datos o tratarlos
+adecuadamente.
+Lectura adicional
+ASP.NET 2.0 Viewstate
+http://channel9.msdn.com/wiki/default.aspx/Channel9.HowToConfigureTheMachineKeyInASP
+NET2
+
 ****************************************************************************************************
 185
+
+Interprete de Inyección
+Objetivo
+Garantizar que las aplicaciones sean seguras de ataques de manipulación de parámetros
+contra intérpretes comunes.
+Plataformas afectadas
+Todas
+Temas relevantes de COBIT
+DS11 – Administrar información – Deben revisarse todas las secciones
+DS11.9 – Proceso de integridad de datos
+DS11.20 – Integridad continúa de datos almacenados
+Inyección del Agente de usuario
+La inyección del agente de usuario es un problema bastante relevante en las aplicaciones
+web. No es posible controlar el escritorio del usuario (o no deberíamos querer hacerlo), pero es
+parte de la ecuación de confianza.
+Hay varios retos que se pueden enviar para confiar en la información de entrada y envío de
+datos de vuelta al usuario:
+• El navegador puede estar comprometido con software espía o Troyanos.
+• El navegador tiene varios procesadores de despliegue embebidos, incluidos: HTML,
+XHTML, XML, Flash (cerca de 90% de todos los navegadores), Javascript (cerca del
+99%), XUL (Firefox y Mozilla), XAML (IE 7 y posteriores) y así sucesivamente.
+Los motores de despliegue y agregados pueden ser violados por:
+• Intentos de “phishing” – el código HTML puro puede ser usado para falsificar un sitio de
+manera convincente.
+• Violaciones de confianza – XUL y XAML son utilizados para escribir interfaces de
+usuario – si pueden ser violados, nada en el navegador sería digno de confianza,
+incluyendo la dirección web y detalles de certificados y candados. 
+
 ****************************************************************************************************
 186
+
+• Inyección de ruta de software malicioso – todas las aplicaciones tienen errores y el
+software espía es experto en tratar de abusar de estos errores, con el propósito de instalar
+o ejecutar software que pudiera causar daño en el equipo del usuario.
+• Recolectores de información – el robo de “cookies” y detalles de los usuarios permite al
+atacante reanudar la sesión de este desde cualquier otro lugar.
+Vectores de la inyección del agente de usuario
+• “Cross-Site scripting” utilizando DHTML y JavaScript
+• Flash / Shockwave
+• Mocha (antes Netscape)
+• ActiveX (solo en IE)
+• Agregados (por ejemplo, Quicktime, Acrobat o Windows Media Player)
+• Los BHO’s (Objetos asistentes del navegador) a menudo utilizados por software espía y
+Troyanos – en ocasiones el usuario ni siquiera sabe de la existencia de estos bebes
+• Errores de HTML (en todos los navegadores)
+• XUL (Firefox) Chrome
+• XAML (IE 7) Chrome – aun sin probar al momento de escribir este documento
+Reflexión Inmediata
+Esta es la forma más común de inyección de agente de usuario ya que es fácil de encontrar y
+ejecutar.
+La victima es llevada / forzada hacia una pagina vulnerable, a través, por ejemplo, de un
+enlace con una imagen de un gatito lindo, una redirección de pagina para activar una cuenta o
+una forma vulnerable que contiene campos “desinfectados” de manera inadecuada. Una vez que
+el usuario se encuentra en el destino vulnerable, el ataque de reflexión incorporado lanza la
+información del atacante. Existen límites para el tamaño del ataque de reflexión incorporado – la
+mayoría de las peticiones GET necesitan ser menores de 2 o 4 KB. Sin embargo, este tamaño ha
+llegado a ser más que suficiente.
+Los intentos de “phising” deberían ser considerados ataques de reflexión inmediata.
+Almacenados
+
 ****************************************************************************************************
 187
+
+En este modelo, la inyección ocurre en un momento previo y los usuarios son afectados en
+una fecha posterior. Los ataques más comunes se presentan en comentarios de bitácoras
+personales, foros y cualquier sitio relativamente público que pueda ser evitado de alguna manera.
+Inyección XSS basada en DOM
+La Inyección del tipo “Cross-Site Scripting” basada en DOM (concepto detallado en la guía
+de referencia de Klein en la sección de Lectura Adicional) permite a un atacante utilizar el
+Modelo de Objetos de Datos (DOM por sus siglas en inglés) para introducir código malicioso del
+lado del cliente en el JavaScript que se encuentra actualmente incorporado en bastantes páginas.
+Para mayor información, por favor diríjase al documento de Inyección XSS basada en DOM en
+la sección de Lectura Adicional.
+Protegiéndose contra ataques basados en DOM
+Del documento de Klein:
+• Evite reescritura del documento del lado del cliente, redirección u otra acción sensible
+utilizando información del lado del cliente. La mayoría de estas tareas se pueden evitar
+utilizando páginas dinámicas (del lado del servidor).
+• Analizar y asegurar el código del lado del cliente (Javascript). Las referencias a objetos
+DOM que puedan ser afectadas por el usuario (o atacante) deben ser inspeccionadas,
+incluyendo (pero no limitando):
+• document.URL
+• document.URLUnencoded
+• document.location (y muchas de sus propiedades)
+• document.referrer
+• window.location (y muchas de sus propiedades)
+Tenga en cuenta que la propiedad de un objeto del documento o de
+la ventana puede ser referenciada de varias formas –
+explícitamente (p.ej. window.location), implícitamente (p.ej.
+location) u obteniendo y utilizando un manejador a una ventana
+(p.ej. manejador_a_ventana.location). 
+
 ****************************************************************************************************
 188
+
+• Se debe poner especial atención en los escenarios en los cuales son modificados los
+objetos DOM, ya sea de manera explicita o potencialmente y por medio de HTML o
+accediendo al objeto DOM mismo, por ejemplo (no se trata de una lista exhaustiva,
+probablemente existen bastantes extensiones de navegador):
+• Escribir HTML puro, por ejemplo:
+• document.write(…)
+• document.writeln(…)
+• document.body.innerHTML(…)
+• Modificando directamente el objeto DOM, por ejemplo:
+• document.forms[0].action=… (y muchas otras colecciones)
+• document.attachEvent(…)
+• document.create…(…)
+• document.execCommand(…)
+• document.body. … (accediendo al DOM a través del objeto “body”)
+• window.attachEvent(…)
+Reemplazando la URL del documento, por ejemplo
+• document.location=… (asignando servidor y nombre del servidor a la ruta del navegador)
+• document.location.hostname=…
+• document.location.replace(…)
+• document.location.assign(…)
+• document.URL=…
+• window.navigate(…)
+Abriendo o modificando una ventana
+• document.open(…)
+• document.location.href=… (asignando servidor y nombre del servidor a la ruta del
+navegador)
+Directamente ejecutando código, por ejemplo:
+• eval(…) 
+
 ****************************************************************************************************
 189
+
+• window.execScript(…)
+• window.setInterval(…)
+• window.setTimeout(…)
+Como protegerse contra “XSS” reflejado y almacenado
+Protegiéndose contra Ataques reflejados
+La validación de los datos de entrada debe ser utilizada para eliminar caracteres sospechosos,
+preferentemente por medio de estrategias de validación bien fortalecidas; siempre es mejor estar
+seguro de que los datos no tienen caracteres ilegales para comenzar a trabajar con ellos.
+En ASP.NET, se debe añadir la siguiente línea al archivo web.config:
+<pages validateRequest="true" />
+en el area <system></system>.
+Protegiéndose contra Ataques almacenados
+Ya que la información a menudo proviene de fuentes impuras, la validación de los datos de
+salida también es requerida.
+ASP.NET: modifique el archivo web.config - asigne “true” al parámetro validateRequest y
+utilice HTTPUtility.HTMLEncode() para las variables en el cuerpo del codigo.
+PHP: utilice htmlentities(), htmlspecialchars(), para mostrar HTML y urlencode() para
+argumentos recibidos por el método GET.
+JSP: actualmente la validación de los datos de salida es muy simple para aquellos que
+utilizan “Java Server Pages” (JSP’s por sus siglas en inglés) – solo utilice “Struts”, por ejemplo
+<bean:write…> y similares:
+Bueno:
+<html:submit styleClass="button" value="<bean:message
+key="button.submitText"/> "/>
+Malo:
+out.println('<input type="submit" class="button" value="<%=buttonSubmitText%>"
+/>');
+
 ****************************************************************************************************
 190
+
+La vieja técnica utilizada en JSP <%=…%> y out.print* no brindan ninguna protección en
+contra de los ataques XSS. Estas técnicas ya no deben ser usadas y cualquier código que las siga
+utilizando debe ser rechazado.
+Siendo un poco precavido usted puede utilizar <%=…%> como argumento de etiquetas
+“Struts”:
+<html:submit styleClass="button" value="<%=button.submitText%>"/> "/>
+Mejor aun utilice la etiqueta <bean:message…> para este propósito. Nunca utilice
+System.out.* para desplegar información, aun tratándose de salidas a la consola – los mensajes
+de consola deben ser autentificados por un mecanismo de autentificación.
+Desglose de la respuesta HTTP
+Este ataque, descrito en 2004 en un documento por Klein (ver el Documento de Desglose de
+Respuesta HTTP en la sección Lectura Adicional), utiliza una debilidad en la definición del
+protocolo HTTP para inyectar información maliciosa en el navegador del usuario. Klein describe
+los siguientes tipos de ataque:
+• Cross-Site Scripting (XSS)
+• Envenenamiento del caché de web (suplantación de portada de sitio web)
+• Ataques cruzados de usuario (un solo usuario, una sola pagina, suplantación de portada
+del sitio de forma temporal)
+• Secuestro de páginas
+• Envenenamiento del caché del navegador
+Como determinar si es vulnerable
+En el protocolo HTTP, las cabeceras y el cuerpo están separados por una secuencia continua
+de retorno de carro y salto de línea (CRLF por sus siglas en ingles). Si el atacante puede insertar
+información en el encabezado, por ejemplo la ubicación de este (utilizado en las redirecciones) o
+en las “cookies”, y si la aplicación no esta protegida contra inyecciones de CRLF, es muy
+probable que la aplicación sea vulnerable a este tipo de ataque.
+Como protegerse 
+
 ****************************************************************************************************
 191
+
+Investigue todos los usos de los encabezados HTTP, tales como:
+• asignar valores a las “cookies”
+• manipular la dirección (o funciones de redirección)
+• asignar valores a los tipos MIME, tipo de contenido, tamaño de archivo, etcétera
+• o asignar valores a cabeceras personalizadas
+Si este encabezado contiene datos de usuario sin validar, la aplicación es vulnerable cuando
+se utilice con marcos de trabajo que no puedan detectar este problema.
+Si la aplicación tiene que utilizar información proporcionada por el usuario en los
+encabezados HTTP, esta debe hacer una revisión buscando valores “\n\n” o “\r\n” en la
+información suministrada y eliminarlos.
+Muchos servidores de aplicación y marcos de trabajo cuentan con protección básica contra
+este tipo de ataques.
+Inyección SQL
+La inyección de instrucciones SQL se puede dar en cualquier forma de acceso a la base de
+datos. Sin embargo, algunos tipos de inyección de SQL son más difíciles de detectar que otros:
+• Procedimientos almacenados que utilizan parámetros, particularmente aquellos que
+tienen el tipo bien definido
+• = declaración preparada
+• = mapeo objeto-relacional (ORM por sus siglas en ingles)
+• Consultas dinámicas
+Es mejor iniciar desde arriba y trabajar hasta la forma mas baja de acceso SQL para prevenir
+problemas de inyección.
+Aunque la anticuada inyección dinámica de SQL todavía es la favorita entre programas
+construidos con PHP, debe tenerse en cuenta que esta técnica ha avanzado considerablemente:
+• Es posible llevar a cabo ataques de inyección a ciegas (y aun completos) utilizando
+ataques temporizados (vea los documentos NGS en la sección de referencias de este
+capitulo)
+• Es posible obviar ciertas formas de procedimientos almacenados, particularmente cuando
+estos procedimientos solo sirven de envoltura. 
+
 ****************************************************************************************************
 192
+
+La aplicación debe considerar las siguientes recomendaciones:
+• Todas las sentencias SQL deben asegurarse de que cuando un usuario afecte información,
+esta información sea seleccionada o actualizada basándose en el registro del usuario.
+• En el código que haga llamadas a cualquier capa de persistencia, agregar caracteres de
+escape para evitar inyecciones de SQL en esas capas.
+• Contar con al menos una prueba automatizada que intente llevar a cabo inyecciones de
+SQL.
+Esto garantizará que el código cuenta con una capa adicional de defensa en contra de la
+inyección de comandos SQL y asegura que si este control falla, la probabilidad de que la
+inyección suceda es conocida.
+Mapeo de Objeto Relacional
+Es común pensar que las capas de Mapeo de Objeto Relacional, como Hibernate son inmunes
+a la inyección SQL. Este no es el caso de Hibernate que incluye un subconjunto de SQL llamado
+HQL, y permite consultas SQL “nativas”. A menudo la capa ORM manipula de forma mínima la
+consulta entrante antes de entregarla a la base de datos para su proceso.
+Si esta usando Hibernate, no utilice el ya descontinuado método session.find() sin usar una de
+las cubiertas de sobrecarga de consulta. Utilizar session.find() con entradas directas de usuario
+permite que estas entradas pasen directamente a la capa inferior de motor de SQL lo cual
+ocasionara inyecciones SQL en todos los sistemas administradores de bases de datos
+relacionales.
+Payment payment = (Payment) session.find("from com.example.Payment as payment
+where payment.id = " + paymentIds.get(i));
+El código HQL (de Hibernate) anterior permitirá inyección de SQL en paymentIds, el cual es
+obtenido del usuario. Una forma segura de expresar esto es:
+int pId = paymentIds.get(i);
+TsPayment payment = (TsPayment) session.find("from com.example.Payment as
+payment where payment.id = ?", pId, StringType); 
+
 ****************************************************************************************************
 193
+
+Es vital que a los datos de entrada se les aplique caracteres de escape apropiados antes de
+utilizarlos en una base de datos. Afortunadamente, el objeto de conexión a base de datos de Java
+utilizado por Oracle agrega caracteres de escape para obtener declaraciones preparadas y
+procedimientos almacenados que utilizan parámetros. Sin embargo, si el manejador de la
+conexión cambia, cualquier código que asuma que los datos de entrada son seguros, estará en
+riesgo.
+La aplicación debe considerar las siguientes recomendaciones:
+• Asegurar que a todas las consultas nativas se les están agregando apropiadamente
+caracteres de escape o no contienen datos de entrada del usuario.
+• Garantizar que todas las llamadas a ORM que se traduzcan a consultas dinámicas sean
+rescritas para convertirse en parámetros seguros.
+• En el código que haga llamadas a cualquier capa de persistencia, agregar caracteres de
+escape para evitar inyecciones de SQL en esas capas.
+• Contar con al menos una prueba automatizada que intente llevar a cabo inyecciones de
+SQL.
+• Esto garantizará que el código cuenta con una capa adicional de defensa en contra de la
+inyección de comandos SQL y asegura que si este control falla, la probabilidad de que la
+inyección suceda es conocida.
+Inyección LDAP
+La inyección de comandos LDAP es relativamente rara al momento de escribir este
+documento, pero es devastadora si no se esta protegido para evitarla. Afortunadamente prevenirla
+es hasta cierto punto sencillo: utilice validación positiva para eliminar todo lo que no sea
+nombres de usuario validos y otros datos dinamicos.
+Por ejemplo, si la siguiente consulta se utiliza:
+String principal = "cn=" + getParameter("username") + ", ou=Users, o=example";
+String password = getParameter("password");
+env.put(Context.SECURITY_AUTHENTICATION, "simple");
+env.put(Context.SECURITY_PRINCIPAL, principal);
+env.put(Context.SECURITY_CREDENTIALS, password); 
+
 ****************************************************************************************************
 194
+
+// crea el contexto inicial
+DirContext ctx = new InitialDirContext(env);
+el servidor LDAP estará en riesgo de recibir un ataque de inyección. Es imprescindible que
+los caracteres especiales de LDAP sean removidos antes de ejecutar cualquier comando:
+// si el nombre de usuario contiene caracteres especiales
+// LDAP se detiene en este paso
+if ( containsLDAPspecials(getParameter("username")) ) {
+ throw new javax.naming.AuthenticationException();
+}
+String principal = "cn=" + getParameter("username") + ", ou=Users, o=example";
+String password = getParameter("password");
+env.put(Context.SECURITY_AUTHENTICATION, "simple");
+env.put(Context.SECURITY_PRINCIPAL, principal);
+env.put(Context.SECURITY_CREDENTIALS, password);
+// crea el contexto inicial
+DirContext ctx = new InitialDirContext(env);
+Inyección XML
+En la actualidad, varios sistemas utilizan XML para transformar y transportar información.
+Es vital que la inyección de XML sea imposible de llevarse a cabo.
+Ataque de rutas – inyección XPath a ciegas
+Amit Kleins detalla una variación de la técnica de inyección SQL en el documento citado en
+la sección de referencias al final de este modulo. La técnica permite a los atacantes llevar a cabo
+ataques completos basados en XPath, esta técnica no requiere conocimientos previos del
+esquema XPath. 
+
 ****************************************************************************************************
 195
+
+Como XPath se utiliza para todo, búsqueda de nodos dentro de un documento XML para
+obtener la correcta autentificación de un usuario, búsquedas en general y así sucesivamente, esta
+técnica es devastadora si el sistema lleva a ser vulnerado.
+La técnica que describe Klein es también una extensión muy útil para otros intérpretes que
+sean “capaces” de recibir ataques de inyección, por ejemplo varios dialectos basados en SQL.
+Como determinar si es vulnerable
+• Si usted permite información no validada proveniente de fuentes no confiables; y además
+• Utiliza funciones XML, como en la construcción de transacciones XML, consultas XPath
+o plantillas XLST de expansión con información contaminada, usted muy probablemente
+sea vulnerable.
+Como protegerse
+Para protegerse se requiere eliminar (prohibir) o agregar las sentencias de escape apropiadas
+a los siguientes caracteres:
+• < > / ' = " para prevenir inyección directa de parámetros
+• Las consultas XPath no deben contener ningún carácter meta (tales como ' = ? // o
+similares)
+• Las expansiones XSLT no deben contener ninguna entrada de usuario, o si las permiten,
+se debe probar la existencia del archivo y garantizar que estos se encuentran dentro de las
+fronteras de la política de seguridad de Java 2.
+Inyección de Código
+ASP.NET no contiene ninguna función que para incluir código inyectado, pero puede hacerlo
+a través del uso de las clases CodeProvider junto con la reflexión. Vea la referencia “Evaluando
+ASP.NET”
+Cualquier código PHP que utilice la función eval() corre el riesgo de sufrir un ataque de
+inyección de código.
+Java generalmente no brinda la habilidad para evaluar JSP’s dinamicas.
+Sin embargo existen dos excepciones en este rubro:
+• Inclusión Dinámica de JSP (<jsp:include …>)
+• Utilizar etiquetas de evaluación de JSP’s proporcionadas por terceros 
+
 ****************************************************************************************************
 196
+
+• Portales y software desarrollado por comunidades a menudo requieren validación de
+código dinámico en las plantillas y temas del sitio intercambiables. Si el portal requiere
+inclusiones dinámica y ejecución de código dinámico, hay un riesgo de inyección de
+código Java o JSP.
+Para combatir estos, la primera línea de defensa la integran:
+• Preferir siempre inclusiones estáticas (<%include …%>)
+• Restringir la inclusión de archivos externos al servidor utilizando las políticas de
+seguridad de Java 2.
+• Establecer reglas de cortafuegos para prevenir conexiones fuera de los límites de Internet.
+• Asegurar que el código no interprete información proporcionada por el usuario sin
+haberla validado previamente.
+En un ejemplo hipotético, el usuario puede seleccionar el uso de “Gatos” como tema inicial.
+En este ejemplo, el código incluye dinámicamente un archivo llamado “Gatos.tema.jsp”
+utilizando concatenación simple. Sin embargo, si el usuario ingresa otro tipo de información,
+puede tener la facultad de obtener código Java interpretado en el servidor. Bajo este panorama, el
+servidor de aplicaciones ya no es propiedad del usuario. En general, la inclusión dinámica y la
+evaluación dinámica de código debe ser mal vista.
+
 ****************************************************************************************************
 197
+
+Lectura adicional
+• Klein, A., Inyección XPath a ciegas
+http://www.packetstormsecurity.com/papers/bypass/Blind_XPath_Injection_20040518.p
+df
+• Klein, A., Inyección XSS basada en DOM
+http://www.webappsec.org/projects/articles/071105.html
+• Añadiendo protección XSS a .NET 1.0
+http://msdn.microsoft.com/library/default.asp?url=/library/enus/dnaspp/html/scriptingprotection.asp
+• Evaluando ASP.NET
+http://www.eggheadcafe.com/articles/20030908.asp
+• Mitigación de código malicioso
+http://www.cert.org/tech_tips/malicious_code_mitigation.html
+• Inyección XSLT in Firefox
+http://www.securityfocus.com/advisories/8185
+• Inyección XML en paquetes libxml2
+http://www.securityfocus.com/advisories/7439
+• Inyección XML en PHP
+http://www.securityfocus.com/advisories/8786
+• Documentos de inyección SQL
+http://www.nextgenss.com/papers/advanced_sql_injection.pdf
+http://www.nextgenss.com/papers/more_advanced_sql_injection.pdf
+http://www.sqlsecurity.com/faq-inj.asp
+http://www.spidynamics.com/papers/SQLInjectionWhitePaper.pdf
+
 ****************************************************************************************************
 198
+Canonicalización, Locales y Unicode
+Objetivo
+Asegurar que la aplicación es robusta cuando está sujeta a valores de entrada codificados,
+internacionalizados o en Unicode.
+Plataformas afectadas
+Todas.
+Temas relevantes de COBIT
+DS11.9 – Integridad en el procesado de datos
+Descripción
+Rara vez las aplicaciones son probadas frente a exploits de Unicode, y todavía muchas de
+ellas son vulnerables por los mismos motivos los cuales permiten hacer que los ataques
+conocidos como de “HTTP Request Smuggling” se puedan llevar a cabo – cada navegador,
+servidor Web, cortafuegos de aplicación web o agente de inspección http, y otros dispositivos
+trata el manejo de las locales del usuario de diferente (y en ocasiones confusa) manera.
+La canonicalización se hace cargo de la manera en la cual los sistemas convierten los datos
+de una manera a otra. Canónico significa la manera más estándar y simple de algo. La
+canonicalización es el proceso de convertir algo de una representación a su forma más simple.
+Las aplicaciones Web tienen que lidiar con varias cuestiones de canonicalización desde la
+codificación de la URL a la traducción a su dirección IP. Cuando las decisiones de seguridad son
+tomadas con una base menor a la de la perfecta canonicalización de la información, la aplicación
+por si misma debe ser capaz de hacer frente a datos proporcionados de manera imprevista de una
+forma segura.
+NB: Asegurarse frente a ataques de canonicalización no significa que todas las
+aplicaciones deban ser internacionalizadas, pero sí que todas las aplicaciones deben ser
+seguras al introducir datos en Unicode o con una representación incorrecta.
+Unicode
+La codificación Unicode es un método para almacenar caracteres con múltiples bytes. Para
+cada lugar en dónde se permita la introducción de datos, la información puede ser proporcionada 
 ****************************************************************************************************
 199
+
+en Unicode para ocultar código malicioso y llevar a cabo una gran variedad de ataques. El RFC
+2279 referencia varias maneras mediantes las cuales se puede codificar la información.
+Unicode fue desarrollado para permitir el uso de un conjunto universal de caracteres
+(Universal Character Set (UCS)) que abarcan los mayores sistemas de escritura del mundo. Los
+caracteres multi-octeto, sin embargo, no son compatibles con muchas aplicaciones y protocolos
+actuales, y esto ha hecho que se desarrollen varios formatos de transformación de UCS (UTF)
+con diferentes características. UTF-8 tiene la característica de preservar el rango completo del
+US-ASCII. Es compatible con sistemas de ficheros, analizadores o parsers y software que
+confían en los valores US-ASCII, pero es transparente a otros valores.
+La importancia de la representación en UTF-8 se deriva del hecho de que los servidores web
+y aplicaciones realizan varios pasos en la entrada con este formato. El orden de estos pasos a
+menudo es crítico para la seguridad de la aplicación. Básicamente, los pasos son “decodificación
+de la URL” potencialmente seguidos por la “decodificación UTF-8”, y entremezclados con ellos
+se encuentran varias comprobaciones de seguridad, que son también pasos de procesamiento.
+Si, por ejemplo, una de las comprobaciones de seguridad consiste en buscar la cadena “..” y
+se lleva a cabo antes de que se llegue a la decodificación de UTF-8, es posible inyectar “..” en su
+formato largo UTF-8. Incluso aunque las comprobaciones de seguridad reconozcan algunos de
+los formatos no canónicos para los puntos, podría ser que no todos los formatos sean capaces.
+Considere el carácter ASCII “.” (punto). Su representación canónica es un punto (ASCII 2E).
+Si lo consideramos como carácter en su segundo rango UTF-8 (2 bytes), obtendríamos una
+representación extendida de él, siendo C0 AE. Del mismo modo, existen más representaciones
+extendidas : E0 80 AE, F0 80 80 AE, F8 80 80 80 AE y FC 80 80 80 80 AE. 
+
 ****************************************************************************************************
 200
+Consideremos ahora la representación C0 AE del ".". Comprobando lo que requiere la
+codificación UTF-8, el segundo octeto contendrá un “10” como sus bits más significativos. Es
+posible definir 3 variantes para ella, enumerando el resto de las posibles combinaciones con 2
+bits (“00”, “01” y “11”). Algunos decodificadores de UTF-8 tratarán estas variantes como
+idénticas al símbolo original (simplemente utilizan los 6 bits menos significativos, sin tener en
+cuenta los 2 bits más significativos). Por lo tanto, las tres variantes son C0 2E, C0 5E y C0 FE.
+Por ello, resulta posible el crear codificaciones UTF-8 incorrectas, en dos sentidos:
+• Una secuencia UTF-8 para representar un símbolo dado puede ser más extenso de lo
+necesario.
+• Una secuencia UTF-8 podría contener octetos con un formato incorrecto (por ejemplo,
+que no cumplan con los 6 formatos anteriores)
+Para complicar aún más las cosas, cada representación puede ser transmitida por HTTP de
+múltiples formas:
+Sin ser tratada. Esto es, sin ningún tipo de codificación de la URL. Esto normalmente
+ocasiona que se envíen octetos ASCII en la ruta, petición o en el cuerpo, que violan los
+estándares http. Sin embargo, la mayoría de los servidores http se comportan adecuadamente con
+caracteres que no son ASCII.
+Codificación válida de la URL. Cada uno de los caracteres no ASCII (justamente, todos los
+caracteres que necesitan una codificación de la URL – un gran conjunto de caracteres que no son
+ASCII) son codificados como la dirección. Esto resulta en el envío, por ejemplo, de %C0%AE.
+Codificación inválida de la URL. Esta es una variante de la codificación válida en URL, en
+la cual algunos digitos hexadecimales son remplazados con digitos que no son hexadecimales,
+aunque el resultado se interpreta como idéntico al original, según algunos algoritmos de
+decodificación. Por ejemplo, %C0 es interpretado como un carácter de número ('C'-
+'A'+10)*16+('0'-'0') = 192. Aplicando el mismo algoritmo a %M0 resulta ('M'-'A'+10)*16+('0'-
+'0') = 448, que, cuando se fuerza en que sea un solo byte, resulta (8 bits menos significativos)
+192, igual que el original. Por lo tanto, si el algoritmo permite carácteres no hexadecimales
+(como por ejemplo ‘M’), entonces será posible obtener variantes para la representación de %C0,
+como por ejemplo %M0 y %BG.
+Debe tenerse en consideración que estas técnicas no están directamente relacionadas con
+Unicode, por lo que pueden ser utilizadas en ataques que no sean Unicode también. 
 ****************************************************************************************************
 201
+Como protegerse
+Se debe elegir una forma canónica adecuada y se debe canonizar todos los valores
+introducidos por el usuario antes de que se tomen decisiones referentes a la autorización. Las
+comprobaciones de seguridad deben llevarse a cabo después de que se complete la codificación
+UTF-8. Además, se recomienda comprobar que la codificación UTF-8 es una forma canónica
+válida del símbolo que representa.
+http://www.ietf.org/rfc/rfc2279.txt?number=2279
+Formatos de entrada
+A menudo, las aplicaciones Web operan internamente en ASCII, ISO 8859-1 o Unicode (los
+programas Java son un ejemplo de UTF-16). Sus usuarios pueden estar utilizando otro tipo de
+locales, y los atacantes podrían elegir sus locales y conjunto de caracteres sin ningún problema.
+Como determinar si se es vulnerable
+Analizar la aplicación Web para determinar si impone el código de página o locales. 
 ****************************************************************************************************
 202
+Si no se impone conjunto de caracteres o locales, será una de las siguientes:
+• Posts HTTP. Punto interesante: Todos los posts HTTP necesitan ser ISO 8859-1, que
+perderán información para la mayoría de los conjuntos de caracteres de byte doble. Se
+debe probar la aplicación con sus navegadores soportados para determinar si funcionan
+con caracteres codificados con doble byte de manera segura.
+• Gets HTTP. Depende de la página representada anteriormente y las implementaciones
+por cada navegador, pero la codificación URL no está propiamente definida para
+conjuntos de caracteres de con byte doble. IE puede ser forzado opcionalmente para
+realizar todos los envíos en UTF-8 que serán después canonizados de manera adecuada
+en el servidor.
+• .NET: Unicode (little endian)
+• Las implementaciones JSP, como por ejemplo Tomcat: UTF-8 – comprobar la opción
+“javaEncoding” en el web.xml por muchos contenedores de servlet.
+• Java: Unicode (UTF-16, big endian, o depende del sistema operativo al lanzarse la
+máquina virtual de Java)
+• PHP: Configurado en php.ini, ISO 8859-1.
+NB: Muchas funciones PHP dan (de manera incorrecta) por hecho el conjunto de
+caracteres y pueden no funcionar correctamente en el momento que se configura
+con otro distinto. ¡Analice su aplicación con el nuevo conjunto de caracteres
+cuidadosamente!
+Como protegerse
+• Determinar las necesidades de su aplicación, e imponer adecuadamente tanto las locales
+como el conjunto de caracteres.
+Imposición de locales
+El servidor web siempre debe establecer unas locales, y preferiblemente un código de país,
+como por ejemplo “es_ES” , “en_US”, “fr_FR”, “zh_CN”.
+Como determinar si se es vulnerable
+Utilizando un analizador de cabeceras http o incluso realizando un telnet contra el servidor
+Web: 
 ****************************************************************************************************
 203
+HEAD / HTTP1.0
+Debería mostrar algo como lo siguiente:
+HTTP/1.1 200 OK
+Date: Sun, 24 Jul 2005 08:13:17 GMT
+Server: Apache/1.3.29
+Connection: close
+Content-Type: text/html; charset=iso-8859-1
+Como protegerse
+Revise e implemente las siguientes directivas:
+http://www.w3.org/International/technique-index
+Como mínimo, seleccione las locales correctas de salida y el conjunto de caracteres.
+Codificación doble (o n-)
+La mayoría de las aplicaciones web sólo comprueban una vez si los valores introducidos han
+sido codificados o decodificados en los valores Unicode correctos. Sin embargo, un atacante
+podría haber codificado dos veces la cadena de ataque.
+Como determinar si se es vulnerable
+• Utilizar la herramienta de codificación doble incluida en la Cheat Sheet de XSS para
+codificar doblemente una cadena de XSS.
+http://ha.ckers.org/xss.html
+• Si la inyección resultante resulta en un ataque XSS satisfactorio, entonces su aplicación
+es vulnerable.
+• Este ataque podría también funcionar en el caso de:
+1. Nombres de ficheros
+2. Objetos no corrientes como son tipos de informes o selectores del lenguaje
+3. Nombres de temas
+Como protegerse 
 ****************************************************************************************************
 204
+• Imponga tanto las locales correctas como el conjunto de caracteres en su aplicación.
+• Utilice las entidades HTML, la codificación URL y demás para prevenir que los
+caracteres Unicode sean tratados de manera inadecuada por las combinaciones más
+importantes de navegador, servidor web y aplicación.
+• Pruebe su código y su solución de manera exhaustiva.
+HTTP Request Smuggling
+El “HTTP Request Smuggling (HRS)” es un hecho detallado en profundidad por Klein,
+Linhart, Heled, y Orrin en un estudio que se puede encontrar en la sección de referencias. La
+base de HTTP Request Smuggling reside en que muchas de las grandes soluciones informáticas
+utilizan muchos componentes que proporcionan una aplicación Web. Las diferencias entre un
+cortafuegos, un cortafuegos de aplicación Web, balanceadores de carga, aceleradores SSL,
+proxys inversos y servidores Web permiten ataques especiales para traspasar todos los controles
+en los sistemas finales y directamente atacar el servidor Web.
+Los tipos de ataques que detallan son:
+• Envenenamiento de la caché Web
+• Evasión de Cortafuegos/IDS/IPS
+• Técnicas anticipadas y prolongadas de HTS
+• Secuestro de peticiones
+• Secuestro de credenciales
+Desde que se publicó el informe, se han descubierto varios ejemplos reales de HRS
+Como determinar si se es vulnerable
+• Revisar el informe
+• Revisar su infraestructura en busca de componentes vulnerables
+Como protegerse
 ****************************************************************************************************
 205
+• Minimizar el número total de componentes que podrían interpretar peticiones http
+entrantes.
+• Mantener al día su infraestructura con los últimos parches.
+Lectura adicional
+• Evasión de IDS utilizando Unicode (Inglés)
+http://online.securityfocus.com/print/infocus/1232
+• Página oficial de internacionalización en W3C (Inglés)
+http://www.w3.org/International/
+• Traducciones al castellano de algunos documentos sobre internacionalización de la W3C
+http://www.w3.org/2005/11/Translations/Query?lang=es&i18n=i18n-tutorials
+• HTTP Request Smuggling (Inglés)
+http://www.watchfire.com/resources/HTTP-Request-Smuggling.pdf
+• Cheat Sheet de XSS
+http://ha.ckers.org/xss.html
 ****************************************************************************************************
 206
+
+Manejo de errores, auditoria y generación de logs
+Objetivo
+Muchas industrias son requeridas por medio de requisitos legales y regulatorios con lo
+siguiente:
+Auditable – todas las actividades que afectan el estado de un usuario o balances deben ser
+formalmente rastreables.
+Trazable – es posible determinar donde ocurre cada actividad en todas las capas de una
+aplicación.
+Alta integridad – los logs no pueden ser sobrescritos o modificados por usuarios locales o
+remotos.
+Las aplicaciones bien escritas generan logs de doble propósito con trazas de actividad para
+auditoria y monitoreo, y hace que sea fácil seguir una transacción sin mucho esfuerzo o acceso al
+sistema. Debería ser posible identificar y seguir una transacción potencialmente fraudulenta de
+punta a punta.
+Entornos afectados
+Todos
+Temas relevantes de COBIT
+DS11 – Administración de datos – Todas las secciones deben ser revisadas, pero en
+particular:
+DS11.4 Manejo de errores en documentos fuente
+DS11.8 Manejo de errores en la entrada de datos
+Descripción
+Manejo de errores, mensajes de depuración, auditoria y archivos de log son diferentes
+aspectos del mismo tópico: como realizar un seguimiento de eventos dentro de una aplicación. 
 ****************************************************************************************************
 207
+Mejores prácticas
+• Prueba de fallas – no deje sin gestionar las fallas.
+• Utilice logs de doble propósito
+• Los logs de auditoria se encuentran legalmente protegidos – protéjalos!
+• Genere reportes y realice búsquedas en los logs utilizando una copia de solo lectura o
+una copia integra del original.
+Manejo de errores
+El manejo de errores toma dos formas: manejo estructurado de excepciones y control de
+errores funcional. El manejo estructurado de excepciones es siempre preferido ya que es más
+fácil cubrir el 100% del código.
+Lenguajes funcionales como PHP 4 que no tienen excepciones son muy difíciles de cubrir el
+100% de los errores. El código que cubre 100% de los errores es extraordinariamente verboso y
+difícil de leer, y puede contener fallas sutiles e inclusive errores en el código de manejo de
+errores. 
 ****************************************************************************************************
 208
+
+Los atacantes motivados prefieren visualizar los mensajes de error ya que pueden mostrar
+información que les permita realizar otros ataques, o pueden mostrar información privada. El
+manejo de errores en aplicaciones web raramente es lo suficientemente robusto como para
+sobrevivir un ataque de penetración.
+Las aplicaciones siempre deberían tener un mecanismo a prueba de fallos. Si una aplicación
+falla y muestra un estado desconocido, es probable que un atacante utilice este estado
+indeterminado para acceder funcionalidad no autorizada, o peor aun, crear, modificar o destruir
+datos.
+Aplicaciones a prueba de fallas
+• Inspeccione el manejo de errores fatales de la aplicación
+• ¿Es a prueba de fallas? Si lo es, ¿de que manera?
+• ¿Es el programa de manejo de errores fatales llamado con suficiente frecuencia?
+• ¿Que ocurre con las transacciones en proceso y la información efímera?
+Depuración de Errores
+• ¿Posee el código en producción mensajes o manipuladores de depuración de errores?
+• ¿Si el lenguaje es un lenguaje de secuencia de código sin pre-procesamiento efectivo
+o compilación, puede ser activado el indicador de depuración de errores en el
+servidor?
+• Los mensajes de depuración de errores filtran información privada, o información que
+¿puede llevar a un posterior ataque exitoso?
+Manejo de Excepciones
+¿Hace uso el código de manipuladores de excepciones estructurados (try {} catch {} etc.) o
+de manipulación de errores basado en funciones?
+Si el código utiliza manipulación de errores basado en funciones, ¿ha revisado el código cada
+valor de salida y resuelve el error apropiadamente?
+¿Fallaría la inyección fuzz contra la interfase promedio?
+Valores de retorno funcionales 
 ****************************************************************************************************
 209
+
+Muchos lenguajes indican una condición de error por valor de retorno. Por ejemplo:
+• ¿Son todos los errores funcionales chequeados? Si no lo son, ¿que puede fallar?
+Mensajes de error detallados
+Los mensajes de error detallados proveen a los atacantes con una enorme cantidad de
+información utilizada.
+¿Como determinar si usted es vulnerable?
+¿Se encuentran activados los mensajes de error?
+¿Filtran los mensajes de error detallados información que puede ser utilizada para preparar
+otros ataques, o información privada?
+¿Captura el navegador el mensaje de error cache?
+Como protegerse
+Asegúrese de que sus aplicaciones posean un modo a prueba de fallas que pueda ser activado
+en caso de que ocurra algo verdaderamente inesperado. Si todo lo demás falla, desconecte al
+usuario y cierre la ventana del navegador
+ El código en producción no debería ser capaz de producir mensajes de depuración de
+errores. Si lo hiciera, el modo de depuración de errores debería ser iniciado por una opción de
+edición de archivo o configuración en el servidor. En particular, la depuración de errores no
+debería ser activado por una opción de la misma aplicación.
+Si el marco o lenguaje posee manipulación de excepciones estructurado (por ejemplo try {}
+catch {}), este debería ser utilizado con preferencia al manejo de errores funcional.
+Si la aplicación utiliza manipulación de errores funcional, su uso debe ser comprensivo e
+intensivo.
+Nunca deberían ser presentados al usuario los mensajes de error detallados, tales como trazas
+que develen información privada. En cambio, se debería utilizar un mensaje de error genérico.
+Esto incluye códigos de respuesta de estado de http (por ejemplo errores 404 o 500).
+Logueo 
+
 ****************************************************************************************************
 210
-****************************************************************************************************
 
+¿Donde generar los logs?
+Los logs deberían ser escritos de tal manera que lo atributos del archivo de log permitan que
+solo nueva información pueda ser escrita (registros anteriores no deberían ser reescritos o
+eliminados). Para seguridad adicional, los logs también deberían ser escritos en un soporte de
+una escritura/múltiple lectura tal como un CD-R.
+ Se deberían realizar copias de los archivos de log a intervalos regulares dependiendo del
+volumen y tamaño (diarios, semanales, mensuales, etc.). También se debería adoptar una
+convención de nombres común a todos los archivos de log, facilitando su indexación. La
+verificación de que el logueo se encuentra activado y en funcionamiento es algo que se omite con
+frecuencia, y es algo que se podría lograr a través de cron job.
+ Asegúrese de que la información no se sobrescrita.
+ Los archivos de los deberían ser copiados y movidos a almacenamiento permanente e
+incorporados a la estrategia general de backup de la organización.
+Los archivos de log y soporte de almacenamiento deberían ser destruidos y eliminados
+apropiadamente, e incorporados al plan de la organización para una eliminación segura. Reportes
+deberían ser generados a intervalos regulares, incluyendo reportes de error tendencias para la
+detección de anomalías.
+ Asegúrese de mantener los logs seguros y confidenciales incluso cuando estos fueron
+resguardados.
+Manipulación
+ Los logs pueden ser alimentados en herramientas de detección de intrusos y de monitoreo
+y rendimiento de sistema. Todos los componentes de logueo deben ser sincronizados con un
+servidor de fecha de manera que todo el logueo pueda ser consolidado efectivamente sin errores
+de latencia. Este servidor de fecha debe ser asegurado y no debe proveer ningún otro servicio a la
+red.
+Mientras se realiza el análisis no debe haber ni manipulación ni eliminación.
+Depuración General de Errores
+
+
+****************************************************************************************************
 211
+
+Los logs resultan útiles en la reconstrucción de eventos luego de que ha ocurrido un
+problema, haya sido este relacionado a la seguridad o no. La reconstrucción de eventos puede
+permitir a un administrador de seguridad determinar el alcance total de la actividad de un intruso
+y acelerar el proceso de recupero.
+Evidencia Forense
+Los logs pueden ser requeridos en algunos casos en procedimientos legales como prueba de
+las actividades maliciosas. En este caso la actual manipulación del log es esencial.
+Detección de Ataques
+Muchas veces los logs son el único registro de que se esta dando un comportamiento
+sospechoso. Por lo tanto los logs algunas veces podrían ser almacenados en tiempo real
+directamente en sistemas de detección de intrusos.
+Calidad de Servicios
+Por protocolo se podrían conducir encuestas repetitivas de tal manera que caídas de red o del
+servidor pueden ser protocoladas y el comportamiento puede ser analizado posteriormente o una
+persona responsable pueda tomar acciones inmediatas.
+Prueba de Validez
+Los desarrolladores de aplicaciones a veces escriben logs para demostrar a los clientes que
+las aplicaciones se comportan de la manera esperada.
+• Requeridos por ley o por políticas corporativas
+• Los logs pueden asignar responsabilidad individual en el universo de aplicaciones
+web al proveer trazabilidad a las acciones de un usuario.
+Puede ser un requerimiento de una política corporativa o legislación local el (por ejemplo)
+guardar la información del encabezamiento de todas las transacciones de aplicación. Estos logs
+deben ser resguardados y mantener su confidencialidad por seis meses antes de que puedan ser
+eliminados.
+Los puntos citados anteriormente muestran las diferentes motivaciones y resultan en
+diferentes requerimientos y estrategias. Esto significa, que antes de que podamos implementar un 
+
 ****************************************************************************************************
 212
+
+mecanismo de logue en una aplicación o sistema, necesitamos conocer los requerimientos y su
+uso posterior. Si fallamos al hacer esto puede llevar a resultados no deseados.
+El fracaso al habilitar o diseñar mecanismos apropiados de logueo de eventos en
+aplicaciones web pueden amenazar la habilidad de una organización para detectar intentos de
+acceso no autorizados, y hasta que punto estos intentos fueron exitosos o no. Mas adelante en
+este capitulo analizaremos los métodos de ataque más comunes, errores de diseño y de
+implementación así como también estrategias de mitigación.
+Existe otro motivo por el cual el mecanismo de logue debe ser planeado antes de la
+implementación. En algunos países, la legislación define que tipo de información personal se
+encuentra permitido no solo loguear, pero también analizar. Por ejemplo, en Suiza, las
+compañías no pueden loguear información personal de sus empleados (como por ejemplo su
+actividad en Internet o lo que escriben en su correo electrónico). Por lo tanto si una compañía
+quisiera loguear los hábitos de navegación en Internet, la compañía tendría que informar sus
+planes por adelantado.
+Esto conduce al requerimiento de poseer logs anónimos o despersonalizados con la
+posibilidad de re-personalizarlos posteriormente si fuera necesario. Si una persona no autorizada
+tiene acceso a logs (legalmente) personalizados, la organización se encontraría nuevamente
+actuando fuera de la ley. Por lo tanto puede haber algunas (no solo) dificultades legales que
+deben ser tenidas en cuenta.
+Tipos de logueo
+ Los logs pueden poseer diferente tipos de información. La selección de la información
+utilizada se encuentra afectada normalmente por la motivación que conduce al logueo. Esta
+sección contiene información sobre los diferentes tipos de información de log y las razones por
+las cuales podríamos querer loguearlas.
+En general, las características de logueo incluyen información de depuración de errores
+apropiada tal como la fecha y hora del evento, procesos iniciados o dueño del proceso, y una
+descripción detallada del evento. Los siguientes son tipos de evento de sistema que pueden ser
+logueados en una aplicación. Depende de la aplicación en particular o sistema y las necesidades
+el decidir cual de estos serán utilizados en los logs.
+• Lectura del acceso al archivo de información y que tipo de información es leída. Esto
+no solo permite ver la información que fue leída, pero también por quien y cuando. 
+
 ****************************************************************************************************
 213
 ****************************************************************************************************
