@@ -610,35 +610,36 @@ ataque de gusano o troyano.
 
 34
 
-Principios de codificación segura
-Sumario
-Arquitectos y proveedores de soluciones necesitan una guía para producir aplicaciones
-seguras por diseño, y pueden hacerlo no sólo implementando los controles básicos documentados
-en el texto principal, sino también refiriéndose al subyacente “¿Por qué?” en esos principios. Los
-principios de seguridad tales como confidencialidad, integridad, y disponibilidad – aunque son
-importantes, amplios y vagos – no cambian. Su aplicación será más robusta cuanto más los
-aplique.
- Por ejemplo, es correcto cuando en una implementación de validación de datos se incluye
-una rutina de validación centralizada para todas las entradas. Sin embargo, es mejor ver una
-validación a cada nivel para todas las entradas del usuario, asociadas con un apropiado manejo
-de errores y un robusto control de accesos.
-En el último año más o menos, ha habido un esfuerzo significante para estandarizar la
-terminología y taxonomía. Esta versión de la guía ha normalizado sus principios con aquellos de
-los grandes textos de la industria, mientras se han abandonado un principio o dos presentes en la
-primera edición de la Guía. Se ha hecho así para prevenir confusión e incrementar la
-conformidad con un conjunto de principios fundamentales. Los principios que han sido
-eliminados están adecuadamente cubiertos por controles dentro del texto.
-Clasificación de activos
-La selección de controles sólo es posible después de clasificar los datos a proteger. Por
-ejemplo, controles aplicables a sistemas de bajo valor tales como blogs y foros son diferentes al
-nivel y número de controles adecuados para la contabilidad, sistemas de alto valor de banca y
-comercio electrónico
-Sobre los atacantes
-En el diseño de controles para prevenir el mal uso de su aplicación, debe considerar los
-atacantes más probables (en orden de posibilidades y pérdidas actualizadas de más a menos):
-Equipo o desarrolladores descontentos.
-Ataques “Accionados por” como efectos secundarios o consecuencias directas de un virus, o
-ataque de gusano o troyano. 
+Atacantes criminales motivados, tales como el crimen organizado.
+Atacantes criminales contra tu organización sin motivo, como defacers.
+Script kiddies
+Fíjese en que no existe una entrada para el término “hacker.” Esto es debido al emotivo e
+incorrecto uso de la palabra “hacker” por los medios. El término correcto es “criminal”. Los
+típicos criminales atrapados y perseguidos por la policía son script kiddies, principalmente dado
+que las organizaciones no están dispuestas a ir a la policía y ayudarles a poner cargos contra los
+delincuentes más serios.
+Sin embargo, ya es demasiado tarde para reclamar el uso incorrecto de la palabra “hacker” e
+intentar devolver a la palabra su correcto origen. La guía usa la palabra “atacante”
+consistentemente cuando se denota que algo o alguien está intentado activamente explotar una
+característica particular.
+Pilares esenciales de la seguridad de la información
+La seguridad de la información se ha mantenido sobre los siguientes pilares:
+Confidencialidad – permitir acceso únicamente a los datos a los cuales el usuario está
+permitido.
+Integridad – asegurar que los datos no se falsifican o alteran por usuarios no autorizados.
+Disponibilidad – asegurar que los sistemas y datos están disponibles para los usuarios
+autorizados cuando lo necesiten.
+Los siguientes principios están todos relacionados a esos tres pilares. En efecto, cuando se
+considera la construcción de un control, considerar cada pilar sucesivamente ayudará en la
+producción de un robusto control de seguridad.
+Arquitectura de Seguridad
+Las aplicaciones sin una arquitectura de seguridad son como puentes construidos sin un
+análisis finito de elementos ni tests de túneles de viento. Seguramente, parecerán puentes, pero
+caerán a la primera sacudida de las alas de una mariposa. La necesidad de la seguridad de
+aplicaciones en forma de arquitectura de seguridad es tan grande como en la construcción de
+puentes o edificios.
+Los arquitectos de aplicaciones son los responsables de su construcción y diseño para
+cubrir los típicos riesgos tanto de uso como de ataques extremos. Los diseñadores de puentes
 
 
 ****************************************************************************************************
